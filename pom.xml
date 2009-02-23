@@ -2,7 +2,7 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>trails-jsecurity</artifactId>
+	<artifactId>tapestry-jsecurity</artifactId>
 	<name>Trails JSecurity</name>
 	<description>Trails Security package based on JSecurity</description>
 	<packaging>jar</packaging>
