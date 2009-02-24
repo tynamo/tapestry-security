@@ -20,11 +20,6 @@ package org.trailsframework.security.services;
 import java.io.IOException;
 import java.util.Properties;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-
 import org.apache.tapestry5.ioc.Configuration;
 import org.apache.tapestry5.ioc.MappedConfiguration;
 import org.apache.tapestry5.ioc.OrderedConfiguration;
@@ -53,6 +48,9 @@ public class SecurityModule {
 			// ignore
 		}
 	}
+
+	// TODO we should a custom implementation of jsecurityfilter that accepts configurations, such as defaultSigninPage
+	private static String defaultSignInPage = "/signin";
 
 	public static void bind(final ServiceBinder binder) {
 		binder.bind(SecurityConfiguration.class, SecurityConfigurationImpl.class);
@@ -89,6 +87,8 @@ public class SecurityModule {
 	}
 
 	public static HttpServletRequestFilter buildJSecurityFilter(SecurityConfiguration securityConfiguration) throws Exception {
+		// Need to sub-class JSecurityFilter to set the configuration rather than it creating a default one on the fly
+		// compare to overridden onFilterConfigSet() implementation
 		JSecurityFilter filter = new JSecurityFilter() {
 			@Override
 			protected void onFilterConfigSet() throws Exception {
@@ -107,11 +107,6 @@ public class SecurityModule {
 				setSecurityManager(ensureSecurityManager(configuration));
 			}
 
-			@Override
-			public void doFilterInternal(ServletRequest request, ServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-				super.doFilterInternal(request, response, filterChain);
-			}
-
 		};
 		filter.setConfiguration(securityConfiguration);
 		// FIXME add configuration here
@@ -122,21 +117,6 @@ public class SecurityModule {
 		filter.afterPropertiesSet();
 		*/
 		return new HttpServletRequestFilterWrapper(filter);
-	}
-
-	public static void contributeSecurityConfiguration(Configuration<SecurityFilterChain> configuration, AnonymousFilter anon, UserFilter user,
-			FormAuthenticationFilter authc, BasicHttpAuthenticationFilter authcBasic, RolesAuthorizationFilter roles, PermissionsAuthorizationFilter perms) {
-
-		configuration.add(SecurityFilterChain.createChainForPath("/").add(anon));
-
-		configuration.add(SecurityFilterChain.createChainForPath("/viewcontest/**").add(authcBasic));
-
-		/*
-		SecurityFilterChain chain = SecurityFilterChain.createChainForPath("/**");
-		chain.add(authcBasic);
-		chain.add(roles, "b2bClient");
-		configuration.add(chain);
-		*/
 	}
 
 	/*
@@ -160,7 +140,7 @@ public class SecurityModule {
 	}
 
 	public static void contributeClasspathAssetAliasManager(MappedConfiguration<String, String> configuration) {
-		configuration.add("trails-jsecurity/" + version, "org/trailsframework/security");
+		configuration.add("jsecurity/" + version, "org/trailsframework/security");
 	}
 
 	public static AnonymousFilter buildAnonymousFilter() throws Exception {
@@ -188,7 +168,7 @@ public class SecurityModule {
 		String name = "authcBasic";
 		BasicHttpAuthenticationFilter filter = new BasicHttpAuthenticationFilter();
 		filter.setName(name);
-		filter.setLoginUrl("/");
+		filter.setLoginUrl(defaultSignInPage);
 		return filter;
 	}
 
@@ -196,7 +176,7 @@ public class SecurityModule {
 		String name = "roles";
 		RolesAuthorizationFilter filter = new RolesAuthorizationFilter();
 		filter.setName(name);
-		filter.setLoginUrl("/");
+		filter.setLoginUrl(defaultSignInPage);
 		return filter;
 	}
 
@@ -204,6 +184,7 @@ public class SecurityModule {
 		String name = "perms";
 		PermissionsAuthorizationFilter filter = new PermissionsAuthorizationFilter();
 		filter.setName(name);
+		filter.setLoginUrl(defaultSignInPage);
 		return filter;
 	}
 
