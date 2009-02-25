@@ -27,15 +27,13 @@ import org.apache.tapestry5.ioc.ServiceBinder;
 import org.apache.tapestry5.ioc.annotations.InjectService;
 import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.LibraryMapping;
-import org.jsecurity.mgt.SecurityManager;
-import org.jsecurity.web.config.WebConfiguration;
+import org.jsecurity.mgt.RealmSecurityManager;
 import org.jsecurity.web.filter.authc.AnonymousFilter;
 import org.jsecurity.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.jsecurity.web.filter.authc.FormAuthenticationFilter;
 import org.jsecurity.web.filter.authc.UserFilter;
 import org.jsecurity.web.filter.authz.PermissionsAuthorizationFilter;
 import org.jsecurity.web.filter.authz.RolesAuthorizationFilter;
-import org.jsecurity.web.servlet.JSecurityFilter;
 
 public class SecurityModule {
 	private static String version = "unversioned";
@@ -53,7 +51,11 @@ public class SecurityModule {
 	private static String defaultSignInPage = "/signin";
 
 	public static void bind(final ServiceBinder binder) {
-		binder.bind(SecurityConfiguration.class, SecurityConfigurationImpl.class);
+		// binder.bind(SecurityConfiguration.class, SecurityConfigurationImpl.class);
+		// binder.bind(SecurityRealm.class, SecurityRealm.class);
+		binder.bind(RealmSecurityManager.class, WebRealmSecurityManagerImpl.class);
+		binder.bind(HttpServletRequestFilter.class, JSecurityConfiguration.class).withId("JSecurityConfiguration");
+		binder.bind(SecurityFilterChainFactory.class, SecurityFilterChainFactoryImpl.class);
 		/*
 				binder.bind(LogoutService.class, LogoutServiceImpl.class).withMarker(SpringSecurityServices.class);
 				binder.bind(AuthenticationTrustResolver.class, AuthenticationTrustResolverImpl.class).withMarker(SpringSecurityServices.class);
@@ -82,42 +84,33 @@ public class SecurityModule {
 	*/
 
 	public static void contributeHttpServletRequestHandler(OrderedConfiguration<HttpServletRequestFilter> configuration,
-			@InjectService("JSecurityFilter") HttpServletRequestFilter jsecurityFilter) {
-		configuration.add("jsecurityFilter", jsecurityFilter, "before:*");
+			@InjectService("JSecurityConfiguration") HttpServletRequestFilter jsecurityConfiguration) {
+		configuration.add("JSecurityConfiguration", jsecurityConfiguration, "before:*");
 	}
 
-	public static HttpServletRequestFilter buildJSecurityFilter(SecurityConfiguration securityConfiguration) throws Exception {
-		// Need to sub-class JSecurityFilter to set the configuration rather than it creating a default one on the fly
-		// compare to overridden onFilterConfigSet() implementation
-		JSecurityFilter filter = new JSecurityFilter() {
-			@Override
-			protected void onFilterConfigSet() throws Exception {
-				WebConfiguration config = getConfiguration();
-				applyFilterConfig(config);
-				setConfiguration(config);
-
-				// Retrieve and store a reference to the security manager
-				SecurityManager sm = ensureSecurityManager(config);
-				setSecurityManager(sm);
-			}
-
-			@Override
-			public void setConfiguration(WebConfiguration configuration) {
-				super.setConfiguration(configuration);
-				setSecurityManager(ensureSecurityManager(configuration));
-			}
-
-		};
-		filter.setConfiguration(securityConfiguration);
-		// FIXME add configuration here
-		/*
-		filter.setContextClass(SecurityContextImpl.class);
-		filter.setAllowSessionCreation(true);
-		filter.setForceEagerSessionCreation(false);
-		filter.afterPropertiesSet();
-		*/
-		return new HttpServletRequestFilterWrapper(filter);
-	}
+	// public static HttpServletRequestFilter buildJSecurityFilter(SecurityConfiguration securityConfiguration) throws
+	// Exception {
+	// // Need to sub-class JSecurityFilter to set the configuration rather than it creating a default one on the fly
+	// // compare to overridden onFilterConfigSet() implementation
+	// JSecurityFilter filter = new JSecurityFilter() {
+	// @Override
+	// public void setConfiguration(WebConfiguration configuration) {
+	// super.setConfiguration(configuration);
+	// setSecurityManager(configuration.getSecurityManager());
+	// }
+	//
+	// };
+	//
+	// filter.setConfiguration(securityConfiguration);
+	// // FIXME add configuration here
+	// /*
+	// filter.setContextClass(SecurityContextImpl.class);
+	// filter.setAllowSessionCreation(true);
+	// filter.setForceEagerSessionCreation(false);
+	// filter.afterPropertiesSet();
+	// */
+	// return new HttpServletRequestFilterWrapper(filter);
+	// }
 
 	/*
 	public static void contributeLogoutService(final OrderedConfiguration<LogoutHandler> cfg,
@@ -142,6 +135,12 @@ public class SecurityModule {
 	public static void contributeClasspathAssetAliasManager(MappedConfiguration<String, String> configuration) {
 		configuration.add("jsecurity/" + version, "org/trailsframework/security");
 	}
+
+	/*
+	public static PathSecurityHandler buildPathSecurityHandler(Map<String, List<HttpServletRequestFilter>> configuration, PipelineBuilder builder, Logger logger) {
+		return builder.build(logger, HttpServletRequestHandler.class, HttpServletRequestFilter.class, configuration);
+	}
+	*/
 
 	public static AnonymousFilter buildAnonymousFilter() throws Exception {
 		String name = "anon";
@@ -187,5 +186,4 @@ public class SecurityModule {
 		filter.setLoginUrl(defaultSignInPage);
 		return filter;
 	}
-
 }

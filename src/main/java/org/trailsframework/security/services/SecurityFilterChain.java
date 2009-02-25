@@ -5,25 +5,29 @@ import java.util.List;
 
 import javax.servlet.Filter;
 
-import org.jsecurity.web.filter.PathMatchingFilter;
+import org.apache.tapestry5.services.HttpServletRequestHandler;
 
 public class SecurityFilterChain {
 	private String path;
 
 	private List<Filter> filters = new ArrayList<Filter>();
 
-	public SecurityFilterChain(String path) {
+	private HttpServletRequestHandler handler;
+
+	public SecurityFilterChain(String path, HttpServletRequestHandler handler) {
 		this.path = path;
+		this.handler = handler;
 	}
 
-	public static SecurityFilterChain createChainForPath(String path) {
-		return new SecurityFilterChain(path);
+	protected HttpServletRequestHandler getHandler() {
+		return handler;
 	}
 
 	protected String getPath() {
 		return path;
 	}
 
+	/*
 	protected List<Filter> getFilters() {
 		return filters;
 	}
@@ -41,4 +45,5 @@ public class SecurityFilterChain {
 	public boolean isEmpty() {
 		return filters.size() == 0;
 	}
+	*/
 }

@@ -9,6 +9,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.apache.tapestry5.ioc.annotations.EagerLoad;
+import org.jsecurity.web.DefaultWebSecurityManager;
 import org.jsecurity.web.config.IniWebConfiguration;
 
 @EagerLoad
@@ -17,21 +18,27 @@ public class SecurityConfigurationImpl extends IniWebConfiguration implements Se
 
 	protected Map<String, SecurityFilterChain> chainMap = new LinkedHashMap<String, SecurityFilterChain>();
 
-	public SecurityConfigurationImpl(final Collection<SecurityFilterChain> chains) {
+	public SecurityConfigurationImpl(final Collection<SecurityFilterChain> chains, SecurityRealm securityRealm) {
 		for (SecurityFilterChain chain : chains) {
 			chainMap.put(chain.getPath(), chain);
 		}
+		DefaultWebSecurityManager sm = new DefaultWebSecurityManager();
+		sm.setRealms(securityRealm);
+		setSecurityManager(sm);
 	}
 
 	@Override
 	protected FilterChain getChain(String chainUrl, FilterChain originalChain) {
 		SecurityFilterChain chain = chainMap.get(chainUrl);
+		/*
 		if (chain != null && !chain.isEmpty()) {
 			return createChain(chain.getFilters(), originalChain);
 		}
+		*/
 		return null;
 	}
 
+	@Override
 	public FilterChain getChain(ServletRequest request, ServletResponse response, FilterChain originalChain) {
 		if (chainMap.isEmpty()) return null;
 
