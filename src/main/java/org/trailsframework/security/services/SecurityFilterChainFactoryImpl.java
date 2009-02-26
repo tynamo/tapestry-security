@@ -31,4 +31,10 @@ public class SecurityFilterChainFactoryImpl implements SecurityFilterChainFactor
 
 	}
 
+	@SuppressWarnings("unchecked")
+	public String getLogicalUrl(Class pageClass) {
+		// TODO should add package, or maybe use Tapestry util operation for it?
+		return "/" + pageClass.getSimpleName().toLowerCase();
+	}
+
 }
