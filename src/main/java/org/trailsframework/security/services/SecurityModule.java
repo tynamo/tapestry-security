@@ -56,6 +56,8 @@ public class SecurityModule {
 		binder.bind(RealmSecurityManager.class, WebRealmSecurityManagerImpl.class);
 		binder.bind(HttpServletRequestFilter.class, JSecurityConfiguration.class).withId("JSecurityConfiguration");
 		binder.bind(SecurityFilterChainFactory.class, SecurityFilterChainFactoryImpl.class);
+		binder.bind(HttpServletRequestDecorator.class, HttpServletRequestDecoratorImpl.class);
+
 		/*
 				binder.bind(LogoutService.class, LogoutServiceImpl.class).withMarker(SpringSecurityServices.class);
 				binder.bind(AuthenticationTrustResolver.class, AuthenticationTrustResolverImpl.class).withMarker(SpringSecurityServices.class);
@@ -134,6 +136,10 @@ public class SecurityModule {
 
 	public static void contributeClasspathAssetAliasManager(MappedConfiguration<String, String> configuration) {
 		configuration.add("jsecurity/" + version, "org/trailsframework/security");
+	}
+
+	public static <T> T decorateHttpServletRequest(Class<T> serviceInterface, T delegate, HttpServletRequestDecorator decorator) {
+		return decorator.build(serviceInterface, delegate);
 	}
 
 	/*

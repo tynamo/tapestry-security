@@ -72,23 +72,23 @@ public class JSecurityConfiguration implements HttpServletRequestFilter {
 			}
 		}
 		boolean handled;
+		ThreadContext.bind(WebUtils.getInetAddress(request));
+		WebUtils.bind(request);
+		WebUtils.bind(response);
+		ThreadContext.bind(securityManager);
+		ThreadContext.bind(securityManager.getSubject());
 		if (chain == null) handled = handler.service(request, response);
 		else {
-			ThreadContext.bind(WebUtils.getInetAddress(request));
-			WebUtils.bind(request);
-			WebUtils.bind(response);
-			ThreadContext.bind(securityManager);
-			ThreadContext.bind(securityManager.getSubject());
 
 			handled = chain.getHandler().service(request, response);
 			if (!handled) handled = handler.service(request, response);
 
-			ThreadContext.unbindSubject();
-			ThreadContext.unbindSecurityManager();
-			WebUtils.unbindServletResponse();
-			WebUtils.unbindServletRequest();
-			ThreadContext.unbindInetAddress();
 		}
+		ThreadContext.bind(WebUtils.getInetAddress(request));
+		WebUtils.bind(request);
+		WebUtils.bind(response);
+		ThreadContext.bind(securityManager);
+		ThreadContext.bind(securityManager.getSubject());
 
 		return handled;
 	}
