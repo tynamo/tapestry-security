@@ -25,6 +25,7 @@ import org.apache.tapestry5.ioc.MappedConfiguration;
 import org.apache.tapestry5.ioc.OrderedConfiguration;
 import org.apache.tapestry5.ioc.ServiceBinder;
 import org.apache.tapestry5.ioc.annotations.InjectService;
+import org.apache.tapestry5.ioc.annotations.Order;
 import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.LibraryMapping;
 import org.jsecurity.mgt.RealmSecurityManager;
@@ -138,6 +139,7 @@ public class SecurityModule {
 		configuration.add("jsecurity/" + version, "org/trailsframework/security");
 	}
 
+	@Order("before:*")
 	public static <T> T decorateHttpServletRequest(Class<T> serviceInterface, T delegate, HttpServletRequestDecorator decorator) {
 		return decorator.build(serviceInterface, delegate);
 	}

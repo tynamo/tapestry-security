@@ -30,7 +30,6 @@ public class HttpServletRequestDecoratorImpl implements HttpServletRequestDecora
 
 		MethodAdvice advice = new MethodAdvice() {
 			public void advise(Invocation invocation) {
-				invocation.proceed();
 				Subject subject = SecurityUtils.getSubject();
 				Object principal = null;
 				// FIXME Should there always be a subject?
@@ -46,6 +45,8 @@ public class HttpServletRequestDecoratorImpl implements HttpServletRequestDecora
 				case isUserInRole:
 					invocation.overrideResult(subject == null ? false : subject.hasRole(invocation.getParameter(0).toString()));
 					break;
+				default:
+					invocation.proceed();
 				}
 			}
 		};

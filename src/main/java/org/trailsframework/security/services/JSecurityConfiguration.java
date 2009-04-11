@@ -84,11 +84,11 @@ public class JSecurityConfiguration implements HttpServletRequestFilter {
 			if (!handled) handled = handler.service(request, response);
 
 		}
-		ThreadContext.bind(WebUtils.getInetAddress(request));
-		WebUtils.bind(request);
-		WebUtils.bind(response);
-		ThreadContext.bind(securityManager);
-		ThreadContext.bind(securityManager.getSubject());
+		ThreadContext.unbindSubject();
+		ThreadContext.unbindSecurityManager();
+		WebUtils.unbindServletResponse();
+		WebUtils.unbindServletRequest();
+		ThreadContext.unbindInetAddress();
 
 		return handled;
 	}
