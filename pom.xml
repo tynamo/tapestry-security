@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>tapestry-jsecurity</artifactId>
 	<name>Trails JSecurity</name>
-	<description>Trails Security package based on JSecurity</description>
+	<description>Trails Security package based on JSecurity 0.9</description>
 	<packaging>jar</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 
