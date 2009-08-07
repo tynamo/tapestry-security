@@ -2,8 +2,8 @@ package org.trailsframework.security.services;
 
 import java.util.Collection;
 
-import org.jsecurity.realm.Realm;
-import org.jsecurity.web.DefaultWebSecurityManager;
+import org.apache.shiro.realm.Realm;
+import org.apache.shiro.web.DefaultWebSecurityManager;
 
 /**
  * Needed just to point out to tapestry-ioc the right constructor to use (from the three available in

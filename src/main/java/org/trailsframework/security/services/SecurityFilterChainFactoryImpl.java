@@ -8,7 +8,7 @@ import javax.servlet.Filter;
 import org.apache.tapestry5.ioc.services.PipelineBuilder;
 import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.HttpServletRequestHandler;
-import org.jsecurity.web.filter.PathMatchingFilter;
+import org.apache.shiro.web.filter.PathMatchingFilter;
 import org.slf4j.Logger;
 
 public class SecurityFilterChainFactoryImpl implements SecurityFilterChainFactory {

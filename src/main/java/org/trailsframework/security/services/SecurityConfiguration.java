@@ -15,14 +15,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.HttpServletRequestHandler;
-import org.jsecurity.mgt.RealmSecurityManager;
-import org.jsecurity.mgt.SecurityManager;
-import org.jsecurity.util.AntPathMatcher;
-import org.jsecurity.util.PatternMatcher;
-import org.jsecurity.util.ThreadContext;
-import org.jsecurity.web.WebUtils;
+import org.apache.shiro.mgt.RealmSecurityManager;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.util.AntPathMatcher;
+import org.apache.shiro.util.PatternMatcher;
+import org.apache.shiro.util.ThreadContext;
+import org.apache.shiro.web.WebUtils;
 
-public class JSecurityConfiguration implements HttpServletRequestFilter {
+public class SecurityConfiguration implements HttpServletRequestFilter {
 	private SecurityManager securityManager;
 
 	private Map<String, SecurityFilterChain> chainMap = new LinkedHashMap<String, SecurityFilterChain>();
@@ -30,7 +30,7 @@ public class JSecurityConfiguration implements HttpServletRequestFilter {
 	// FIXME make configurable
 	private PatternMatcher pathMatcher = new AntPathMatcher();
 
-	public JSecurityConfiguration(RealmSecurityManager securityManager, List<SecurityFilterChain> chains) {
+	public SecurityConfiguration(RealmSecurityManager securityManager, List<SecurityFilterChain> chains) {
 		this.securityManager = securityManager;
 		// The order of securityFilterChains is meaningful, so we need to construct the map ourselves rather
 		// than simply use MappedConfiguration

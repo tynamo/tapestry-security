@@ -3,8 +3,8 @@ package org.trailsframework.security.services;
 import org.apache.tapestry5.ioc.Invocation;
 import org.apache.tapestry5.ioc.MethodAdvice;
 import org.apache.tapestry5.ioc.services.AspectDecorator;
-import org.jsecurity.SecurityUtils;
-import org.jsecurity.subject.Subject;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 
 public class HttpServletRequestDecoratorImpl implements HttpServletRequestDecorator {
 	public static enum SecurityOperation {

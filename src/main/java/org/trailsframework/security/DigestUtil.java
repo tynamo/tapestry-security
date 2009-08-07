@@ -4,8 +4,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A utility class for encoding a string with SHA-1 hash and comparing the equality of an encoded string Uses a randomly
@@ -17,7 +17,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 public class DigestUtil {
-	private static final Log LOG = LogFactory.getLog(DigestUtil.class);
+	private static final Logger logger = LoggerFactory.getLogger(DigestUtil.class);
 
 	public final static int SALT_MINLENGTH = 2;
 
@@ -42,7 +42,7 @@ public class DigestUtil {
 		if (encodedPassword != null && plainTextPassword != null) {
 			int index = encodedPassword.indexOf(SALT_SEPARATOR);
 			if (index < 1) {
-				LOG.warn("Salt was not found from the encodedPassword parameter. Operation expects String encodedPassword, String plainTextPassword");
+				logger.warn("Salt was not found from the encodedPassword parameter. Operation expects String encodedPassword, String plainTextPassword");
 			} else {
 				String salt = encodedPassword.substring(0, index);
 				result = encodedPassword.substring(index + 1).equals(new String(createHash(plainTextPassword, salt.getBytes())));
@@ -71,7 +71,7 @@ public class DigestUtil {
 			try {
 				messageDigest = MessageDigest.getInstance("SHA-1");
 			} catch (NoSuchAlgorithmException e) {
-				LOG.fatal("Couldn't create SHA-1 MessageDigest, password encoding doesn't work. Are you using the right version of Java?");
+				logger.error("Couldn't create SHA-1 MessageDigest, password encoding doesn't work. Are you using the right version of Java?");
 				return null;
 			}
 		}
@@ -79,7 +79,7 @@ public class DigestUtil {
 		try {
 			mdLocal = (MessageDigest) messageDigest.clone();
 		} catch (CloneNotSupportedException e1) {
-			LOG.fatal("Couldn't clone static MessageDigest, password encoding doesn't work. Are you using the right version of Java?");
+			logger.error("Couldn't clone static MessageDigest, password encoding doesn't work. Are you using the right version of Java?");
 			return null;
 		}
 

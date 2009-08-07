@@ -28,13 +28,13 @@ import org.apache.tapestry5.ioc.annotations.InjectService;
 import org.apache.tapestry5.ioc.annotations.Order;
 import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.LibraryMapping;
-import org.jsecurity.mgt.RealmSecurityManager;
-import org.jsecurity.web.filter.authc.AnonymousFilter;
-import org.jsecurity.web.filter.authc.BasicHttpAuthenticationFilter;
-import org.jsecurity.web.filter.authc.FormAuthenticationFilter;
-import org.jsecurity.web.filter.authc.UserFilter;
-import org.jsecurity.web.filter.authz.PermissionsAuthorizationFilter;
-import org.jsecurity.web.filter.authz.RolesAuthorizationFilter;
+import org.apache.shiro.mgt.RealmSecurityManager;
+import org.apache.shiro.web.filter.authc.AnonymousFilter;
+import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
+import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
+import org.apache.shiro.web.filter.authc.UserFilter;
+import org.apache.shiro.web.filter.authz.PermissionsAuthorizationFilter;
+import org.apache.shiro.web.filter.authz.RolesAuthorizationFilter;
 
 public class SecurityModule {
 	private static String version = "unversioned";
@@ -48,107 +48,32 @@ public class SecurityModule {
 		}
 	}
 
-	// TODO we should a custom implementation of jsecurityfilter that accepts configurations, such as defaultSigninPage
 	private static String defaultSignInPage = "/signin";
 
 	public static void bind(final ServiceBinder binder) {
-		// binder.bind(SecurityConfiguration.class, SecurityConfigurationImpl.class);
-		// binder.bind(SecurityRealm.class, SecurityRealm.class);
 		binder.bind(RealmSecurityManager.class, WebRealmSecurityManagerImpl.class);
-		binder.bind(HttpServletRequestFilter.class, JSecurityConfiguration.class).withId("JSecurityConfiguration");
+		binder.bind(HttpServletRequestFilter.class, SecurityConfiguration.class).withId("SecurityConfiguration");
 		binder.bind(SecurityFilterChainFactory.class, SecurityFilterChainFactoryImpl.class);
 		binder.bind(HttpServletRequestDecorator.class, HttpServletRequestDecoratorImpl.class);
-
-		/*
-				binder.bind(LogoutService.class, LogoutServiceImpl.class).withMarker(SpringSecurityServices.class);
-				binder.bind(AuthenticationTrustResolver.class, AuthenticationTrustResolverImpl.class).withMarker(SpringSecurityServices.class);
-				binder.bind(PasswordEncoder.class, PlaintextPasswordEncoder.class).withMarker(SpringSecurityServices.class);
-				*/
 	}
-
-	public static void contributeFactoryDefaults(final MappedConfiguration<String, String> configuration) {
-		configuration.add("spring-security.check.url", "/j_spring_security_check");
-		configuration.add("spring-security.failure.url", "/loginfailed");
-		configuration.add("spring-security.target.url", "/");
-		configuration.add("spring-security.afterlogout.url", "/");
-		configuration.add("spring-security.accessDenied.url", "");
-		configuration.add("spring-security.force.ssl.login", "false");
-		configuration.add("spring-security.rememberme.key", "REMEMBERMEKEY");
-		configuration.add("spring-security.loginform.url", "/loginpage");
-		configuration.add("spring-security.anonymous.key", "spring_anonymous");
-		configuration.add("spring-security.anonymous.attribute", "anonymous,ROLE_ANONYMOUS");
-		configuration.add("spring-security.password.salt", "DEADBEEF");
-	}
-
-	/*
-	public static void contributeComponentClassTransformWorker(OrderedConfiguration<ComponentClassTransformWorker> configuration, SecurityChecker securityChecker) {
-		configuration.add("SpringSecurity", new SpringSecurityWorker(securityChecker));
-	}
-	*/
 
 	public static void contributeHttpServletRequestHandler(OrderedConfiguration<HttpServletRequestFilter> configuration,
-			@InjectService("JSecurityConfiguration") HttpServletRequestFilter jsecurityConfiguration) {
-		configuration.add("JSecurityConfiguration", jsecurityConfiguration, "before:*");
+			@InjectService("SecurityConfiguration") HttpServletRequestFilter securityConfiguration) {
+		configuration.add("SecurityConfiguration", securityConfiguration, "before:*");
 	}
-
-	// public static HttpServletRequestFilter buildJSecurityFilter(SecurityConfiguration securityConfiguration) throws
-	// Exception {
-	// // Need to sub-class JSecurityFilter to set the configuration rather than it creating a default one on the fly
-	// // compare to overridden onFilterConfigSet() implementation
-	// JSecurityFilter filter = new JSecurityFilter() {
-	// @Override
-	// public void setConfiguration(WebConfiguration configuration) {
-	// super.setConfiguration(configuration);
-	// setSecurityManager(configuration.getSecurityManager());
-	// }
-	//
-	// };
-	//
-	// filter.setConfiguration(securityConfiguration);
-	// // FIXME add configuration here
-	// /*
-	// filter.setContextClass(SecurityContextImpl.class);
-	// filter.setAllowSessionCreation(true);
-	// filter.setForceEagerSessionCreation(false);
-	// filter.afterPropertiesSet();
-	// */
-	// return new HttpServletRequestFilterWrapper(filter);
-	// }
-
-	/*
-	public static void contributeLogoutService(final OrderedConfiguration<LogoutHandler> cfg,
-			@InjectService("RememberMeLogoutHandler") final LogoutHandler rememberMeLogoutHandler) {
-		cfg.add("securityContextLogoutHandler", new SecurityContextLogoutHandler());
-		cfg.add("rememberMeLogoutHandler", rememberMeLogoutHandler);
-	}
-	*/
-
-	/*
-	public static void contributeRequestHandler(final OrderedConfiguration<RequestFilter> configuration, final RequestGlobals globals,
-			@InjectService("SpringSecurityExceptionFilter") final SpringSecurityExceptionTranslationFilter springSecurityExceptionFilter) {
-
-		configuration.add("SpringSecurityExceptionFilter", new RequestFilterWrapper(globals, springSecurityExceptionFilter), "after:ErrorFilter");
-	}
-	*/
 
 	public static void contributeComponentClassResolver(Configuration<LibraryMapping> configuration) {
 		configuration.add(new LibraryMapping("security", "org.trailsframework.security"));
 	}
 
 	public static void contributeClasspathAssetAliasManager(MappedConfiguration<String, String> configuration) {
-		configuration.add("jsecurity/" + version, "org/trailsframework/security");
+		configuration.add("security/" + version, "org/trailsframework/security");
 	}
 
 	@Order("before:*")
 	public static <T> T decorateHttpServletRequest(Class<T> serviceInterface, T delegate, HttpServletRequestDecorator decorator) {
 		return decorator.build(serviceInterface, delegate);
 	}
-
-	/*
-	public static PathSecurityHandler buildPathSecurityHandler(Map<String, List<HttpServletRequestFilter>> configuration, PipelineBuilder builder, Logger logger) {
-		return builder.build(logger, HttpServletRequestHandler.class, HttpServletRequestFilter.class, configuration);
-	}
-	*/
 
 	public static AnonymousFilter buildAnonymousFilter() throws Exception {
 		String name = "anon";
