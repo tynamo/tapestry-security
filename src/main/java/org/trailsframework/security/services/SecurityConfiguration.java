@@ -72,7 +72,7 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 			}
 		}
 		boolean handled;
-		ThreadContext.bind(WebUtils.getInetAddress(request));
+		WebUtils.bindInetAddressToThread(request);
 		WebUtils.bind(request);
 		WebUtils.bind(response);
 		ThreadContext.bind(securityManager);
@@ -88,7 +88,7 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 		ThreadContext.unbindSecurityManager();
 		WebUtils.unbindServletResponse();
 		WebUtils.unbindServletRequest();
-		ThreadContext.unbindInetAddress();
+		WebUtils.unbindInetAddressFromThread();
 
 		return handled;
 	}
