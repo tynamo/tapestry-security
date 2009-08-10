@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>org.trailsframework</groupId>
 		<artifactId>trails-parent</artifactId>
-		<version>2.1.1</version>
+		<version>2.1.0</version>
 	</parent>
 
 	<dependencies>
@@ -34,6 +34,20 @@
 			<version>1.0-incubating-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
+	
+	<!-- The repo section can be moved once 2.1.1 parent becomes available -->
+	<repositories>
+		<repository>
+			<id>apache-ci-snapshots</id>
+			<url>http://repository.apache.org/snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
+	</repositories>
 	
 	<build>
 		<resources>
