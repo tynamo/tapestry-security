@@ -17,10 +17,13 @@ import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.HttpServletRequestHandler;
 import org.apache.shiro.mgt.RealmSecurityManager;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.AntPathMatcher;
 import org.apache.shiro.util.PatternMatcher;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.WebUtils;
+import org.apache.shiro.web.subject.WebSubjectBuilder;
+import org.apache.shiro.web.subject.support.WebThreadStateManager;
 
 public class SecurityConfiguration implements HttpServletRequestFilter {
 	private SecurityManager securityManager;
@@ -72,23 +75,37 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 			}
 		}
 		boolean handled;
-		WebUtils.bindInetAddressToThread(request);
+		
+//		WebUtils.bindInetAddressToThread(request);
+//		WebUtils.bind(request);
+//		WebUtils.bind(response);
+//		ThreadContext.bind(securityManager);
+//		ThreadContext.bind(securityManager.getSubject());
+        
 		WebUtils.bind(request);
 		WebUtils.bind(response);
-		ThreadContext.bind(securityManager);
-		ThreadContext.bind(securityManager.getSubject());
-		if (chain == null) handled = handler.service(request, response);
-		else {
-
-			handled = chain.getHandler().service(request, response);
-			if (!handled) handled = handler.service(request, response);
-
-		}
-		ThreadContext.unbindSubject();
-		ThreadContext.unbindSecurityManager();
-		WebUtils.unbindServletResponse();
-		WebUtils.unbindServletRequest();
-		WebUtils.unbindInetAddressFromThread();
+        Subject subject = new WebSubjectBuilder(securityManager, request, response).build();
+        WebThreadStateManager threadState = new WebThreadStateManager(subject, request, response);
+        threadState.bindThreadState();
+        try {
+			if (chain == null) handled = handler.service(request, response);
+			else {
+	
+				handled = chain.getHandler().service(request, response);
+				if (!handled) handled = handler.service(request, response);
+	
+			}
+        }
+        finally {
+        	threadState.clearAllThreadState();
+    		WebUtils.unbindServletResponse();
+    		WebUtils.unbindServletRequest();
+        }
+//		ThreadContext.unbindSubject();
+//		ThreadContext.unbindSecurityManager();
+//		WebUtils.unbindServletResponse();
+//		WebUtils.unbindServletRequest();
+//		WebUtils.unbindInetAddressFromThread();
 
 		return handled;
 	}
