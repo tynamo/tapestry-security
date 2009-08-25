@@ -13,17 +13,16 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.tapestry5.services.HttpServletRequestFilter;
-import org.apache.tapestry5.services.HttpServletRequestHandler;
 import org.apache.shiro.mgt.RealmSecurityManager;
 import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.AntPathMatcher;
 import org.apache.shiro.util.PatternMatcher;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.WebUtils;
+import org.apache.shiro.web.subject.WebSubject;
 import org.apache.shiro.web.subject.WebSubjectBuilder;
-import org.apache.shiro.web.subject.support.WebThreadStateManager;
+import org.apache.shiro.web.subject.support.WebSubjectThreadState;
+import org.apache.tapestry5.services.HttpServletRequestFilter;
+import org.apache.tapestry5.services.HttpServletRequestHandler;
 
 public class SecurityConfiguration implements HttpServletRequestFilter {
 	private SecurityManager securityManager;
@@ -33,7 +32,7 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 	// FIXME make configurable
 	private PatternMatcher pathMatcher = new AntPathMatcher();
 
-	public SecurityConfiguration(RealmSecurityManager securityManager, List<SecurityFilterChain> chains) {
+	public SecurityConfiguration(final RealmSecurityManager securityManager, final List<SecurityFilterChain> chains) {
 		this.securityManager = securityManager;
 		// The order of securityFilterChains is meaningful, so we need to construct the map ourselves rather
 		// than simply use MappedConfiguration
@@ -49,20 +48,22 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 
 		private int index = 0;
 
-		HandlerFilterChain(HttpServletRequestHandler handler, List<Filter> filters) {
+		HandlerFilterChain(final HttpServletRequestHandler handler, final List<Filter> filters) {
 			this.handler = handler;
 			this.filters = filters;
 			this.index = 0;
 		}
 
-		public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
-			if (this.filters == null || this.filters.size() == this.index) handler.service((HttpServletRequest) request, (HttpServletResponse) response);
+		public void doFilter(final ServletRequest request, final ServletResponse response) throws IOException, ServletException {
+			if (this.filters == null || this.filters.size() == this.index) handler.service((HttpServletRequest) request,
+					(HttpServletResponse) response);
 			else this.filters.get(this.index++).doFilter(request, response, this);
 		}
 
 	}
 
-	public boolean service(final HttpServletRequest request, final HttpServletResponse response, final HttpServletRequestHandler handler) throws IOException {
+	public boolean service(final HttpServletRequest request, final HttpServletResponse response, final HttpServletRequestHandler handler)
+			throws IOException {
 
 		String requestURI = WebUtils.getPathWithinApplication(request);
 
@@ -75,37 +76,36 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 			}
 		}
 		boolean handled;
-		
-//		WebUtils.bindInetAddressToThread(request);
-//		WebUtils.bind(request);
-//		WebUtils.bind(response);
-//		ThreadContext.bind(securityManager);
-//		ThreadContext.bind(securityManager.getSubject());
-        
+
+		// WebUtils.bindInetAddressToThread(request);
+		// WebUtils.bind(request);
+		// WebUtils.bind(response);
+		// ThreadContext.bind(securityManager);
+		// ThreadContext.bind(securityManager.getSubject());
+
 		WebUtils.bind(request);
 		WebUtils.bind(response);
-        Subject subject = new WebSubjectBuilder(securityManager, request, response).build();
-        WebThreadStateManager threadState = new WebThreadStateManager(subject, request, response);
-        threadState.bindThreadState();
-        try {
+		WebSubject subject = new WebSubjectBuilder(securityManager, request, response).buildWebSubject();
+		WebSubjectThreadState threadState = new WebSubjectThreadState(subject);
+		threadState.bind();
+		try {
 			if (chain == null) handled = handler.service(request, response);
 			else {
-	
+
 				handled = chain.getHandler().service(request, response);
 				if (!handled) handled = handler.service(request, response);
-	
+
 			}
-        }
-        finally {
-        	threadState.clearAllThreadState();
-    		WebUtils.unbindServletResponse();
-    		WebUtils.unbindServletRequest();
-        }
-//		ThreadContext.unbindSubject();
-//		ThreadContext.unbindSecurityManager();
-//		WebUtils.unbindServletResponse();
-//		WebUtils.unbindServletRequest();
-//		WebUtils.unbindInetAddressFromThread();
+		} finally {
+			threadState.clear();
+			WebUtils.unbindServletResponse();
+			WebUtils.unbindServletRequest();
+		}
+		// ThreadContext.unbindSubject();
+		// ThreadContext.unbindSecurityManager();
+		// WebUtils.unbindServletResponse();
+		// WebUtils.unbindServletRequest();
+		// WebUtils.unbindInetAddressFromThread();
 
 		return handled;
 	}
