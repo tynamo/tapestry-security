@@ -19,7 +19,6 @@ import org.apache.shiro.util.AntPathMatcher;
 import org.apache.shiro.util.PatternMatcher;
 import org.apache.shiro.web.WebUtils;
 import org.apache.shiro.web.subject.WebSubject;
-import org.apache.shiro.web.subject.WebSubjectBuilder;
 import org.apache.shiro.web.subject.support.WebSubjectThreadState;
 import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.HttpServletRequestHandler;
@@ -85,7 +84,7 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 
 		WebUtils.bind(request);
 		WebUtils.bind(response);
-		WebSubject subject = new WebSubjectBuilder(securityManager, request, response).buildWebSubject();
+		WebSubject subject = new WebSubject.Builder(securityManager, request, response).buildWebSubject();
 		WebSubjectThreadState threadState = new WebSubjectThreadState(subject);
 		threadState.bind();
 		try {
