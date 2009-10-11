@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.trailsframework.security.services;
+package org.tynamo.security.services;
 
 import java.io.IOException;
 

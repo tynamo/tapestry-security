@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.trailsframework.security.services;
+package org.tynamo.security.services;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -63,11 +63,11 @@ public class SecurityModule {
 	}
 
 	public static void contributeComponentClassResolver(Configuration<LibraryMapping> configuration) {
-		configuration.add(new LibraryMapping("security", "org.trailsframework.security"));
+		configuration.add(new LibraryMapping("security", "org.tynamo.security"));
 	}
 
 	public static void contributeClasspathAssetAliasManager(MappedConfiguration<String, String> configuration) {
-		configuration.add("security/" + version, "org/trailsframework/security");
+		configuration.add("security/" + version, "org/tynamo/security");
 	}
 
 	@Order("before:*")

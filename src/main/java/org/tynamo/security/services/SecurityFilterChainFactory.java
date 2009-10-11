@@ -1,4 +1,4 @@
-package org.trailsframework.security.services;
+package org.tynamo.security.services;
 
 public interface SecurityFilterChainFactory {
 	public SecurityFilterChain createChain(String path, final SecurityFilterConfiguration filterConfiguration);

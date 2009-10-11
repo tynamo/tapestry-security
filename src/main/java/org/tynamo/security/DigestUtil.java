@@ -1,4 +1,4 @@
-package org.trailsframework.security;
+package org.tynamo.security;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

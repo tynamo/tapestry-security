@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.trailsframework.security.services;
+package org.tynamo.security.services;
 
 /**
  * Interface that makes few methods from {@link org.springframework.security.intercept.AbstractSecurityInterceptor}

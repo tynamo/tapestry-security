@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.trailsframework.security.services;
+package org.tynamo.security.services;
 
 import java.lang.reflect.Modifier;
 
@@ -24,7 +24,7 @@ import org.apache.tapestry5.services.ClassTransformation;
 import org.apache.tapestry5.services.ComponentClassTransformWorker;
 import org.apache.tapestry5.services.TransformConstants;
 import org.apache.tapestry5.services.TransformMethodSignature;
-import org.trailsframework.security.annotations.Secured;
+import org.tynamo.security.annotations.Secured;
 
 /**
  * @author Ivan Dubrov

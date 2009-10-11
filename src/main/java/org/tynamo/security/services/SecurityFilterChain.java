@@ -1,4 +1,4 @@
-package org.trailsframework.security.services;
+package org.tynamo.security.services;
 
 import org.apache.tapestry5.services.HttpServletRequestHandler;
 
