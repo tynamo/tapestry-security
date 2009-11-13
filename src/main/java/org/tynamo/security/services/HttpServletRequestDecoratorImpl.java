@@ -30,6 +30,8 @@ public class HttpServletRequestDecoratorImpl implements HttpServletRequestDecora
 
 		MethodAdvice advice = new MethodAdvice() {
 			public void advise(Invocation invocation) {
+				// FIXME catch all exceptions - bad things will happen if request is not bound yet, which will happen
+				// if any of the services use Request shadow when subject is still being built
 				Subject subject = SecurityUtils.getSubject();
 				Object principal = null;
 				// FIXME Should there always be a subject?
