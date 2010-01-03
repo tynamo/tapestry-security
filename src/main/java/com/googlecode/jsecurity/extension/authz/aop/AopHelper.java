@@ -84,7 +84,7 @@ public class AopHelper {
 	}
 	
 	/**
-	 * Create {@link org.jsecurity.authz.aop.AuthorizingAnnotationHandler}
+	 * Create {@link org.apache.shiro.authz.aop.AuthorizingAnnotationHandler}
 	 * for annotation.
 	 * 
 	 * @param annotation

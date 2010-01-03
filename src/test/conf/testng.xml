@@ -1,0 +1,17 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="tapestry-jsecurity-integration-test">
+
+	<parameter name="browserCmd" value="*firefox"/>
+
+	<test verbose="2" name="Integration" annotations="JDK">
+		<parameter name="webapp" value="src/test/webapp"/>
+		<groups>
+			<define name="notLoggedIn"/>
+			<define name="loggedIn"/>
+		</groups>
+		<classes>
+			<class name="com.googlecode.tapestry5jsecurity.TapestryJSecurityIntegrationTest"/>
+		</classes>
+	</test>
+
+</suite>

@@ -40,7 +40,7 @@ public class DefaultSecurityInterceptor implements SecurityInterceptor {
 	
 	
 	/**
-	 * Used in cases where previously known {@link org.jsecurity.authz.aop.AuthorizingAnnotationHandler} object.
+	 * Used in cases where previously known {@link org.apache.shiro.authz.aop.AuthorizingAnnotationHandler} object.
 	 * <p>
 	 * if the handler object is unknown use {@link #DefaultSecurityInterceptor(Annotation)} constructor 
 	 * 

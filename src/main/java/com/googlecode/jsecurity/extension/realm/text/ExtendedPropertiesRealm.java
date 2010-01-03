@@ -28,7 +28,7 @@ import org.apache.shiro.cache.HashtableCacheManager;
 import org.apache.shiro.realm.text.PropertiesRealm;
 
 /**
- * Fixes some bugs with {@link org.jsecurity.realm.text.PropertiesRealm}
+ * Fixes some bugs with {@link org.apache.shiro.realm.text.PropertiesRealm}
  * 
  * @author Valentine Yerastov
  */
@@ -55,7 +55,7 @@ public class ExtendedPropertiesRealm extends PropertiesRealm {
 	 * Устраняет ошибку генерации NullPointerException, при попытке зарегестрироваться 
 	 * по несуществующему аккаунту.
 	 * 
-	 * @see org.jsecurity.realm.SimpleAccountRealm#doGetAuthenticationInfo(org.jsecurity.authc.AuthenticationToken)
+	 * @see org.apache.shiro.realm.SimpleAccountRealm#doGetAuthenticationInfo(org.apache.shiro.authc.AuthenticationToken)
 	 */
 	@Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
@@ -91,7 +91,7 @@ public class ExtendedPropertiesRealm extends PropertiesRealm {
 	 * неккоректные аккаунты с именем realm по умолчание, которое потом менялось 
 	 * на имя заданное в конфиге.
 	 *  
-	 * @see org.jsecurity.realm.AuthorizingRealm#afterCacheManagerSet()
+	 * @see org.apache.shiro.realm.AuthorizingRealm#afterCacheManagerSet()
 	 */
 	@Override
     protected void afterCacheManagerSet() {

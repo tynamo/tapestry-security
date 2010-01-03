@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_1_0.xsd">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+        <title>Index</title>
+    </head>
+    <body>
+    	<div id="result">RESULT[${result}]</div>
+    	
+    	<div id="status">STATUS[${status}]</div> 
+    	
+    	<div><t:jsec.loginlink /></div> 
+    	
+    	<h3>Testing interceptors work</h3>
+    	
+    	<div><t:actionlink t:id="componentMethodInterceptor" id="componentMethodInterceptor">action componentMethodInterceptor (Restricted by annotation on page method)</t:actionlink> </div>
+    	<div><t:pagelink id="about" page="about">link to page about (Restricted by annotation on page class)</t:pagelink></div>
+    	<p />
+    	<div><t:actionlink t:id="alphaServiceInvoke" id="alphaServiceInvoke">action alphaServiceInvoke (Restricted by annotation on service method)</t:actionlink></div>
+    	<div><t:actionlink t:id="bettaServiceInvoke" id="bettaServiceInvoke">action bettaServiceInvoke (Restricted by annotation on service class)</t:actionlink></div>
+    	
+		<h3>Testing all annotation types</h3>
+    	<div><t:actionlink t:id="alphaServiceRequiresAuthentication" id="alphaServiceRequiresAuthentication">action alphaServiceRequiresAuthentication</t:actionlink></div>
+    	<div><t:actionlink t:id="alphaServiceRequiresUser" id="alphaServiceRequiresUser">action alphaServiceRequiresUser</t:actionlink></div>
+    	<div><t:actionlink t:id="alphaServiceRequiresGuest" id="alphaServiceRequiresGuest">action alphaServiceRequiresGuest</t:actionlink></div>
+    	<div><t:actionlink t:id="alphaServiceRequiresRolesUser" id="alphaServiceRequiresRolesUser">action alphaServiceRequiresRolesUser</t:actionlink></div>
+    	<div><t:actionlink t:id="alphaServiceRequiresRolesManager" id="alphaServiceRequiresRolesManager">action alphaServiceRequiresRolesManager</t:actionlink></div>
+    	<div><t:actionlink t:id="alphaServiceRequiresPermissionsNewsView" id="alphaServiceRequiresPermissionsNewsView">action alphaServiceRequiresPermissionsNewsView</t:actionlink></div>
+    	<div><t:actionlink t:id="alphaServiceRequiresPermissionsNewsEdit" id="alphaServiceRequiresPermissionsNewsEdit">action alphaServiceRequiresPermissionsNewsEdit</t:actionlink></div>
+    	
+    	<h3>Testing filter works</h3>
+    	
+    	<div><t:pagelink id="authcCabinet" page="authc/cabinet">authc/cabinet (authc filter)</t:pagelink></div>
+    	<div><t:pagelink id="authcSignup" page="authc/signup">authc/signup  (anon filter)</t:pagelink></div>
+    	<p />
+    	<div><t:pagelink id="userCabinet" page="user/cabinet">user/cabinet (user filter)</t:pagelink></div>
+    	<div><t:pagelink id="userSignup" page="user/signup">user/signup  (anon filter)</t:pagelink></div>
+    	<p />
+    	<div><t:pagelink id="rolesUser" page="roles/user">roles/user (roles filter, role exists)</t:pagelink></div>
+    	<div><t:pagelink id="rolesManager" page="roles/manager">roles/manager (roles filter, role does not exists)</t:pagelink></div>
+    	<p />
+    	<div><t:pagelink id="permView" page="perms/view">perms/view (perms filter, permission exists)</t:pagelink></div>
+    	<div><t:pagelink id="permEdit" page="perms/edit">perms/edit (perms filter, permission does not exists)</t:pagelink></div>
+
+		<h3>Testing components work</h3>
+		<t:jsec.authenticated>
+			<div id="AuthenticatedComponent">AuthenticatedComponent - RENDERED</div>
+		</t:jsec.authenticated>
+		
+		<t:jsec.notAuthenticated>
+			<div id="NotAuthenticatedComponent">NotAuthenticatedComponent - RENDERED</div>
+		</t:jsec.notAuthenticated>
+		
+		<t:jsec.user>
+			<div id="UserComponent">UserComponent - RENDERED</div>
+		</t:jsec.user>
+		
+		<t:jsec.guest>
+			<div id="GuestComponent">GuestComponent - RENDERED</div>
+		</t:jsec.guest>
+		
+		<t:jsec.hasAnyRoles t:roles="user, driver">
+			<div id="HasAnyRoleComponentSuccess">HasAnyRoleComponentSuccess - RENDERED</div>
+		</t:jsec.hasAnyRoles>
+		
+		<t:jsec.hasAnyRoles t:roles="teacher, manager">
+			<div id="HasAnyRoleComponentFailed">HasAnyRoleComponentFailed - RENDERED</div>
+		</t:jsec.hasAnyRoles>
+		
+		<t:jsec.hasPermission t:permission="book:read">
+			<div id="HasPermissionComponentSuccess">HasPermissionComponentSuccess - RENDERED</div>
+		</t:jsec.hasPermission>
+		
+		<t:jsec.hasPermission t:permission="book:write">
+			<div id="HasPermissionComponentFailed">HasPermissionComponentFailed - RENDERED</div>
+		</t:jsec.hasPermission>
+		
+		<t:jsec.hasRole t:role="user">
+			<div id="HasRoleComponentSuccess">HasRoleComponentSuccess - RENDERED</div>
+		</t:jsec.hasRole>
+		
+		<t:jsec.hasRole t:role="manager">
+			<div id="HasRoleComponentFailed">HasRoleComponentFailed - RENDERED</div>
+		</t:jsec.hasRole>
+    	
+    </body>
+</html>

@@ -75,8 +75,8 @@ public class FilterUtils {
 	}
 	
 	/**
-	 * Override default authc filter fom {@link org.jsecurity.web.filter.authc.FormAuthenticationFilter} to 
-	 * {@link org.jsecurity.web.filter.authc.PassThruAuthenticationFilter}.
+	 * Override default authc filter fom {@link org.apache.shiro.web.filter.authc.FormAuthenticationFilter} to
+	 * {@link org.apache.shiro.web.filter.authc.PassThruAuthenticationFilter}.
 	 * <p>
 	 * This is necessary in order to handle the authentication process manually.
 	 * 

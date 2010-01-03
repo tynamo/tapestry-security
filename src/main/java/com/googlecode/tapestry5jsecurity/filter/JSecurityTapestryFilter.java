@@ -64,7 +64,7 @@ public class JSecurityTapestryFilter extends ShiroFilter {
 	 * <p>
 	 * This use tapestry for handling exception, redirect after logout etc...  
 	 *  
-	 * @see org.jsecurity.web.servlet.JSecurityFilter#onFilterConfigSet()
+	 * @see org.apache.shiro.web.servlet.JSecurityFilter#onFilterConfigSet()
 	 */
 	@Override
 	protected void onFilterConfigSet() throws Exception {

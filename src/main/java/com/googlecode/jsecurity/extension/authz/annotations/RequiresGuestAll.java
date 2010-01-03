@@ -24,7 +24,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Analog {@link org.jsecurity.authz.annotation.RequiresGuest}, 
+ * Analog {@link org.apache.shiro.authz.annotation.RequiresGuest},
  * but can be applied to the type.
  *  
  * @author Valentine Yerastov

@@ -16,20 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.googlecode.jsecurity.extension.authz.annotations;
+package com.googlecode.tapestry5jsecurity.testapp.services.impl;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.googlecode.tapestry5jsecurity.testapp.services.BettaService;
 
-/**
- * Analog {@link org.apache.shiro.authz.annotation.RequiresAuthentication},
- * but can be applied to the type.
- *  
- * @author Valentine Yerastov
- */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface RequiresAuthenticationAll {
+public class BettaServiceImpl implements BettaService {
+
+	@Override
+	public String invoke() {
+		return Invoker.invoke(getClass());
+	}
+	
 }

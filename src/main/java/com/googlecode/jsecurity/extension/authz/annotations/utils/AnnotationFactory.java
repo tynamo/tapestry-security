@@ -59,7 +59,7 @@ public class AnnotationFactory {
 	
 	public RequiresAuthentication createRequiresAuthentication() {
 		return new RequiresAuthentication() {
-			@Override
+
 			public Class<? extends Annotation> annotationType() {
 				return RequiresAuthentication.class;
 			}
@@ -68,7 +68,7 @@ public class AnnotationFactory {
 	
 	public RequiresUser createRequiresUser() {
 		return new RequiresUser() {
-			@Override
+
 			public Class<? extends Annotation> annotationType() {
 				return RequiresUser.class;
 			}

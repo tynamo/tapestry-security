@@ -14,6 +14,10 @@
 		<version>0.0.4</version>
 	</parent>
 
+	<properties>
+		<selenium-version>1.0.1</selenium-version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.shiro</groupId>
@@ -47,6 +51,61 @@
 			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.apache.tapestry</groupId>
+			<artifactId>tapestry-test</artifactId>
+			<version>${tapestry-release-version}</version>
+			<scope>test</scope>
+			<!-- Selenium 1.0-beta-2 does not work well on MacOS -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.seleniumhq.selenium.client-drivers</groupId>
+					<artifactId>selenium-java-client-driver</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.seleniumhq.selenium.server</groupId>
+					<artifactId>selenium-server</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.seleniumhq.selenium.server</groupId>
+					<artifactId>selenium-server-coreless</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.seleniumhq.selenium.client-drivers</groupId>
+			<artifactId>selenium-java-client-driver</artifactId>
+			<version>${selenium-version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium.client-drivers</groupId>
+			<artifactId>selenium-java-testng-helper</artifactId>
+			<version>${selenium-version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium.server</groupId>
+			<artifactId>selenium-server</artifactId>
+			<version>${selenium-version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium.server</groupId>
+			<artifactId>selenium-server-coreless</artifactId>
+			<version>${selenium-version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.4</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<scm>
@@ -91,15 +150,30 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.4.3</version>
 				<configuration>
-					<archive>
-						<manifestEntries>
-							<Tapestry-Module-Classes>org.tynamo.security.services.SecurityModule</Tapestry-Module-Classes>
-						</manifestEntries>
-					</archive>
+					<suiteXmlFiles>
+						<suiteXmlFile>src/test/conf/testng.xml</suiteXmlFile>
+					</suiteXmlFiles>
+					<argLine>-Xmx500m</argLine>
+					<redirectTestOutputToFile>false</redirectTestOutputToFile>
 				</configuration>
 			</plugin>
+			<!--
+			   <plugin>
+				   <groupId>org.apache.maven.plugins</groupId>
+				   <artifactId>maven-jar-plugin</artifactId>
+				   <configuration>
+					   <archive>
+						   <manifestEntries>
+							   <Tapestry-Module-Classes>org.tynamo.security.services.SecurityModule
+							   </Tapestry-Module-Classes>
+						   </manifestEntries>
+					   </archive>
+				   </configuration>
+			   </plugin>
+   -->
 		</plugins>
 	</build>
 
