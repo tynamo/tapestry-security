@@ -1,0 +1,27 @@
+<div xmlns:t="http://tapestry.apache.org/schema/tapestry_5_0_0.xsd" xmlns:p="tapestry:parameter" 
+	id="jsecLoginFormContainer" >
+	
+		<t:form t:id="jsecLoginForm" >
+			<div id="jsecLoginMessage" >${loginMessage}</div>
+			<div id="jsecLoginContainer">
+				<div><t:label for="jsecLogin">login:</t:label></div>
+				<div><t:textfield t:id="jsecLogin" validate="required"/></div>
+			</div>
+			
+			<div id="jsecPasswordContainer">
+				<div><t:label for="jsecPassword">password:</t:label></div>
+				<div><t:passwordfield t:id="jsecPassword" validate="required"/></div>
+			</div>
+			
+			<div id="jsecRememberMeContainer">
+				<div>
+					<t:checkbox t:id="jsecRememberMe" /> 
+					<t:label for="jsecRememberMe">Remember Me</t:label>
+				</div>
+			</div>
+			
+			<div id="jsecEnterContainer">
+				<t:submit id="jsecEnter" value="Enter" />
+			</div>
+		</t:form>
+</div>
