@@ -10,7 +10,7 @@
 			<define name="loggedIn"/>
 		</groups>
 		<classes>
-			<class name="com.googlecode.tapestry5jsecurity.TapestryJSecurityIntegrationTest"/>
+			<class name="org.googlecode.tapestry5jsecurity.TapestryJSecurityIntegrationTest"/>
 		</classes>
 	</test>
 

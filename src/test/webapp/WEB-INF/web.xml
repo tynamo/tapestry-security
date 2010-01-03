@@ -6,12 +6,12 @@
     <display-name>tapestry-jsecurity-sample Tapestry 5 Application</display-name>
     <context-param>
         <param-name>tapestry.app-package</param-name>
-        <param-value>com.googlecode.tapestry5jsecurity.testapp</param-value>
+        <param-value>org.googlecode.tapestry5jsecurity.testapp</param-value>
     </context-param>
     
     <filter>
         <filter-name>app</filter-name>
-        <filter-class>com.googlecode.tapestry5jsecurity.filter.JSecurityTapestryDelegatingFilter</filter-class>
+        <filter-class>org.googlecode.tapestry5jsecurity.filter.JSecurityTapestryDelegatingFilter</filter-class>
         <init-param>
             <param-name>configUrl</param-name>
             <param-value>classpath:security.conf</param-value>

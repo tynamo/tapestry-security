@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_0_0.xsd">
+
+	<head>
+		<title>Login page</title>
+		<style type="text/css">
+			#jsecLoginFormContainer {
+				background: url(${asset:classpath:org/googlecode/tapestry5jsecurity/img/login-bg.png}) no-repeat;
+				width:778px;
+				height:600px;
+				margin:0 auto;
+			}
+			
+			#jsecLoginForm {
+				padding: 90px 110px;
+			}
+			
+			#jsecLoginMessage {
+				color:red;
+				margin-bottom: 10px;	
+			}
+			
+			input {
+				font-size: 220%;
+			}
+			
+			input[type="text"], input[type="password"] {
+				font-size: 220%; width: 400px;
+			}
+			
+			#jsecLoginContainer {
+				margin-bottom: 50px;
+			}
+			
+			#jsecPasswordContainer { 
+				margin-bottom: 50px;
+			}
+			
+			#jsecRememberMeContainer {
+				margin-bottom: 40px;
+			}
+			
+			.jsecMessage {
+				margin:0 auto;
+			}
+		</style>	
+	</head>
+
+	<body style="text-align:center;font-family:'lucida grande','lucida sans unicode','bitstream vera sans', 'trebuchet ms',arial,sans-serif;">
+		<div class="jsecMessage">
+			${message}
+		</div>
+		
+		<t:jsec.loginform />
+			
+	</body>
+</html>
