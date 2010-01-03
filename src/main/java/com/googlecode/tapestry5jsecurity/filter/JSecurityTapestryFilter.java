@@ -21,10 +21,10 @@ package com.googlecode.tapestry5jsecurity.filter;
 import java.io.StringReader;
 import java.util.Map;
 
-import org.jsecurity.io.IniResource;
-import org.jsecurity.util.StringUtils;
-import org.jsecurity.web.config.IniWebConfiguration;
-import org.jsecurity.web.servlet.JSecurityFilter;
+import org.apache.shiro.io.IniResource;
+import org.apache.shiro.util.StringUtils;
+import org.apache.shiro.web.config.IniWebConfiguration;
+import org.apache.shiro.web.servlet.ShiroFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +38,7 @@ import com.googlecode.tapestry5jsecurity.JSecurityModule;
  * @see TapestryIniWebConfiguration
  * @author xibyte
  */
-public class JSecurityTapestryFilter extends JSecurityFilter {
+public class JSecurityTapestryFilter extends ShiroFilter {
 
 	private static final Logger logger = LoggerFactory.getLogger(JSecurityTapestryFilter.class);
 	

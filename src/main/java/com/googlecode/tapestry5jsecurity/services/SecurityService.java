@@ -18,7 +18,7 @@
  */
 package com.googlecode.tapestry5jsecurity.services;
 
-import org.jsecurity.subject.Subject;
+import org.apache.shiro.subject.Subject;
 
 /**
  * General interface for work with jsecurity api.

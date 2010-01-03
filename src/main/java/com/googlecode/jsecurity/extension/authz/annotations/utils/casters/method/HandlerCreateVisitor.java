@@ -18,17 +18,17 @@
  */
 package com.googlecode.jsecurity.extension.authz.annotations.utils.casters.method;
 
-import org.jsecurity.authz.annotation.RequiresAuthentication;
-import org.jsecurity.authz.annotation.RequiresGuest;
-import org.jsecurity.authz.annotation.RequiresPermissions;
-import org.jsecurity.authz.annotation.RequiresRoles;
-import org.jsecurity.authz.annotation.RequiresUser;
-import org.jsecurity.authz.aop.AuthenticatedAnnotationHandler;
-import org.jsecurity.authz.aop.AuthorizingAnnotationHandler;
-import org.jsecurity.authz.aop.GuestAnnotationHandler;
-import org.jsecurity.authz.aop.PermissionAnnotationHandler;
-import org.jsecurity.authz.aop.RoleAnnotationHandler;
-import org.jsecurity.authz.aop.UserAnnotationHandler;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresGuest;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.authz.annotation.RequiresUser;
+import org.apache.shiro.authz.aop.AuthenticatedAnnotationHandler;
+import org.apache.shiro.authz.aop.AuthorizingAnnotationHandler;
+import org.apache.shiro.authz.aop.GuestAnnotationHandler;
+import org.apache.shiro.authz.aop.PermissionAnnotationHandler;
+import org.apache.shiro.authz.aop.RoleAnnotationHandler;
+import org.apache.shiro.authz.aop.UserAnnotationHandler;
 
 
 /**

@@ -18,8 +18,15 @@
  */
 package com.googlecode.tapestry5jsecurity;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.shiro.ShiroException;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.StringUtils;
+import org.apache.shiro.web.WebUtils;
 import org.apache.tapestry5.internal.services.PageResponseRenderer;
 import org.apache.tapestry5.internal.services.RequestPageCache;
 import org.apache.tapestry5.internal.structure.Page;
@@ -27,13 +34,8 @@ import org.apache.tapestry5.runtime.Component;
 import org.apache.tapestry5.services.ExceptionReporter;
 import org.apache.tapestry5.services.RequestGlobals;
 import org.apache.tapestry5.services.Response;
-import org.jsecurity.JSecurityException;
-import org.jsecurity.session.Session;
-import org.jsecurity.subject.Subject;
-import org.jsecurity.util.StringUtils;
-import org.jsecurity.web.WebUtils;
 
-import com.googlecode.tapestry5commons.errors.ErrorHandler;
+
 import com.googlecode.tapestry5jsecurity.services.PageService;
 import com.googlecode.tapestry5jsecurity.services.SecurityService;
 
@@ -42,7 +44,7 @@ import com.googlecode.tapestry5jsecurity.services.SecurityService;
  * 
  * @author xibyte
  */
-public class JSecurityExceptionHandler implements ErrorHandler<JSecurityException> {
+public class JSecurityExceptionHandler {
 
 	private final PageResponseRenderer renderer;
 	private final RequestPageCache pageCache;
@@ -62,7 +64,11 @@ public class JSecurityExceptionHandler implements ErrorHandler<JSecurityExceptio
 		this.response = response;
 	}
 	
-	public void handle(JSecurityException exception) throws Exception {
+	
+	/**
+	 * TODO: Make configurable strategies objects for JSecurityException 
+	 */
+	public void handle(ShiroException exception) throws IOException {
 		
 		if (securityService.isAuthenticated()) {
 			
@@ -80,7 +86,6 @@ public class JSecurityExceptionHandler implements ErrorHandler<JSecurityExceptio
 			renderer.renderPageResponse(page);
 			
 		} else {
-			response.setStatus(HttpServletResponse.SC_OK);
 			Subject subject = securityService.getSubject();
 			
 			if (subject != null ) {
@@ -99,22 +104,10 @@ public class JSecurityExceptionHandler implements ErrorHandler<JSecurityExceptio
 		}
 	}
 
-	private void reportExceptionIfPossible(JSecurityException exception, Page page) {
+	private void reportExceptionIfPossible(ShiroException exception, Page page) {
 		Component rootComponent = page.getRootComponent();
 		if (rootComponent instanceof ExceptionReporter) {
 			((ExceptionReporter) rootComponent).reportException(exception);
 		}
-	}
-
-
-	@Override
-	public Class<JSecurityException> getExceptionClass() {
-		return JSecurityException.class;
-	}
-
-
-	@Override
-	public int getResponseStatusForXHR(JSecurityException th) {
-		return HttpServletResponse.SC_UNAUTHORIZED;
 	}
 }

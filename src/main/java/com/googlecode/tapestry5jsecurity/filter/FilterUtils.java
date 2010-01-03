@@ -24,7 +24,8 @@ import java.util.Map;
 import javax.servlet.Filter;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.jsecurity.web.filter.AccessControlFilter;
+import org.apache.shiro.web.filter.AccessControlFilter;
+import org.apache.shiro.web.filter.authc.PassThruAuthenticationFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +84,7 @@ public class FilterUtils {
 	 */
 	public static Map<String, Filter> overrideAuthenticationFilter(Map<String, Filter> filters) {
 		String name = "authc";
-		TapestryAuthenticationFilter filter = new TapestryAuthenticationFilter();
+        PassThruAuthenticationFilter filter = new PassThruAuthenticationFilter();
         filter.setName(name);
         filters.put(name, filter);
         return filters;

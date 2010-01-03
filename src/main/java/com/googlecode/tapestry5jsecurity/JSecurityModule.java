@@ -33,7 +33,6 @@ import org.apache.tapestry5.ioc.ServiceBinder;
 import org.apache.tapestry5.ioc.annotations.Local;
 import org.apache.tapestry5.ioc.annotations.Match;
 import org.apache.tapestry5.ioc.annotations.Order;
-import org.apache.tapestry5.ioc.annotations.SubModule;
 import org.apache.tapestry5.services.ApplicationGlobals;
 import org.apache.tapestry5.services.ApplicationInitializer;
 import org.apache.tapestry5.services.ApplicationInitializerFilter;
@@ -44,15 +43,14 @@ import org.apache.tapestry5.services.Context;
 import org.apache.tapestry5.services.LibraryMapping;
 import org.apache.tapestry5.services.RequestGlobals;
 import org.apache.tapestry5.services.Response;
-import org.jsecurity.util.ClassUtils;
+import org.apache.shiro.ShiroException;
+import org.apache.shiro.util.ClassUtils;
 import org.slf4j.Logger;
 
 import com.googlecode.jsecurity.extension.authz.annotations.utils.AnnotationFactory;
 import com.googlecode.jsecurity.extension.authz.aop.AopHelper;
 import com.googlecode.jsecurity.extension.authz.aop.DefaultSecurityInterceptor;
 import com.googlecode.jsecurity.extension.authz.aop.SecurityInterceptor;
-import com.googlecode.tapestry5commons.TapestryCommonsModule;
-import com.googlecode.tapestry5commons.errors.ErrorHandler;
 import com.googlecode.tapestry5jsecurity.services.ClassInterceptorsCache;
 import com.googlecode.tapestry5jsecurity.services.PageService;
 import com.googlecode.tapestry5jsecurity.services.SecurityService;
@@ -67,7 +65,6 @@ import com.googlecode.tapestry5jsecurity.services.impl.SecurityServiceImpl;
  * 
  * @author Valentine Yerastov
  */
-@SubModule(TapestryCommonsModule.class)
 public class JSecurityModule {
 	
 	public static final String LOGIN_URL_PROPERTY_NAME = "loginUrl";
@@ -77,6 +74,8 @@ public class JSecurityModule {
 	public static final String LOGIN_URL_DEFAULT_VALUE = "/jsec/login";
 	public static final String SUCCESS_DEFAULT_VALUE = "/index";
 	public static final String UNAUTHORIZED_DEFAULT_VALUE = "/jsec/unauthorized";
+
+	private static final String EXCEPTION_HANDLE_METHOD_NAME = "handleRequestException";
 
     public static void bind(ServiceBinder binder){
         binder.bind(ClassInterceptorsCache.class, ClassInterceptorsCacheImpl.class);
@@ -186,7 +185,13 @@ public class JSecurityModule {
 		}
 	}
 
-	public static JSecurityExceptionHandler buildJSecurityExceptionHandler(
+	/**
+	 * Advise current RequestExceptionHandler for we can catch JSecurityException exceptions
+	 * and handle this. 
+	 * 
+	 * @see JSecurityExceptionHandler
+	 */
+	public static void adviseRequestExceptionHandler(MethodAdviceReceiver receiver,
 			final PageResponseRenderer renderer, 
 			final RequestPageCache pageCache, 
 			final Logger logger, 
@@ -194,16 +199,48 @@ public class JSecurityModule {
 			final Response response,
 			final SecurityService securityService,
 			final PageService pageService) {
-
-		return new JSecurityExceptionHandler(renderer, pageCache,
-				securityService, pageService, requestGlobals, response);
 		
-	}
-	
-	public static void contributeErrorHandlerSource(OrderedConfiguration<ErrorHandler<?>> configuration, 
-			JSecurityExceptionHandler handler) {
-
-		configuration.add(JSecurityExceptionHandler.class.getSimpleName(), handler, "before:*");
+		Method handleMethod;
+		
+		try {
+			Class<?> serviceInterface = receiver.getInterface();
+			handleMethod = serviceInterface.getMethod(EXCEPTION_HANDLE_METHOD_NAME, Throwable.class);
+		} catch (Exception e) {
+			throw new RuntimeException("Can't find method  " +
+					"RequestExceptionHandler."+EXCEPTION_HANDLE_METHOD_NAME+". Changed API?", e);
+		}
+		
+		final JSecurityExceptionHandler handler = 
+			new JSecurityExceptionHandler(renderer, pageCache, securityService, pageService, requestGlobals, response);
+		
+		MethodAdvice advice = new MethodAdvice() {
+			@Override
+			public void advise(Invocation invocation) {
+				Throwable exception = (Throwable) invocation.getParameter(0);
+				
+				ShiroException jsException = null;
+				
+				if (exception.getCause() instanceof ShiroException) {
+					jsException = (ShiroException) exception.getCause();
+				} else if (exception instanceof ShiroException) {
+					jsException = (ShiroException) exception;
+				}
+				
+				if (jsException != null) {
+					
+					try {
+						handler.handle( jsException );
+					} catch (Exception e) {
+						logger.error("Error handling JSecurityException", e);
+						invocation.proceed();
+					}
+					
+				} else {
+					invocation.proceed();
+				}
+			}
+		};
+		receiver.adviseMethod(handleMethod, advice);
 	}
 
 }

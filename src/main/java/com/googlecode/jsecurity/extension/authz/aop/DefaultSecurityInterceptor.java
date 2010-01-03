@@ -20,7 +20,7 @@ package com.googlecode.jsecurity.extension.authz.aop;
 
 import java.lang.annotation.Annotation;
 
-import org.jsecurity.authz.aop.AuthorizingAnnotationHandler;
+import org.apache.shiro.authz.aop.AuthorizingAnnotationHandler;
 
 
 /**

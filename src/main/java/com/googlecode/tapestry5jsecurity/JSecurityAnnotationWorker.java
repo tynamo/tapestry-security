@@ -33,6 +33,7 @@ import com.googlecode.jsecurity.extension.authz.aop.DefaultSecurityInterceptor;
 import com.googlecode.jsecurity.extension.authz.aop.SecurityInterceptor;
 
 
+
 /**
  * Transform components based on annotation.
  * <p>

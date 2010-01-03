@@ -20,11 +20,11 @@ package com.googlecode.jsecurity.extension.authz.annotations.utils;
 
 import java.lang.annotation.Annotation;
 
-import org.jsecurity.authz.annotation.RequiresAuthentication;
-import org.jsecurity.authz.annotation.RequiresGuest;
-import org.jsecurity.authz.annotation.RequiresPermissions;
-import org.jsecurity.authz.annotation.RequiresRoles;
-import org.jsecurity.authz.annotation.RequiresUser;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresGuest;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.authz.annotation.RequiresUser;
 
 import com.googlecode.jsecurity.extension.authz.annotations.RequiresPermissionsAll;
 import com.googlecode.jsecurity.extension.authz.annotations.RequiresRolesAll;

@@ -28,12 +28,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jsecurity.authz.annotation.RequiresAuthentication;
-import org.jsecurity.authz.annotation.RequiresGuest;
-import org.jsecurity.authz.annotation.RequiresPermissions;
-import org.jsecurity.authz.annotation.RequiresRoles;
-import org.jsecurity.authz.annotation.RequiresUser;
-import org.jsecurity.authz.aop.AuthorizingAnnotationHandler;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresGuest;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.authz.annotation.RequiresUser;
+import org.apache.shiro.authz.aop.AuthorizingAnnotationHandler;
 
 import com.googlecode.jsecurity.extension.authz.annotations.RequiresAuthenticationAll;
 import com.googlecode.jsecurity.extension.authz.annotations.RequiresGuestAll;

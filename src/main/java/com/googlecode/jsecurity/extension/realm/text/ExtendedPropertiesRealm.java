@@ -18,14 +18,14 @@
  */
 package com.googlecode.jsecurity.extension.realm.text;
 
-import org.jsecurity.authc.AuthenticationException;
-import org.jsecurity.authc.AuthenticationInfo;
-import org.jsecurity.authc.AuthenticationToken;
-import org.jsecurity.authc.UnknownAccountException;
-import org.jsecurity.authc.UsernamePasswordToken;
-import org.jsecurity.cache.CacheManager;
-import org.jsecurity.cache.HashtableCacheManager;
-import org.jsecurity.realm.text.PropertiesRealm;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.cache.CacheManager;
+import org.apache.shiro.cache.HashtableCacheManager;
+import org.apache.shiro.realm.text.PropertiesRealm;
 
 /**
  * Fixes some bugs with {@link org.jsecurity.realm.text.PropertiesRealm}

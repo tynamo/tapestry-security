@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.jsecurity.realm.Realm;
+import org.apache.shiro.realm.Realm;
 
 public class RealmCollectionImpl implements RealmCollection {
 

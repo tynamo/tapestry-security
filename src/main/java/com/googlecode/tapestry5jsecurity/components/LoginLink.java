@@ -20,8 +20,8 @@ package com.googlecode.tapestry5jsecurity.components;
 
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.ioc.annotations.Inject;
-import org.jsecurity.subject.Subject;
-import org.jsecurity.web.WebUtils;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.web.WebUtils;
 
 import com.googlecode.tapestry5jsecurity.services.PageService;
 import com.googlecode.tapestry5jsecurity.services.SecurityService;

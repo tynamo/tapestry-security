@@ -1,16 +1,107 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-	<parent>
-		<groupId>com.googlecode.tapestry5jsecurity</groupId>
-		<artifactId>tapestry-jsecurity</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-	</parent>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.googlecode.tapestry5jsecurity</groupId>
-	<artifactId>tapestry-jsecurity-core</artifactId>
-	<name>Tapestry JSecurity Basic Integration</name>
-	<description>Basic integration Tapestry with JSecurity</description>
+	<artifactId>tapestry-security</artifactId>
+	<name>Tapestry Security</name>
+	<description>Tynamo Security package for Tapestry 5 based on Shiro Security</description>
+	<packaging>jar</packaging>
+	<version>0.2.0-SNAPSHOT</version>
+
+	<parent>
+		<groupId>org.tynamo</groupId>
+		<artifactId>tynamo-parent</artifactId>
+		<version>0.0.4</version>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-core</artifactId>
+			<version>1.0-incubating-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-web</artifactId>
+			<version>1.0-incubating-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.tapestry</groupId>
+			<artifactId>tapestry-core</artifactId>
+			<version>${tapestry-release-version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.tapestry</groupId>
+			<artifactId>tapestry-ioc</artifactId>
+			<version>${tapestry-release-version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<scm>
+		<connection>scm:svn:http://svn.codehaus.org/tynamo/trunk/tapestry-security</connection>
+		<developerConnection>scm:svn:https://svn.codehaus.org/tynamo/trunk/tapestry-security</developerConnection>
+		<url>http://svn.tynamo.codehaus.org/tynamo/trunk/tapestry-security</url>
+	</scm>
+
+	<distributionManagement>
+		<site>
+			<id>tynamo-site</id>
+			<!-- Note the url. Only static files deployed in /constant/ can be decorated by Unity -->
+			<url>dav:https://dav.codehaus.org/tynamo/constant/site/tapestry-security</url>
+		</site>
+	</distributionManagement>
+
+	<!-- Needed as long as we depend on a Shiro snapshot -->
+	<repositories>
+		<repository>
+			<id>apache-ci-snapshots</id>
+			<url>http://repository.apache.org/snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
+	</repositories>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>src/main/filtered-resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<Tapestry-Module-Classes>org.tynamo.security.services.SecurityModule</Tapestry-Module-Classes>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 
 </project>

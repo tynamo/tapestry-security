@@ -19,8 +19,7 @@
 package com.googlecode.tapestry5jsecurity.pages;
 
 import org.apache.tapestry5.services.ExceptionReporter;
-import org.jsecurity.JSecurityException;
-import org.jsecurity.subject.Subject;
+import org.apache.shiro.subject.Subject;
 
 /**
  * This page rendered if was thrown {@link JSecurityException} and {@link Subject}

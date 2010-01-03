@@ -18,8 +18,8 @@
  */
 package com.googlecode.tapestry5jsecurity.services.impl;
 
-import org.jsecurity.SecurityUtils;
-import org.jsecurity.subject.Subject;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 
 import com.googlecode.tapestry5jsecurity.services.SecurityService;
 

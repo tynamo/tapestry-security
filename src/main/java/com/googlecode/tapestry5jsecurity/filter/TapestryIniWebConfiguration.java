@@ -24,10 +24,10 @@ import javax.servlet.Filter;
 
 import org.apache.tapestry5.TapestryFilter;
 import org.apache.tapestry5.ioc.Registry;
-import org.jsecurity.mgt.RealmSecurityManager;
-import org.jsecurity.mgt.SecurityManager;
-import org.jsecurity.realm.Realm;
-import org.jsecurity.web.config.IniWebConfiguration;
+import org.apache.shiro.mgt.RealmSecurityManager;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.realm.Realm;
+import org.apache.shiro.web.config.IniWebConfiguration;
 
 import com.googlecode.tapestry5jsecurity.realm.RealmCollection;
 
@@ -46,10 +46,9 @@ public class TapestryIniWebConfiguration extends IniWebConfiguration {
     	super.initFilter(filter);
     }
     
-    @Override
-    protected Map<String, Filter> createDefaultFilters() {
-    	return FilterUtils.overrideAuthenticationFilter(super.createDefaultFilters());
-    }
+//    protected Map<String, Filter> createDefaultFilters() {
+//    	return FilterUtils.overrideAuthenticationFilter(super.createDefaultFilters());
+//    }
     
     /**
      * Try find SecurityManager or Realm or RealmCollection in tapestry registry. 

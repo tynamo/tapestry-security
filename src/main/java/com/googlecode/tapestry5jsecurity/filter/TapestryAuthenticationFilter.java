@@ -3,7 +3,7 @@ package com.googlecode.tapestry5jsecurity.filter;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.jsecurity.web.filter.authc.AuthenticationFilter;
+import org.apache.shiro.web.filter.authc.AuthenticationFilter;
 
 public class TapestryAuthenticationFilter extends AuthenticationFilter {
 
@@ -34,5 +34,4 @@ public class TapestryAuthenticationFilter extends AuthenticationFilter {
 	public static void main(String[] args) {
 		System.out.println(new TapestryAuthenticationFilter().eraseSubmit("/ligun/do.action;jsessionid=23231" ));
 	}
-	
 }
