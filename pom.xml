@@ -118,7 +118,7 @@
 		<site>
 			<id>tynamo-site</id>
 			<!-- Note the url. Only static files deployed in /constant/ can be decorated by Unity -->
-			<url>dav:https://dav.codehaus.org/tynamo/constant/site/tapestry-security</url>
+			<url>dav:https://dav.codehaus.org/tynamo/constant/tapestry-security</url>
 		</site>
 	</distributionManagement>
 
