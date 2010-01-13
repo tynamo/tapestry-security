@@ -166,7 +166,7 @@
 				<configuration>
 					<archive>
 						<manifestEntries>
-							<Tapestry-Module-Classes>org.tynamo.security.services.JSecurityModule
+							<Tapestry-Module-Classes>org.tynamo.security.JSecurityModule
 							</Tapestry-Module-Classes>
 						</manifestEntries>
 					</archive>
