@@ -29,65 +29,73 @@ import org.apache.shiro.web.filter.authc.PassThruAuthenticationFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.tynamo.security.JSecurityModule;
+import org.tynamo.security.SecurityModule;
 
 /**
  * Simple util class to manipulate shiro filters.
- * 
+ *
  * @author Valentine Yerastov
  */
-public class FilterUtils {
+public class FilterUtils
+{
 
-	private static final Logger logger = LoggerFactory
-	.getLogger(FilterUtils.class);
-	
+	private static final Logger logger = LoggerFactory.getLogger(FilterUtils.class);
+
 	/**
-	 * Override defults filter configuration 
+	 * Override defults filter configuration
 	 */
-	public static void overrideDefaults(Filter filter) {
-    	if (filter instanceof AccessControlFilter) {
-        	/**
-        	 * Override defaults urls
-        	 */
-        	overrideDefaultPropertyValue(filter, JSecurityModule.LOGIN_URL_PROPERTY_NAME, 
-        			JSecurityModule.LOGIN_URL_DEFAULT_VALUE);
-        	
-        	overrideDefaultPropertyValue(filter, JSecurityModule.SUCCESS_URL_PROPERTY_NAME, 
-        			JSecurityModule.SUCCESS_DEFAULT_VALUE);
-        	
-        	overrideDefaultPropertyValue(filter, JSecurityModule.UNAUTHORIZED_URL_PROPERTY_NAME, 
-        			JSecurityModule.UNAUTHORIZED_DEFAULT_VALUE);
-    	}
+	public static void overrideDefaults(Filter filter)
+	{
+		if (filter instanceof AccessControlFilter)
+		{
+			/**
+			 * Override defaults urls
+			 */
+			overrideDefaultPropertyValue(filter, SecurityModule.LOGIN_URL_PROPERTY_NAME,
+					SecurityModule.LOGIN_URL_DEFAULT_VALUE);
+
+			overrideDefaultPropertyValue(filter, SecurityModule.SUCCESS_URL_PROPERTY_NAME,
+					SecurityModule.SUCCESS_DEFAULT_VALUE);
+
+			overrideDefaultPropertyValue(filter, SecurityModule.UNAUTHORIZED_URL_PROPERTY_NAME,
+					SecurityModule.UNAUTHORIZED_DEFAULT_VALUE);
+		}
 	}
-	
+
 	private static void overrideDefaultPropertyValue(Filter filter, String propertyName,
-			String propertyDefaultValue) {
-		try {
+	                                                 String propertyDefaultValue)
+	{
+		try
+		{
 			PropertyDescriptor pd = PropertyUtils.getPropertyDescriptor(filter, propertyName);
-			if (pd != null && pd.getWriteMethod() != null) {
+			if (pd != null && pd.getWriteMethod() != null)
+			{
 				pd.getWriteMethod().invoke(filter, propertyDefaultValue);
-			} else {
+			} else
+			{
 				logger.debug("No find property {} for bean {}", "", "");
 			}
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			logger.debug("No find property {} for bean {}", "", "");
 		}
 	}
-	
+
 	/**
 	 * Override default authc filter fom {@link org.apache.shiro.web.filter.authc.FormAuthenticationFilter} to
 	 * {@link org.apache.shiro.web.filter.authc.PassThruAuthenticationFilter}.
-	 * <p>
+	 * <p/>
 	 * This is necessary in order to handle the authentication process manually.
-	 * 
-	 *  @see org.tynamo.security.JSecurityExceptionHandler
+	 *
+	 * @see org.tynamo.security.ShiroExceptionHandler
 	 */
-	public static Map<String, Filter> overrideAuthenticationFilter(Map<String, Filter> filters) {
+	public static Map<String, Filter> overrideAuthenticationFilter(Map<String, Filter> filters)
+	{
 		String name = "authc";
-        PassThruAuthenticationFilter filter = new PassThruAuthenticationFilter();
-        filter.setName(name);
-        filters.put(name, filter);
-        return filters;
+		PassThruAuthenticationFilter filter = new PassThruAuthenticationFilter();
+		filter.setName(name);
+		filters.put(name, filter);
+		return filters;
 	}
 
 }

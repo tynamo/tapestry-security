@@ -1,11 +1,11 @@
 <t:container xmlns="http://www.w3.org/1999/xhtml" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_0_0.xsd">
 	
-	<t:jsec.notAuthenticated>
-		<t:actionlink t:id="jsecLoginLink" id="jsecLoginLink">login</t:actionlink>
-	</t:jsec.notAuthenticated>
+	<t:shiro.notAuthenticated>
+		<t:actionlink t:id="shiroLoginLink" id="shiroLoginLink">login</t:actionlink>
+	</t:shiro.notAuthenticated>
 	
-	<t:jsec.authenticated>
-		<t:actionlink t:id="jsecLogoutLink" id="jsecLogoutLink">logout</t:actionlink>
-	</t:jsec.authenticated>
+	<t:shiro.authenticated>
+		<t:actionlink t:id="shiroLogoutLink" id="shiroLogoutLink">logout</t:actionlink>
+	</t:shiro.authenticated>
 	
 </t:container>

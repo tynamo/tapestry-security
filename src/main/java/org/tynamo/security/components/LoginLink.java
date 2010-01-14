@@ -28,11 +28,12 @@ import org.tynamo.security.services.SecurityService;
 
 /**
  * If subject is not authenticated rendered link to login page,
- * else link to logout. 
- * 
+ * else link to logout.
+ *
  * @author xibyte
  */
-public class LoginLink {
+public class LoginLink
+{
 
 	@Inject
 	@Property
@@ -40,22 +41,26 @@ public class LoginLink {
 
 	@Inject
 	private PageService pageService;
-	
-	public String onActionFromJsecLoginLink() {
+
+	public String onActionFromshiroLoginLink()
+	{
 		removeSavedRequest();
 		return pageService.getLoginPage();
 	}
 
-	public void onActionFromJsecLogoutLink() {
+	public void onActionFromshiroLogoutLink()
+	{
 		securityService.getSubject().logout();
 	}
 
-	private void removeSavedRequest() {
+	private void removeSavedRequest()
+	{
 		Subject subject = securityService.getSubject();
-		if (subject != null) {
+		if (subject != null)
+		{
 			subject.getSession().removeAttribute(WebUtils.SAVED_REQUEST_KEY);
 		}
 	}
 
-	
+
 }

@@ -18,10 +18,6 @@
  */
 package org.tynamo.security;
 
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
@@ -34,17 +30,19 @@ import org.apache.tapestry5.runtime.Component;
 import org.apache.tapestry5.services.ExceptionReporter;
 import org.apache.tapestry5.services.RequestGlobals;
 import org.apache.tapestry5.services.Response;
-
-
 import org.tynamo.security.services.PageService;
 import org.tynamo.security.services.SecurityService;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 /**
- * Handler for JSecurityException
- * 
+ * Handler for ShiroException
+ *
  * @author xibyte
  */
-public class JSecurityExceptionHandler {
+public class ShiroExceptionHandler
+{
 
 	private final PageResponseRenderer renderer;
 	private final RequestPageCache pageCache;
@@ -53,9 +51,11 @@ public class JSecurityExceptionHandler {
 	private final RequestGlobals requestGlobals;
 	private final Response response;
 
-	public JSecurityExceptionHandler(PageResponseRenderer renderer, RequestPageCache pageCache, 
-			SecurityService securityService, PageService pageService, RequestGlobals requestGlobals, Response response) {
-		
+	public ShiroExceptionHandler(PageResponseRenderer renderer, RequestPageCache pageCache,
+	                             SecurityService securityService, PageService pageService,
+	                             RequestGlobals requestGlobals, Response response)
+	{
+
 		this.renderer = renderer;
 		this.pageCache = pageCache;
 		this.securityService = securityService;
@@ -63,50 +63,58 @@ public class JSecurityExceptionHandler {
 		this.requestGlobals = requestGlobals;
 		this.response = response;
 	}
-	
-	
+
+
 	/**
-	 * TODO: Make configurable strategies objects for JSecurityException 
+	 * TODO: Make configurable strategies objects for ShiroException
 	 */
-	public void handle(ShiroException exception) throws IOException {
-		
-		if (securityService.isAuthenticated()) {
-			
+	public void handle(ShiroException exception) throws IOException
+	{
+
+		if (securityService.isAuthenticated())
+		{
+
 			String unauthorizedPage = pageService.getUnauthorizedPage();
-			
+
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			if (!StringUtils.hasText(unauthorizedPage)) {
+			if (!StringUtils.hasText(unauthorizedPage))
+			{
 				return;
 			}
-			
+
 			Page page = pageCache.get(unauthorizedPage);
-			
+
 			reportExceptionIfPossible(exception, page);
-			
+
 			renderer.renderPageResponse(page);
-			
-		} else {
+
+		} else
+		{
 			Subject subject = securityService.getSubject();
-			
-			if (subject != null ) {
+
+			if (subject != null)
+			{
 				Session session = subject.getSession();
-				if (session != null) {
+				if (session != null)
+				{
 					WebUtils.saveRequest(requestGlobals.getHTTPServletRequest());
 				}
 			}
-			
+
 			Page page = pageCache.get(pageService.getLoginPage());
-			
+
 			reportExceptionIfPossible(exception, page);
-			
+
 			renderer.renderPageResponse(page);
-			
+
 		}
 	}
 
-	private void reportExceptionIfPossible(ShiroException exception, Page page) {
+	private void reportExceptionIfPossible(ShiroException exception, Page page)
+	{
 		Component rootComponent = page.getRootComponent();
-		if (rootComponent instanceof ExceptionReporter) {
+		if (rootComponent instanceof ExceptionReporter)
+		{
 			((ExceptionReporter) rootComponent).reportException(exception);
 		}
 	}

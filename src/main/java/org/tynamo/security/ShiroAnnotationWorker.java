@@ -18,53 +18,50 @@
  */
 package org.tynamo.security;
 
-import java.lang.annotation.Annotation;
-import java.util.List;
-
 import org.apache.tapestry5.model.MutableComponentModel;
-import org.apache.tapestry5.services.ClassTransformation;
-import org.apache.tapestry5.services.ComponentClassTransformWorker;
-import org.apache.tapestry5.services.ComponentMethodAdvice;
-import org.apache.tapestry5.services.ComponentMethodInvocation;
-import org.apache.tapestry5.services.TransformMethodSignature;
-
+import org.apache.tapestry5.services.*;
 import org.tynamo.shiro.extension.authz.aop.AopHelper;
 import org.tynamo.shiro.extension.authz.aop.DefaultSecurityInterceptor;
 import org.tynamo.shiro.extension.authz.aop.SecurityInterceptor;
 
+import java.lang.annotation.Annotation;
+import java.util.List;
 
 
 /**
  * Transform components based on annotation.
- * <p>
- * Support annotation on method. 
- * <p>
- * The following rules 
+ * <p/>
+ * Support annotation on method.
+ * <p/>
+ * The following rules
  * <ul>
  * <li>Annotations on methods are <b>not</b> inherited.</li>
  * <li>The annotations only in target class, unlike services </li>
  * <ul>
- * <p>
- *  
- * @see org.tynamo.security.JSecurityModule#buildSecurityFilter(org.slf4j.Logger,
- * org.apache.tapestry5.services.ComponentEventLinkEncoder, 
- * org.apache.tapestry5.services.ComponentClassResolver,
- * org.tynamo.security.services.ClassInterceptorsCache)
- *  
+ * <p/>
+ *
  * @author Valentine Yerastov
+ * @see SecurityModule#buildSecurityFilter(org.slf4j.Logger,
+ *      org.apache.tapestry5.services.ComponentEventLinkEncoder,
+ *      org.apache.tapestry5.services.ComponentClassResolver,
+ *      org.tynamo.security.services.ClassInterceptorsCache)
  */
-public class JSecurityAnnotationWorker implements ComponentClassTransformWorker {
+public class ShiroAnnotationWorker implements ComponentClassTransformWorker
+{
 
 	@Override
 	public void transform(ClassTransformation transformation,
-			MutableComponentModel model) {
-		
-		for (Class<? extends Annotation> annotationClass : AopHelper.getAutorizationAnnotationClasses()) {
-			
-			List<TransformMethodSignature> methodsToTransform = 
-				transformation.findMethodsWithAnnotation(annotationClass);
-			
-			for (TransformMethodSignature tm : methodsToTransform) {
+	                      MutableComponentModel model)
+	{
+
+		for (Class<? extends Annotation> annotationClass : AopHelper.getAutorizationAnnotationClasses())
+		{
+
+			List<TransformMethodSignature> methodsToTransform =
+					transformation.findMethodsWithAnnotation(annotationClass);
+
+			for (TransformMethodSignature tm : methodsToTransform)
+			{
 				Annotation annotation = transformation.getMethodAnnotation(tm, annotationClass);
 				processTransform(transformation, tm, annotation);
 			}
@@ -72,18 +69,21 @@ public class JSecurityAnnotationWorker implements ComponentClassTransformWorker 
 	}
 
 	private void processTransform(ClassTransformation transformation,
-			TransformMethodSignature tm, Annotation annotation) {
+	                              TransformMethodSignature tm, Annotation annotation)
+	{
 		final SecurityInterceptor interceptor = new DefaultSecurityInterceptor(annotation);
 
-		ComponentMethodAdvice advice = new ComponentMethodAdvice() {
-			public void advise(ComponentMethodInvocation invocation) {
+		ComponentMethodAdvice advice = new ComponentMethodAdvice()
+		{
+			public void advise(ComponentMethodInvocation invocation)
+			{
 				interceptor.intercept();
 				invocation.proceed();
 			}
 		};
-		
+
 		transformation.advise(tm, advice);
 
 	}
-	
+
 }

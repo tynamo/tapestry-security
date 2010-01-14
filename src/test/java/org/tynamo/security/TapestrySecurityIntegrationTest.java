@@ -31,7 +31,7 @@ import java.io.IOException;
 
 import static org.testng.Assert.*;
 
-public class TapestryJSecurityIntegrationTest extends AbstractContainerTest
+public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 {
 
 	private static final String STATUS_NOT_AUTH = "STATUS[Not Authenticated]";
@@ -64,7 +64,7 @@ public class TapestryJSecurityIntegrationTest extends AbstractContainerTest
 
 		if (STATUS_AUTH.equals(getText("status")))
 		{
-			clickOnBasePage("jsecLogout");
+			clickOnBasePage("shiroLogout");
 		}
 	}
 
@@ -203,7 +203,7 @@ public class TapestryJSecurityIntegrationTest extends AbstractContainerTest
 	@Test(dependsOnGroups = {"notLoggedIn"})
 	public void testLoginClick() throws Exception
 	{
-		clickOnBasePage("jsecLoginLink");
+		clickOnBasePage("shiroLoginLink");
 		assertLoginPage();
 	}
 
@@ -448,7 +448,7 @@ public class TapestryJSecurityIntegrationTest extends AbstractContainerTest
 	@Test(dependsOnGroups = {"loggedIn"})
 	public void testLogout() throws Exception
 	{
-		clickOnBasePage("jsecLogoutLink");
+		clickOnBasePage("shiroLogoutLink");
 		assertNotAuthenticated();
 	}
 
@@ -473,13 +473,13 @@ public class TapestryJSecurityIntegrationTest extends AbstractContainerTest
 
 	protected void assertLoginPage()
 	{
-		assertNotNull(page.getElementById("jsecLogin"), "Page not containt login field. Not login page.");
-		assertEquals("password", getAttribute("jsecPassword", "type"),
+		assertNotNull(page.getElementById("shiroLogin"), "Page not containt login field. Not login page.");
+		assertEquals("password", getAttribute("shiroPassword", "type"),
 				"Page does not containt password field. Not login page.");
-		assertEquals("checkbox", getAttribute("jsecRememberMe", "type"),
+		assertEquals("checkbox", getAttribute("shiroRememberMe", "type"),
 				"Page does containt rememberMe field. Not login page.");
 
-		assertNotNull(page.getElementById("jsecEnter"), "Page not containt login form submit button. Not login page.");
+		assertNotNull(page.getElementById("shiroEnter"), "Page not containt login form submit button. Not login page.");
 	}
 
 	private String getAttribute(String id, String attr)
@@ -531,9 +531,9 @@ public class TapestryJSecurityIntegrationTest extends AbstractContainerTest
 
 	protected void loginAction() throws IOException
 	{
-		type("jsecLogin", "psycho");
-		type("jsecPassword", "psycho");
-		click("jsecEnter");
+		type("shiroLogin", "psycho");
+		type("shiroPassword", "psycho");
+		click("shiroEnter");
 	}
 
 	private void type(String id, String value)

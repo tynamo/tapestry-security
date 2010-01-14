@@ -9,7 +9,7 @@
     	
     	<div id="status">STATUS[${status}]</div> 
     	
-    	<div><t:jsec.loginlink /></div> 
+    	<div><t:shiro.loginlink /></div>
     	
     	<h3>Testing interceptors work</h3>
     	
@@ -43,45 +43,45 @@
     	<div><t:pagelink id="permEdit" page="perms/edit">perms/edit (perms filter, permission does not exists)</t:pagelink></div>
 
 		<h3>Testing components work</h3>
-		<t:jsec.authenticated>
+		<t:shiro.authenticated>
 			<div id="AuthenticatedComponent">AuthenticatedComponent - RENDERED</div>
-		</t:jsec.authenticated>
+		</t:shiro.authenticated>
 		
-		<t:jsec.notAuthenticated>
+		<t:shiro.notAuthenticated>
 			<div id="NotAuthenticatedComponent">NotAuthenticatedComponent - RENDERED</div>
-		</t:jsec.notAuthenticated>
+		</t:shiro.notAuthenticated>
 		
-		<t:jsec.user>
+		<t:shiro.user>
 			<div id="UserComponent">UserComponent - RENDERED</div>
-		</t:jsec.user>
+		</t:shiro.user>
 		
-		<t:jsec.guest>
+		<t:shiro.guest>
 			<div id="GuestComponent">GuestComponent - RENDERED</div>
-		</t:jsec.guest>
+		</t:shiro.guest>
 		
-		<t:jsec.hasAnyRoles t:roles="user, driver">
+		<t:shiro.hasAnyRoles t:roles="user, driver">
 			<div id="HasAnyRoleComponentSuccess">HasAnyRoleComponentSuccess - RENDERED</div>
-		</t:jsec.hasAnyRoles>
+		</t:shiro.hasAnyRoles>
 		
-		<t:jsec.hasAnyRoles t:roles="teacher, manager">
+		<t:shiro.hasAnyRoles t:roles="teacher, manager">
 			<div id="HasAnyRoleComponentFailed">HasAnyRoleComponentFailed - RENDERED</div>
-		</t:jsec.hasAnyRoles>
+		</t:shiro.hasAnyRoles>
 		
-		<t:jsec.hasPermission t:permission="book:read">
+		<t:shiro.hasPermission t:permission="book:read">
 			<div id="HasPermissionComponentSuccess">HasPermissionComponentSuccess - RENDERED</div>
-		</t:jsec.hasPermission>
+		</t:shiro.hasPermission>
 		
-		<t:jsec.hasPermission t:permission="book:write">
+		<t:shiro.hasPermission t:permission="book:write">
 			<div id="HasPermissionComponentFailed">HasPermissionComponentFailed - RENDERED</div>
-		</t:jsec.hasPermission>
+		</t:shiro.hasPermission>
 		
-		<t:jsec.hasRole t:role="user">
+		<t:shiro.hasRole t:role="user">
 			<div id="HasRoleComponentSuccess">HasRoleComponentSuccess - RENDERED</div>
-		</t:jsec.hasRole>
+		</t:shiro.hasRole>
 		
-		<t:jsec.hasRole t:role="manager">
+		<t:shiro.hasRole t:role="manager">
 			<div id="HasRoleComponentFailed">HasRoleComponentFailed - RENDERED</div>
-		</t:jsec.hasRole>
+		</t:shiro.hasRole>
     	
     </body>
 </html>

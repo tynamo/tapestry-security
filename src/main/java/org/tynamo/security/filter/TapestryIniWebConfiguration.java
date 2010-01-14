@@ -18,83 +18,92 @@
  */
 package org.tynamo.security.filter;
 
-import java.util.Map;
-
-import javax.servlet.Filter;
-
-import org.apache.tapestry5.TapestryFilter;
-import org.apache.tapestry5.ioc.Registry;
 import org.apache.shiro.mgt.RealmSecurityManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.web.config.IniWebConfiguration;
-
+import org.apache.tapestry5.TapestryFilter;
+import org.apache.tapestry5.ioc.Registry;
 import org.tynamo.security.realm.RealmCollection;
+
+import javax.servlet.Filter;
+import java.util.Map;
 
 /**
  * Override default filter configuration, for simple work with tapestry.
- * 
- * @see FilterUtils
+ *
  * @author xibyte
+ * @see FilterUtils
  */
 @SuppressWarnings("serial")
-public class TapestryIniWebConfiguration extends IniWebConfiguration {
+public class TapestryIniWebConfiguration extends IniWebConfiguration
+{
 
-    @Override
-    protected void initFilter(Filter filter) {
-    	FilterUtils.overrideDefaults(filter);
-    	super.initFilter(filter);
-    }
-    
+	@Override
+	protected void initFilter(Filter filter)
+	{
+		FilterUtils.overrideDefaults(filter);
+		super.initFilter(filter);
+	}
+
 //    protected Map<String, Filter> createDefaultFilters() {
 //    	return FilterUtils.overrideAuthenticationFilter(super.createDefaultFilters());
 //    }
-    
-    /**
-     * Try find SecurityManager or Realm or RealmCollection in tapestry registry. 
-     */
-    @Override
-    protected SecurityManager createSecurityManager(Map<String, Map<String, String>> sections) {
+
+	/**
+	 * Try find SecurityManager or Realm or RealmCollection in tapestry registry.
+	 */
+	@Override
+	protected SecurityManager createSecurityManager(Map<String, Map<String, String>> sections)
+	{
 		Registry registry = (Registry) getFilterConfig().getServletContext()
-		.getAttribute(TapestryFilter.REGISTRY_CONTEXT_NAME);
-    	
-		
-		if (registry == null) {
-	    	//Can't get Registry 
-	    	//(for example: The case when Tapestry filter initialize after 
-	    	//JSecurity filter).
+				.getAttribute(TapestryFilter.REGISTRY_CONTEXT_NAME);
+
+
+		if (registry == null)
+		{
+			//Can't get Registry
+			//(for example: The case when Tapestry filter initialize after
+			//Security filter).
 			return super.createSecurityManager(sections);
 		}
-		
-		SecurityManager securityManager = 
-			findServiceInTapestryRegistry(registry, SecurityManager.class);
-		
-		if (securityManager == null) {
+
+		SecurityManager securityManager =
+				findServiceInTapestryRegistry(registry, SecurityManager.class);
+
+		if (securityManager == null)
+		{
 			securityManager = super.createSecurityManager(sections);
-			
-            if (securityManager instanceof RealmSecurityManager) {
-                RealmSecurityManager realmSm = (RealmSecurityManager) securityManager;
+
+			if (securityManager instanceof RealmSecurityManager)
+			{
+				RealmSecurityManager realmSm = (RealmSecurityManager) securityManager;
 
 				Realm realm = findServiceInTapestryRegistry(registry, Realm.class);
-				if (realm != null) {
+				if (realm != null)
+				{
 					realmSm.setRealm(realm);
-				} else {
-					RealmCollection realmCollection = 
-						findServiceInTapestryRegistry(registry, RealmCollection.class);
-					if (realmCollection != null) {
+				} else
+				{
+					RealmCollection realmCollection = findServiceInTapestryRegistry(registry, RealmCollection.class);
+					if (realmCollection != null)
+					{
 						realmSm.setRealms(realmCollection);
 					}
 				}
-            }
+			}
 		}
-		
-        return securityManager;    
+
+		return securityManager;
 	}
 
-	private <T> T findServiceInTapestryRegistry(Registry registry, Class<T> clazz) {
-		try {
+	private <T> T findServiceInTapestryRegistry(Registry registry, Class<T> clazz)
+	{
+		try
+		{
 			return registry.getService(clazz);
-		} catch (RuntimeException e) {
+		} catch (RuntimeException e)
+		{
 			//If service not exists, registsry throw exception.
 			return null;
 		}

@@ -18,31 +18,28 @@
  */
 package org.tynamo.shiro.extension.authz.annotations.utils.casters.method;
 
-import org.apache.shiro.authz.annotation.RequiresAuthentication;
-import org.apache.shiro.authz.annotation.RequiresGuest;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.authz.annotation.RequiresRoles;
-import org.apache.shiro.authz.annotation.RequiresUser;
+import org.apache.shiro.authz.annotation.*;
 
 /**
- * Visitor interface for use in 
- * {@link com.google.code.jsecurity.extension.authz.annotations.utils.casters.method.MethodAnnotationCaster}
- * 
- * @see com.google.code.jsecurity.extension.authz.annotations.utils.casters.method.MethodAnnotationCaster
+ * Visitor interface for use in
+ * {@link org.tynamo.shiro.extension.authz.annotations.utils.casters.method.MethodAnnotationCaster}
+ *
  * @author Valentine Yerastov
+ * @see org.tynamo.shiro.extension.authz.annotations.utils.casters.method.MethodAnnotationCaster
  */
-public interface MethodAnnotationCasterVisitor {
+public interface MethodAnnotationCasterVisitor
+{
 
 	void visitRequiresPermissions(RequiresPermissions annotation);
-	
+
 	void visitRequiresRoles(RequiresRoles annotation);
-	
+
 	void visitRequiresUser(RequiresUser annotation);
-	
+
 	void visitRequiresGuest(RequiresGuest annotation);
-	
+
 	void visitRequiresAuthentication(RequiresAuthentication annotation);
-	
+
 	void visitNotFund();
-	
+
 }

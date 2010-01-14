@@ -18,34 +18,40 @@
  */
 package org.tynamo.security.pages;
 
-import org.apache.tapestry5.services.ExceptionReporter;
 import org.apache.shiro.subject.Subject;
+import org.apache.tapestry5.services.ExceptionReporter;
 
 /**
- * This page rendered if was thrown {@link JSecurityException} and {@link Subject}
+ * This page rendered if was thrown {@link ShiroException} and {@link Subject}
  * is not authenticated.
- * 
+ *
  * @author xibyte
  */
-public class Unauthorized implements ExceptionReporter {
+public class Unauthorized implements ExceptionReporter
+{
 
 	private Throwable exception;
 
-	public String getMessage() {
-		if (exception != null) {
+	public String getMessage()
+	{
+		if (exception != null)
+		{
 			return exception.getMessage();
-		} else {
+		} else
+		{
 			return "";
 		}
 	}
-	
+
 	@Override
-	public void reportException(Throwable exception) {
+	public void reportException(Throwable exception)
+	{
 		this.exception = exception;
 	}
 
-	public Throwable getException() {
+	public Throwable getException()
+	{
 		return exception;
 	}
-	
+
 }

@@ -42,24 +42,24 @@ import org.tynamo.security.services.PageService;
 import org.tynamo.security.services.SecurityService;
 
 /**
- * Login form component 
- * 
+ * Login form component
+ *
  * @author xibyte
  */
-public class LoginForm {
-	
-	private static final Logger logger = LoggerFactory
-			.getLogger(LoginForm.class);
-	
+public class LoginForm
+{
+
+	private static final Logger logger = LoggerFactory.getLogger(LoginForm.class);
+
 	@Property
-	private String jsecLogin;
-	
+	private String shiroLogin;
+
 	@Property
-	private String jsecPassword;
-	
+	private String shiroPassword;
+
 	@Property
-	private boolean jsecRememberMe;
-	
+	private boolean shiroRememberMe;
+
 	@Persist(PersistenceConstants.FLASH)
 	private String loginMessage;
 
@@ -68,66 +68,81 @@ public class LoginForm {
 
 	@Inject
 	private RequestGlobals requestGlobals;
-	
+
 	@Inject
 	private SecurityService securityService;
-	
+
 	@Inject
 	private PageService pageService;
-	
-	public Object onActionFromJsecLoginForm() {
+
+	public Object onActionFromshiroLoginForm()
+	{
 
 		Subject currentUser = securityService.getSubject();
-		
-		if (currentUser == null) {
+
+		if (currentUser == null)
+		{
 			throw new IllegalStateException("Subject can`t be null");
 		}
-		
-		UsernamePasswordToken token = new UsernamePasswordToken(jsecLogin, jsecPassword);
-		token.setRememberMe(jsecRememberMe);  
 
-		
-		try {
-		    currentUser.login( token );
-		} catch ( UnknownAccountException e ) {
+		UsernamePasswordToken token = new UsernamePasswordToken(shiroLogin, shiroPassword);
+		token.setRememberMe(shiroRememberMe);
+
+
+		try
+		{
+			currentUser.login(token);
+		} catch (UnknownAccountException e)
+		{
 			loginMessage = "Account not exists";
 			return null;
-		} catch ( IncorrectCredentialsException e ) {
+		} catch (IncorrectCredentialsException e)
+		{
 			loginMessage = "Wrong password";
 			return null;
-		} catch ( LockedAccountException e ) {
+		} catch (LockedAccountException e)
+		{
 			loginMessage = "Account locked";
 			return null;
-		} catch ( AuthenticationException e ) {
+		} catch (AuthenticationException e)
+		{
 			loginMessage = "Authentication Error";
 			return null;
 		}
-		
-		
+
+
 		SavedRequest savedRequest = WebUtils.getAndClearSavedRequest(requestGlobals.getHTTPServletRequest());
-		
-		if (savedRequest != null && savedRequest.getMethod().equalsIgnoreCase("GET")) {
-			try {
+
+		if (savedRequest != null && savedRequest.getMethod().equalsIgnoreCase("GET"))
+		{
+			try
+			{
 				response.sendRedirect(savedRequest.getRequestUrl());
 				return null;
-			} catch (IOException e) {
+			} catch (IOException e)
+			{
 				logger.warn("Can't redirect to saved request.");
 				return pageService.getSuccessPage();
 			}
-		} else {
+		} else
+		{
 			return pageService.getSuccessPage();
 		}
-		
+
 	}
 
-	public void setLoginMessage(String loginMessage) {
+	public void setLoginMessage(String loginMessage)
+	{
 		this.loginMessage = loginMessage;
 	}
 
-	public String getLoginMessage() {
-		if ( StringUtils.hasText(loginMessage) ) {
+	public String getLoginMessage()
+	{
+		if (StringUtils.hasText(loginMessage))
+		{
 			return loginMessage;
-		} else {
+		} else
+		{
 			return " ";
 		}
 	}

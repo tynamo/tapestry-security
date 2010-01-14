@@ -1,27 +1,27 @@
 <div xmlns:t="http://tapestry.apache.org/schema/tapestry_5_0_0.xsd" xmlns:p="tapestry:parameter" 
-	id="jsecLoginFormContainer" >
+	id="shiroLoginFormContainer" >
 	
-		<t:form t:id="jsecLoginForm" >
-			<div id="jsecLoginMessage" >${loginMessage}</div>
-			<div id="jsecLoginContainer">
-				<div><t:label for="jsecLogin">login:</t:label></div>
-				<div><t:textfield t:id="jsecLogin" validate="required"/></div>
+		<t:form t:id="shiroLoginForm" >
+			<div id="shiroLoginMessage" >${loginMessage}</div>
+			<div id="shiroLoginContainer">
+				<div><t:label for="shiroLogin">login:</t:label></div>
+				<div><t:textfield t:id="shiroLogin" validate="required"/></div>
 			</div>
 			
-			<div id="jsecPasswordContainer">
-				<div><t:label for="jsecPassword">password:</t:label></div>
-				<div><t:passwordfield t:id="jsecPassword" validate="required"/></div>
+			<div id="shiroPasswordContainer">
+				<div><t:label for="shiroPassword">password:</t:label></div>
+				<div><t:passwordfield t:id="shiroPassword" validate="required"/></div>
 			</div>
 			
-			<div id="jsecRememberMeContainer">
+			<div id="shiroRememberMeContainer">
 				<div>
-					<t:checkbox t:id="jsecRememberMe" /> 
-					<t:label for="jsecRememberMe">Remember Me</t:label>
+					<t:checkbox t:id="shiroRememberMe" />
+					<t:label for="shiroRememberMe">Remember Me</t:label>
 				</div>
 			</div>
 			
-			<div id="jsecEnterContainer">
-				<t:submit id="jsecEnter" value="Enter" />
+			<div id="shiroEnterContainer">
+				<t:submit id="shiroEnter" value="Enter" />
 			</div>
 		</t:form>
 </div>

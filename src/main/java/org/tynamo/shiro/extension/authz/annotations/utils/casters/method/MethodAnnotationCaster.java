@@ -18,60 +18,67 @@
  */
 package org.tynamo.shiro.extension.authz.annotations.utils.casters.method;
 
-import java.lang.annotation.Annotation;
+import org.apache.shiro.authz.annotation.*;
 
-import org.apache.shiro.authz.annotation.RequiresAuthentication;
-import org.apache.shiro.authz.annotation.RequiresGuest;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.authz.annotation.RequiresRoles;
-import org.apache.shiro.authz.annotation.RequiresUser;
+import java.lang.annotation.Annotation;
 
 
 /**
  * Class for accepting
- * {@link com.google.code.jsecurity.extension.authz.annotations.utils.casters.method.MethodAnnotationCasterVisitor} 
- * visitors. 
- * <p>
+ * {@link org.tynamo.shiro.extension.authz.annotations.utils.casters.method.MethodAnnotationCasterVisitor}
+ * visitors.
+ * <p/>
  * Provides call the desired method of the visitor, depending on the annotation type.
- * 
- * @see com.google.code.jsecurity.extension.authz.annotations.utils.casters.method.MethodAnnotationCasterVisitor
+ *
  * @author Valentine Yerastov
+ * @see org.tynamo.shiro.extension.authz.annotations.utils.casters.method.MethodAnnotationCasterVisitor
  */
-public class MethodAnnotationCaster {
+public class MethodAnnotationCaster
+{
 
-	private static final MethodAnnotationCaster instance = new MethodAnnotationCaster(); 
-	
-	private MethodAnnotationCaster() {}
-	
-	public void accept(MethodAnnotationCasterVisitor visitor, Annotation annotation) {
-		if (annotation instanceof RequiresPermissions) {
+	private static final MethodAnnotationCaster instance = new MethodAnnotationCaster();
+
+	private MethodAnnotationCaster()
+	{
+	}
+
+	public void accept(MethodAnnotationCasterVisitor visitor, Annotation annotation)
+	{
+		if (annotation instanceof RequiresPermissions)
+		{
 
 			visitor.visitRequiresPermissions((RequiresPermissions) annotation);
 
-		} else if (annotation instanceof RequiresRoles) {
+		} else if (annotation instanceof RequiresRoles)
+		{
 
 			visitor.visitRequiresRoles((RequiresRoles) annotation);
 
-		} else if (annotation instanceof RequiresUser) {
+		} else if (annotation instanceof RequiresUser)
+		{
 
 			visitor.visitRequiresUser((RequiresUser) annotation);
 
-		} else if (annotation instanceof RequiresGuest) {
+		} else if (annotation instanceof RequiresGuest)
+		{
 
 			visitor.visitRequiresGuest((RequiresGuest) annotation);
 
-		} else if (annotation instanceof RequiresAuthentication) {
+		} else if (annotation instanceof RequiresAuthentication)
+		{
 
 			visitor.visitRequiresAuthentication((RequiresAuthentication) annotation);
 
-		} else {
+		} else
+		{
 
 			visitor.visitNotFund();
 
 		}
 	}
 
-	public static MethodAnnotationCaster getInstance() {
+	public static MethodAnnotationCaster getInstance()
+	{
 		return instance;
 	}
 }

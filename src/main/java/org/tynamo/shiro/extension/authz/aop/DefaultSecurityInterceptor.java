@@ -18,67 +18,74 @@
  */
 package org.tynamo.shiro.extension.authz.aop;
 
-import java.lang.annotation.Annotation;
-
 import org.apache.shiro.authz.aop.AuthorizingAnnotationHandler;
+
+import java.lang.annotation.Annotation;
 
 
 /**
  * Generic interceptor for use in different aop implementations.
  * Created based on <b>method</b> annotation.
- * <p>
- * To create the interceptor based on the class annotation, use 
- * {@link com.google.code.jsecurity.extension.authz.annotations.utils.AnnotationFactory}  
+ * <p/>
+ * To create the interceptor based on the class annotation, use
+ * {@link org.tynamo.shiro.extension.authz.annotations.utils.AnnotationFactory}
  * for convert class annotation to method annotation.
- * 
+ *
  * @author Valentine Yerastov
  */
-public class DefaultSecurityInterceptor implements SecurityInterceptor {
+public class DefaultSecurityInterceptor implements SecurityInterceptor
+{
 
 	private final AuthorizingAnnotationHandler handler;
 	private final Annotation annotation;
-	
-	
+
+
 	/**
 	 * Used in cases where previously known {@link org.apache.shiro.authz.aop.AuthorizingAnnotationHandler} object.
-	 * <p>
-	 * if the handler object is unknown use {@link #DefaultSecurityInterceptor(Annotation)} constructor 
-	 * 
+	 * <p/>
+	 * if the handler object is unknown use {@link #DefaultSecurityInterceptor(Annotation)} constructor
+	 *
 	 * @param handler
 	 * @param annotation
 	 */
-	public DefaultSecurityInterceptor(AuthorizingAnnotationHandler handler, Annotation annotation) {
+	public DefaultSecurityInterceptor(AuthorizingAnnotationHandler handler, Annotation annotation)
+	{
 		this.handler = handler;
 		this.annotation = annotation;
 	}
-	
+
 	/**
-	 * Initialize {@link #handler} field use annotation. 
-	 * 
-	 * @param annotation	annotation for create handler and use during 
-	 * {@link #intercept()} invocation.
+	 * Initialize {@link #handler} field use annotation.
+	 *
+	 * @param annotation annotation for create handler and use during
+	 *                   {@link #intercept()} invocation.
 	 */
-	public DefaultSecurityInterceptor(Annotation annotation) {
-		
+	public DefaultSecurityInterceptor(Annotation annotation)
+	{
+
 		this.annotation = annotation;
 		AuthorizingAnnotationHandler handler = AopHelper.createHandler(annotation);
-		if (handler == null) {
-			throw new IllegalStateException("No handler for "+annotation+"annotation");
+		if (handler == null)
+		{
+			throw new IllegalStateException("No handler for " + annotation + "annotation");
 		}
 		this.handler = handler;
-		
+
 	}
-	
+
 	/* (non-Javadoc)
-	 * @see org.tynamo.shiro.extension.authz.aop.SecurityInterceptor#intercept()
-	 */
-	public void intercept() {
+		 * @see org.tynamo.shiro.extension.authz.aop.SecurityInterceptor#intercept()
+		 */
+
+	public void intercept()
+	{
 		handler.assertAuthorized(getAnnotation());
 	}
 
-	public Annotation getAnnotation() {
+	public Annotation getAnnotation()
+	{
 		return annotation;
 	}
-	
-	
+
+
 }

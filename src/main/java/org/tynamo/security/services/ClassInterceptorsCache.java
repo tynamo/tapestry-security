@@ -18,24 +18,24 @@
  */
 package org.tynamo.security.services;
 
-import java.util.List;
-
 import org.tynamo.shiro.extension.authz.aop.SecurityInterceptor;
-import org.tynamo.security.JSecurityModule;
+
+import java.util.List;
 
 /**
  * List of {@link org.tynamo.shiro.extension.authz.aop.SecurityInterceptor} for use
  * in security RequestFilter.
- * 
- * @see JSecurityModule#buildSecurityFilter(org.slf4j.Logger, org.apache.tapestry5.services.ComponentEventLinkEncoder, org.apache.tapestry5.services.ComponentClassResolver, ClassInterceptorsCache)
+ *
  * @author Valentine Yerastov
+ * @see org.tynamo.security.SecurityModule#buildSecurityFilter(org.slf4j.Logger, org.apache.tapestry5.services.ComponentEventLinkEncoder, org.apache.tapestry5.services.ComponentClassResolver, ClassInterceptorsCache)
  */
-public interface ClassInterceptorsCache {
+public interface ClassInterceptorsCache
+{
 
-	void put(String className,  List<SecurityInterceptor> interceptors);
-	
-	void add(String className,  SecurityInterceptor interceptor);
-	
+	void put(String className, List<SecurityInterceptor> interceptors);
+
+	void add(String className, SecurityInterceptor interceptor);
+
 	List<SecurityInterceptor> get(String className);
-	
+
 }

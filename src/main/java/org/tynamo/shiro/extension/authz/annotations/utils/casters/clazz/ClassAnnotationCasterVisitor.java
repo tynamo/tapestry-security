@@ -18,30 +18,27 @@
  */
 package org.tynamo.shiro.extension.authz.annotations.utils.casters.clazz;
 
-import org.tynamo.shiro.extension.authz.annotations.RequiresAuthenticationAll;
-import org.tynamo.shiro.extension.authz.annotations.RequiresGuestAll;
-import org.tynamo.shiro.extension.authz.annotations.RequiresPermissionsAll;
-import org.tynamo.shiro.extension.authz.annotations.RequiresRolesAll;
-import org.tynamo.shiro.extension.authz.annotations.RequiresUserAll;
+import org.tynamo.shiro.extension.authz.annotations.*;
 
 /**
- * Visitor interface for use in 
- * {@link com.google.code.jsecurity.extension.authz.annotations.utils.casters.clazz.ClassAnnotationCaster}
- * 
- * @see com.google.code.jsecurity.extension.authz.annotations.utils.casters.clazz.ClassAnnotationCaster
+ * Visitor interface for use in
+ * {@link org.tynamo.shiro.extension.authz.annotations.utils.casters.clazz.ClassAnnotationCaster}
+ *
  * @author Valentine Yerastov
+ * @see org.tynamo.shiro.extension.authz.annotations.utils.casters.clazz.ClassAnnotationCaster
  */
-public interface ClassAnnotationCasterVisitor {
+public interface ClassAnnotationCasterVisitor
+{
 
 	void visitRequiresPermissionsAll(RequiresPermissionsAll annotation);
-	
+
 	void visitRequiresRolesAll(RequiresRolesAll annotation);
-	
+
 	void visitRequiresUserAll(RequiresUserAll annotation);
-	
+
 	void visitRequiresGuestAll(RequiresGuestAll annotation);
-	
+
 	void visitRequiresAuthenticationAll(RequiresAuthenticationAll annotation);
-	
+
 	void visitNotFund();
 }
