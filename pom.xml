@@ -53,56 +53,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.tapestry</groupId>
-			<artifactId>tapestry-test</artifactId>
-			<version>${tapestry-release-version}</version>
-			<scope>test</scope>
-			<!-- Selenium 1.0-beta-2 does not work well on MacOS -->
-			<exclusions>
-				<exclusion>
-					<groupId>org.seleniumhq.selenium.client-drivers</groupId>
-					<artifactId>selenium-java-client-driver</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.seleniumhq.selenium.server</groupId>
-					<artifactId>selenium-server</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.seleniumhq.selenium.server</groupId>
-					<artifactId>selenium-server-coreless</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.seleniumhq.selenium.client-drivers</groupId>
-			<artifactId>selenium-java-client-driver</artifactId>
-			<version>${selenium-version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.seleniumhq.selenium.client-drivers</groupId>
-			<artifactId>selenium-java-testng-helper</artifactId>
-			<version>${selenium-version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.seleniumhq.selenium.server</groupId>
-			<artifactId>selenium-server</artifactId>
-			<version>${selenium-version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.seleniumhq.selenium.server</groupId>
-			<artifactId>selenium-server-coreless</artifactId>
-			<version>${selenium-version}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.4</version>
+			<groupId>org.tynamo</groupId>
+			<artifactId>tapestry-model-test</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 

@@ -18,29 +18,47 @@
  */
 package org.tynamo.security;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.tapestry5.test.AbstractIntegrationTestSuite;
+import com.gargoylesoftware.htmlunit.html.HtmlInput;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.mortbay.jetty.webapp.WebAppContext;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeGroups;
-import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-
 import org.tynamo.security.testapp.services.impl.Invoker;
+import org.tynamo.test.AbstractContainerTest;
 
+import java.io.IOException;
 
-public class TapestryJSecurityIntegrationTest extends AbstractIntegrationTestSuite
+import static org.testng.Assert.*;
+
+public class TapestryJSecurityIntegrationTest extends AbstractContainerTest
 {
 
 	private static final String STATUS_NOT_AUTH = "STATUS[Not Authenticated]";
 	private static final String STATUS_AUTH = "STATUS[Authenticated]";
+	private HtmlPage page;
 
-	@Parameters({"webapp"})
-	public TapestryJSecurityIntegrationTest(String webapp)
+	@Override
+	@BeforeClass
+	public void configureWebClient()
 	{
-		super(webapp);
+		webClient.setThrowExceptionOnFailingStatusCode(false);
 	}
 
+	@Override
+	public WebAppContext buildContext()
+	{
+		WebAppContext context = new WebAppContext("src/test/webapp", "/");
+		/*
+		 * Sets the classloading model for the context to avoid an strange "ClassNotFoundException: org.slf4j.Logger"
+		 */
+		context.setParentLoaderPriority(true);
+		return context;
+	}
+
+
 	@BeforeGroups(groups = "notLoggedIn")
-	public void checkLoggedIn()
+	public void checkLoggedIn() throws Exception
 	{
 		openBase();
 
@@ -183,7 +201,7 @@ public class TapestryJSecurityIntegrationTest extends AbstractIntegrationTestSui
 
 
 	@Test(dependsOnGroups = {"notLoggedIn"})
-	public void testLoginClick()
+	public void testLoginClick() throws Exception
 	{
 		clickOnBasePage("jsecLoginLink");
 		assertLoginPage();
@@ -440,7 +458,7 @@ public class TapestryJSecurityIntegrationTest extends AbstractIntegrationTestSui
 		clickOnBasePage("about");
 		assertLoginPage();
 		loginAction();
-		assertEquals(BASE_URL + "about", getLocation(), "Don't redirect to remebered url");
+		assertEquals(BASEURI + "about", getLocation(), "Don't redirect to remebered url");
 	}
 
 	@Test(dependsOnMethods = {"testSaveRequestAnnotationHandler"})
@@ -450,24 +468,23 @@ public class TapestryJSecurityIntegrationTest extends AbstractIntegrationTestSui
 		clickOnBasePage("authcCabinet");
 		assertLoginPage();
 		loginAction();
-		assertEquals(BASE_URL + "authc/cabinet", getLocation(), "Don't redirect to remebered url");
+		assertEquals(BASEURI + "authc/cabinet", getLocation(), "Don't redirect to remebered url");
 	}
 
 	protected void assertLoginPage()
 	{
-
-		String[] fields = getAllFields();
-
-		assertTrue(ArrayUtils.contains(fields, "jsecLogin"), "Page not containt login field. Not login page.");
-		assertEquals("password", getAttribute("jsecPassword@type"),
+		assertNotNull(page.getElementById("jsecLogin"), "Page not containt login field. Not login page.");
+		assertEquals("password", getAttribute("jsecPassword", "type"),
 				"Page does not containt password field. Not login page.");
-		assertEquals("checkbox", getAttribute("jsecRememberMe@type"),
+		assertEquals("checkbox", getAttribute("jsecRememberMe", "type"),
 				"Page does containt rememberMe field. Not login page.");
 
-		String[] buttons = getAllButtons();
+		assertNotNull(page.getElementById("jsecEnter"), "Page not containt login form submit button. Not login page.");
+	}
 
-		assertTrue(ArrayUtils.contains(buttons, "jsecEnter"),
-				"Page not containt login form submit button. Not login page.");
+	private String getAttribute(String id, String attr)
+	{
+		return page.getElementById(id).getAttribute(attr);
 	}
 
 	protected void assertUnauthorizedPage()
@@ -477,24 +494,23 @@ public class TapestryJSecurityIntegrationTest extends AbstractIntegrationTestSui
 
 	protected void assertUnauthorizedPage401()
 	{
-		assertEquals(getTitle(), "Error 401 Unauthorized", "Not Unauthorized page");
+		assertEquals(getTitle(), "Error 401 UNAUTHORIZED", "Not Unauthorized page");
 	}
 
-	protected void openPage(String page)
+	protected void openPage(String url) throws Exception
 	{
-		open(BASE_URL + page);
-		waitForPageToLoad();
+		page = webClient.getPage(BASEURI + url);
 	}
 
-	protected void openBase()
+	protected void openBase() throws Exception
 	{
 		openPage("");
 	}
 
-	protected void clickOnBasePage(String url)
+	protected void clickOnBasePage(String url) throws Exception
 	{
 		openBase();
-		clickAndWait(url);
+		page = page.getElementById(url).click();
 	}
 
 	protected void assertSuccessInvoke()
@@ -513,12 +529,48 @@ public class TapestryJSecurityIntegrationTest extends AbstractIntegrationTestSui
 		assertEquals(STATUS_NOT_AUTH, getText("status"));
 	}
 
-	protected void loginAction()
+	protected void loginAction() throws IOException
 	{
 		type("jsecLogin", "psycho");
 		type("jsecPassword", "psycho");
 		click("jsecEnter");
-		waitForPageToLoad();
+	}
+
+	private void type(String id, String value)
+	{
+		page.getForms().get(0).<HtmlInput>getInputByName(id).setValueAttribute(value);
+	}
+
+	private void click(String id) throws IOException
+	{
+		page = clickButton(page, id);
+	}
+
+	private String getText(String id)
+	{
+		return page.getElementById(id).asText();
+	}
+
+
+	private void assertText(String id, String text)
+	{
+		assertEquals(page.getElementById(id).asText(), text);
+	}
+
+	private boolean isElementPresent(String id)
+	{
+		return page.getElementById(id) != null;
+	}
+
+
+	private String getTitle()
+	{
+		return page.getTitleText();
+	}
+
+	private String getLocation()
+	{
+		return page.getWebResponse().getRequestSettings().getUrl().toString();
 	}
 
 }
