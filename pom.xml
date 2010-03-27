@@ -11,12 +11,8 @@
 	<parent>
 		<groupId>org.tynamo</groupId>
 		<artifactId>tynamo-parent</artifactId>
-		<version>0.0.4</version>
+		<version>0.0.5</version>
 	</parent>
-
-	<properties>
-		<selenium-version>1.0.1</selenium-version>
-	</properties>
 
 	<dependencies>
 		<dependency>
@@ -119,7 +115,7 @@
 				<configuration>
 					<archive>
 						<manifestEntries>
-							<Tapestry-Module-Classes>org.tynamo.security.SecurityModule
+							<Tapestry-Module-Classes>org.tynamo.security.services.SecurityModule
 							</Tapestry-Module-Classes>
 						</manifestEntries>
 					</archive>

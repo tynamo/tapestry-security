@@ -1,19 +1,12 @@
 package org.tynamo.security.services;
 
-public interface PageService {
-	
-	String getLoginPage();
+public interface PageService
+{
 
-	void setLoginPage(String loginPage);
+	String getLoginPage();
 
 	String getSuccessPage();
 
-	void setSuccessPage(String successPage);
-
 	String getUnauthorizedPage();
-	
-	void setUnauthorizedPage(String unauthorizedPage);
 
-	void loadPagesFromServletContext();
-	
 }

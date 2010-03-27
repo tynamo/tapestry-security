@@ -329,7 +329,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	public void testRolesFilterDeny() throws Exception
 	{
 		clickOnBasePage("rolesManager");
-		assertUnauthorizedPage401();
+		assertUnauthorizedPage();
 	}
 
 	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
@@ -343,7 +343,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	public void testPermsFilterDeny() throws Exception
 	{
 		clickOnBasePage("permEdit");
-		assertUnauthorizedPage401();
+		assertUnauthorizedPage();
 	}
 
 	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
@@ -521,12 +521,12 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 
 	protected void assertAuthenticated()
 	{
-		assertEquals(STATUS_AUTH, getText("status"));
+		assertEquals(getText("status"), STATUS_AUTH);
 	}
 
 	protected void assertNotAuthenticated()
 	{
-		assertEquals(STATUS_NOT_AUTH, getText("status"));
+		assertEquals(getText("status"), STATUS_NOT_AUTH);
 	}
 
 	protected void loginAction() throws IOException

@@ -41,7 +41,7 @@ import java.util.List;
  * <p/>
  *
  * @author Valentine Yerastov
- * @see SecurityModule#buildSecurityFilter(org.slf4j.Logger,
+ * @see org.tynamo.security.services.SecurityModule#buildSecurityFilter(org.slf4j.Logger,
  *      org.apache.tapestry5.services.ComponentEventLinkEncoder,
  *      org.apache.tapestry5.services.ComponentClassResolver,
  *      org.tynamo.security.services.ClassInterceptorsCache)

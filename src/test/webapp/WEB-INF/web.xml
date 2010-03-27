@@ -11,11 +11,7 @@
 
 	<filter>
 		<filter-name>app</filter-name>
-		<filter-class>org.tynamo.security.filter.SecurityTapestryDelegatingFilter</filter-class>
-		<init-param>
-			<param-name>configUrl</param-name>
-			<param-value>classpath:security.conf</param-value>
-		</init-param>
+		<filter-class>org.apache.tapestry5.TapestryFilter</filter-class>
 	</filter>
 
 	<filter-mapping>

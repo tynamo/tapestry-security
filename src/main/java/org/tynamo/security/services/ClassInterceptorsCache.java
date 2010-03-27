@@ -27,7 +27,7 @@ import java.util.List;
  * in security RequestFilter.
  *
  * @author Valentine Yerastov
- * @see org.tynamo.security.SecurityModule#buildSecurityFilter(org.slf4j.Logger, org.apache.tapestry5.services.ComponentEventLinkEncoder, org.apache.tapestry5.services.ComponentClassResolver, ClassInterceptorsCache)
+ * @see SecurityModule#buildSecurityFilter(org.slf4j.Logger, org.apache.tapestry5.services.ComponentEventLinkEncoder, org.apache.tapestry5.services.ComponentClassResolver, ClassInterceptorsCache)
  */
 public interface ClassInterceptorsCache
 {

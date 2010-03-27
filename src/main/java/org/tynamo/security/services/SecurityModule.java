@@ -16,21 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.tynamo.security;
+package org.tynamo.security.services;
 
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.util.ClassUtils;
+import org.apache.shiro.web.WebSecurityManager;
 import org.apache.tapestry5.internal.services.PageResponseRenderer;
 import org.apache.tapestry5.internal.services.RequestPageCache;
 import org.apache.tapestry5.ioc.*;
-import org.apache.tapestry5.ioc.annotations.Local;
-import org.apache.tapestry5.ioc.annotations.Match;
-import org.apache.tapestry5.ioc.annotations.Order;
+import org.apache.tapestry5.ioc.annotations.*;
 import org.apache.tapestry5.services.*;
 import org.slf4j.Logger;
-import org.tynamo.security.services.ClassInterceptorsCache;
-import org.tynamo.security.services.PageService;
-import org.tynamo.security.services.SecurityService;
+import org.tynamo.security.SecurityComponentRequestFilter;
+import org.tynamo.security.SecuritySymbols;
+import org.tynamo.security.ShiroAnnotationWorker;
+import org.tynamo.security.ShiroExceptionHandler;
+import org.tynamo.security.filter.SecurityRequestFilter;
 import org.tynamo.security.services.impl.ClassInterceptorsCacheImpl;
 import org.tynamo.security.services.impl.PageServiceImpl;
 import org.tynamo.security.services.impl.SecurityServiceImpl;
@@ -39,6 +40,7 @@ import org.tynamo.shiro.extension.authz.aop.AopHelper;
 import org.tynamo.shiro.extension.authz.aop.DefaultSecurityInterceptor;
 import org.tynamo.shiro.extension.authz.aop.SecurityInterceptor;
 
+import javax.servlet.ServletException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -53,27 +55,23 @@ import java.util.List;
 public class SecurityModule
 {
 
-	public static final String LOGIN_URL_PROPERTY_NAME = "loginUrl";
-	public static final String SUCCESS_URL_PROPERTY_NAME = "successUrl";
-	public static final String UNAUTHORIZED_URL_PROPERTY_NAME = "unauthorizedUrl";
-
-	public static final String LOGIN_URL_DEFAULT_VALUE = "/shiro/login";
-	public static final String SUCCESS_DEFAULT_VALUE = "/index";
-	public static final String UNAUTHORIZED_DEFAULT_VALUE = "/shiro/unauthorized";
-
-	private static final String EXCEPTION_HANDLE_METHOD_NAME = "handleRequestException";
-
-	public static void bind(ServiceBinder binder)
+	public static void bind(final ServiceBinder binder)
 	{
+
+		binder.bind(WebSecurityManager.class, TapestryRealmSecurityManager.class);
 		binder.bind(ClassInterceptorsCache.class, ClassInterceptorsCacheImpl.class);
 		binder.bind(SecurityService.class, SecurityServiceImpl.class);
 		binder.bind(ComponentRequestFilter.class, SecurityComponentRequestFilter.class);
+		binder.bind(ShiroExceptionHandler.class);
+		binder.bind(PageService.class, PageServiceImpl.class);
 	}
 
-	public static PageService buildPageService(ApplicationGlobals applicationGlobals)
+	public static void contributeFactoryDefaults(MappedConfiguration<String, String> configuration)
 	{
-		PageServiceImpl pageService = new PageServiceImpl(applicationGlobals);
-		return pageService;
+		configuration.add(SecuritySymbols.LOGIN_URL, "/shiro/login");
+		configuration.add(SecuritySymbols.SUCCESS_URL, "/index");
+		configuration.add(SecuritySymbols.UNAUTHORIZED_URL, "/shiro/unauthorized");
+		configuration.add(SecuritySymbols.DEFAULTSIGNINPAGE, "/defaultSignInPage");
 	}
 
 
@@ -81,9 +79,6 @@ public class SecurityModule
 	 * Create ClassInterceptorsCache through annotations on the class page,
 	 * which then will use SecurityFilter.
 	 * <p/>
-	 * <b>RU:</b>
-	 * Создаем ClassInterceptorsCache на основе аннотаций на классе страницы,
-	 * который потом будет использовать SecurityFilter.
 	 */
 	public void contributeApplicationInitializer(OrderedConfiguration<ApplicationInitializerFilter> configuration,
 	                                             final ComponentClassResolver componentClassResolver,
@@ -98,24 +93,20 @@ public class SecurityModule
 
 				initializer.initializeApplication(context);
 
-				//TODO: Лучшим местом для создания обновления кэша будет ShiroAnnotationWorker
 				for (String name : componentClassResolver.getPageNames())
 				{
 					String className = componentClassResolver.resolvePageNameToClassName(name);
 					Class<?> clazz = ClassUtils.forName(className);
-					//Смотрим аннотации у классов предков и у себя
+
 					while (clazz != null)
 					{
-						for (Class<? extends Annotation> annotationClass : AopHelper
-								.getAutorizationAnnotationAllClasses())
+						for (Class<? extends Annotation> annotationClass : AopHelper.getAutorizationAnnotationAllClasses())
 						{
 							Annotation classAnnotation = clazz.getAnnotation(annotationClass);
 							if (classAnnotation != null)
 							{
-								Annotation annotation =
-										AnnotationFactory.getInstance().createAuthzMethodAnnotation(classAnnotation);
+								Annotation annotation = AnnotationFactory.getInstance().createAuthzMethodAnnotation(classAnnotation);
 								//Add in the cache which then will be used in RequestFilter
-								//Добавляем в кэш который потом будет использоваться в RequestFilter
 								classInterceptorsCache.add(className, new DefaultSecurityInterceptor(annotation));
 							}
 						}
@@ -133,18 +124,14 @@ public class SecurityModule
 		configuration.add("SecurityFilter", filter, "before:*");
 	}
 
-
-	public static void contributeComponentClassTransformWorker(
-			OrderedConfiguration<ComponentClassTransformWorker> configuration)
+	public static void contributeComponentClassTransformWorker(OrderedConfiguration<ComponentClassTransformWorker> configuration)
 	{
-
-		configuration.addInstance(ShiroAnnotationWorker.class
-				.getSimpleName(), ShiroAnnotationWorker.class);
+		configuration.addInstance(ShiroAnnotationWorker.class.getSimpleName(), ShiroAnnotationWorker.class);
 	}
 
 	public static void contributeComponentClassResolver(Configuration<LibraryMapping> configuration)
 	{
-		configuration.add(new LibraryMapping("shiro", SecurityModule.class.getPackage().getName()));
+		configuration.add(new LibraryMapping("shiro", "org.tynamo.security"));
 	}
 
 	/**
@@ -185,10 +172,9 @@ public class SecurityModule
 	}
 
 	/**
-	 * Advise current RequestExceptionHandler for we can catch ShiroException exceptions
-	 * and handle this.
+	 * Advise current RequestExceptionHandler for we can catch ShiroException exceptions and handle this.
 	 *
-	 * @see ShiroExceptionHandler
+	 * @see org.tynamo.security.ShiroExceptionHandler
 	 */
 	public static void adviseRequestExceptionHandler(MethodAdviceReceiver receiver,
 	                                                 final PageResponseRenderer renderer,
@@ -197,7 +183,7 @@ public class SecurityModule
 	                                                 final RequestGlobals requestGlobals,
 	                                                 final Response response,
 	                                                 final SecurityService securityService,
-	                                                 final PageService pageService)
+	                                                 final ShiroExceptionHandler handler)
 	{
 
 		Method handleMethod;
@@ -205,15 +191,12 @@ public class SecurityModule
 		try
 		{
 			Class<?> serviceInterface = receiver.getInterface();
-			handleMethod = serviceInterface.getMethod(EXCEPTION_HANDLE_METHOD_NAME, Throwable.class);
+			handleMethod = serviceInterface.getMethod(SecuritySymbols.EXCEPTION_HANDLE_METHOD_NAME, Throwable.class);
 		} catch (Exception e)
 		{
 			throw new RuntimeException("Can't find method  " +
-					"RequestExceptionHandler." + EXCEPTION_HANDLE_METHOD_NAME + ". Changed API?", e);
+					"RequestExceptionHandler." + SecuritySymbols.EXCEPTION_HANDLE_METHOD_NAME + ". Changed API?", e);
 		}
-
-		final ShiroExceptionHandler handler =
-				new ShiroExceptionHandler(renderer, pageCache, securityService, pageService, requestGlobals, response);
 
 		MethodAdvice advice = new MethodAdvice()
 		{
@@ -251,6 +234,23 @@ public class SecurityModule
 			}
 		};
 		receiver.adviseMethod(handleMethod, advice);
+	}
+
+	public static void contributeHttpServletRequestHandler(OrderedConfiguration<HttpServletRequestFilter> configuration,
+	                                                       @InjectService("SecurityRequestFilter") HttpServletRequestFilter securityRequestFilter)
+	{
+		configuration.add("SecurityRequestFilter", securityRequestFilter, "before:*");
+	}
+
+	@ServiceId("SecurityRequestFilter")
+	public static HttpServletRequestFilter buildHttpServletRequestFilter(final ApplicationGlobals globals,
+						 Logger logger,
+						 WebSecurityManager securityManager,
+						 @Inject @Symbol(SecuritySymbols.SUCCESS_URL) String successUrl,
+						 @Inject @Symbol(SecuritySymbols.LOGIN_URL) String loginUrl,
+						 @Inject @Symbol(SecuritySymbols.UNAUTHORIZED_URL) String unauthorizedUrl) throws ServletException
+	{
+		return new SecurityRequestFilter(securityManager, logger, loginUrl, unauthorizedUrl, successUrl, globals.getServletContext());
 	}
 
 }

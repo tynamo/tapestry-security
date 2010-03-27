@@ -18,9 +18,9 @@
  */
 package org.tynamo.security.testapp.services;
 
-import java.io.IOException;
-
+import org.apache.shiro.realm.Realm;
 import org.apache.tapestry5.SymbolConstants;
+import org.apache.tapestry5.ioc.Configuration;
 import org.apache.tapestry5.ioc.MappedConfiguration;
 import org.apache.tapestry5.ioc.OrderedConfiguration;
 import org.apache.tapestry5.ioc.ServiceBinder;
@@ -30,26 +30,25 @@ import org.apache.tapestry5.services.Request;
 import org.apache.tapestry5.services.RequestFilter;
 import org.apache.tapestry5.services.RequestHandler;
 import org.apache.tapestry5.services.Response;
-import org.apache.shiro.realm.Realm;
 import org.slf4j.Logger;
-
-import org.tynamo.shiro.extension.realm.text.ExtendedPropertiesRealm;
-import org.tynamo.security.SecurityModule;
+import org.tynamo.security.services.SecurityModule;
 import org.tynamo.security.testapp.services.impl.AlphaServiceImpl;
 import org.tynamo.security.testapp.services.impl.BettaServiceImpl;
+import org.tynamo.shiro.extension.realm.text.ExtendedPropertiesRealm;
+
+import java.io.IOException;
 
 /**
  * This module is automatically included as part of the Tapestry IoC Registry, it's a good place to
  * configure and extend Tapestry, or to place your own service definitions.
  */
 @SubModule(SecurityModule.class)
-public class AppModule
-{
-	public static void bind(ServiceBinder binder)
-	{
+public class AppModule {
+
+	public static void bind(ServiceBinder binder) {
+
 		binder.bind(AlphaService.class, AlphaServiceImpl.class);
 		binder.bind(BettaService.class, BettaServiceImpl.class);
-		binder.bind(Realm.class, ExtendedPropertiesRealm.class);
 
 		// Make bind() calls on the binder object to define most IoC services.
 		// Use service builder methods (example below) when the implementation
@@ -57,9 +56,7 @@ public class AppModule
 		// invoking the constructor.
 	}
 
-	public static void contributeApplicationDefaults(
-			MappedConfiguration<String, String> configuration)
-	{
+	public static void contributeApplicationDefaults(MappedConfiguration<String, String> configuration) {
 		// Contributions to ApplicationDefaults will override any contributions to
 		// FactoryDefaults (with the same key). Here we're restricting the supported
 		// locales to just "en" (English). As you add localised message catalogs and other assets,
@@ -99,25 +96,20 @@ public class AppModule
 	 * a service named "RequestFilter" we use an explicit service id that we can reference
 	 * inside the contribution method.
 	 */
-	public RequestFilter buildTimingFilter(final Logger log)
-	{
-		return new RequestFilter()
-		{
+	public RequestFilter buildTimingFilter(final Logger log) {
+		return new RequestFilter() {
 			public boolean service(Request request, Response response, RequestHandler handler)
-					throws IOException
-			{
+					throws IOException {
 				long startTime = System.currentTimeMillis();
 
-				try
-				{
+				try {
 					// The responsibility of a filter is to invoke the corresponding method
 					// in the handler. When you chain multiple filters together, each filter
 					// received a handler that is a bridge to the next filter.
 
 					return handler.service(request, response);
 				}
-				finally
-				{
+				finally {
 					long elapsed = System.currentTimeMillis() - startTime;
 
 					log.info(String.format("Request time: %d ms", elapsed));
@@ -134,14 +126,18 @@ public class AppModule
 	 * that implement RequestFilter (defined in other modules).
 	 */
 	public void contributeRequestHandler(OrderedConfiguration<RequestFilter> configuration,
-	                                     @Local
-	                                     RequestFilter filter)
-	{
+	                                     @Local RequestFilter filter) {
 		// Each contribution to an ordered configuration has a name, When necessary, you may
 		// set constraints to precisely control the invocation order of the contributed filter
 		// within the pipeline.
 
 		configuration.add("Timing", filter);
+	}
+
+	public static void contributeWebSecurityManager(Configuration<Realm> configuration) {
+		ExtendedPropertiesRealm realm = new ExtendedPropertiesRealm();
+		realm.setResourcePath("classpath:shiro-users.properties");
+		configuration.add(realm);
 	}
 
 }
