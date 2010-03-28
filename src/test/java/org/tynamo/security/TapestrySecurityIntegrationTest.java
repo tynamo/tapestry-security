@@ -30,6 +30,7 @@ import org.tynamo.test.AbstractContainerTest;
 import java.io.IOException;
 
 import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 {
@@ -365,7 +366,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	public void testContributedFilterChainDefinition() throws Exception
 	{
 		clickOnBasePage("contributed");
-		assertSuccessInvoke();
+		assertEquals("contribution success", page.getTitleText());
 	}
 
 	//----------------------------------------
@@ -496,6 +497,19 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 				"Page does containt rememberMe field. Not login page.");
 
 		assertNotNull(page.getElementById("shiroEnter"), "Page not containt login form submit button. Not login page.");
+	}
+
+// -----------------------
+
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testServletDecoration() throws Exception
+	{
+		clickOnBasePage("contributed");
+		assertText("remoteUser", "psycho");
+		assertText("userPrincipal", "psycho");
+		assertText("userInRoleUser", "true");
+		assertText("userInRoleManager", "false");
 	}
 
 	private String getAttribute(String id, String attr)

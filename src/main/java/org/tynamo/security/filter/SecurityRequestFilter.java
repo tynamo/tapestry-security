@@ -145,7 +145,7 @@ public class SecurityRequestFilter extends IniShiroFilter implements HttpServlet
 		//build up the chains:
 		for (FilterChainDefinition filterChainDefinition : filterChainDefinitions)
 		{
-			logger.info("ADDING: " + filterChainDefinition);
+			logger.debug("adding filterChainDefinition: " + filterChainDefinition);
 			chainResolver.getFilterChainManager().createChain(filterChainDefinition.getAntUrlPathExpression(), filterChainDefinition.getChainDefinition());
 		}
 

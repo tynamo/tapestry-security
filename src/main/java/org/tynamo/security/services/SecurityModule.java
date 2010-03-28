@@ -43,14 +43,14 @@ import org.tynamo.shiro.extension.authz.aop.AopHelper;
 import org.tynamo.shiro.extension.authz.aop.DefaultSecurityInterceptor;
 import org.tynamo.shiro.extension.authz.aop.SecurityInterceptor;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Properties;
 
 /**
- * The main entry point for Security integration. To use in your
- * tapestry application add this module to your application module, using
- * {@link org.apache.tapestry5.ioc.annotations.SubModule SubModule annotation}
+ * The main entry point for Security integration.
  *
  * @author Valentine Yerastov
  */
@@ -58,6 +58,21 @@ public class SecurityModule
 {
 
 	private static final String EXCEPTION_HANDLE_METHOD_NAME = "handleRequestException";
+	private static final String PATH_PREFIX = "shiro";
+	private static String version = "unversioned";
+
+	static
+	{
+		Properties moduleProperties = new Properties();
+		try
+		{
+			moduleProperties.load(SecurityModule.class.getResourceAsStream("module.properties"));
+			version = moduleProperties.getProperty("module.version");
+		} catch (IOException e)
+		{
+			// ignore
+		}
+	}
 
 	public static void bind(final ServiceBinder binder)
 	{
@@ -73,9 +88,9 @@ public class SecurityModule
 
 	public static void contributeFactoryDefaults(MappedConfiguration<String, String> configuration)
 	{
-		configuration.add(SecuritySymbols.LOGIN_URL, "/shiro/login");
+		configuration.add(SecuritySymbols.LOGIN_URL, "/" + PATH_PREFIX + "/login");
 		configuration.add(SecuritySymbols.SUCCESS_URL, "/index");
-		configuration.add(SecuritySymbols.UNAUTHORIZED_URL, "/shiro/unauthorized");
+		configuration.add(SecuritySymbols.UNAUTHORIZED_URL, "/" + PATH_PREFIX + "/unauthorized");
 		configuration.add(SecuritySymbols.DEFAULTSIGNINPAGE, "/defaultSignInPage");
 		configuration.add(SecuritySymbols.CONFIG_PATH, "classpath:shiro.ini");
 		configuration.add(SecuritySymbols.SHOULD_LOAD_INI_FROM_CONFIG_PATH, "false");
@@ -138,7 +153,12 @@ public class SecurityModule
 
 	public static void contributeComponentClassResolver(Configuration<LibraryMapping> configuration)
 	{
-		configuration.add(new LibraryMapping("shiro", "org.tynamo.security"));
+		configuration.add(new LibraryMapping(PATH_PREFIX, "org.tynamo.security"));
+	}
+
+	public static void contributeClasspathAssetAliasManager(MappedConfiguration<String, String> configuration)
+	{
+		configuration.add(PATH_PREFIX + "/" + version, "org/tynamo/security");
 	}
 
 	/**

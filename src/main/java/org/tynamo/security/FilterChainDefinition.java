@@ -1,9 +1,10 @@
 package org.tynamo.security;
 
 /**
- * key/value pair The key/value pair must conform to the format defined by the {@link
- * FilterChainManager#createChain(String,String)} JavaDoc - the property key is an ant URL path expression and the value
- * is the comma-delimited chain definition.
+ * key/value pair
+ * <p>
+ * The key/value pair must conform to the format defined by the {@link FilterChainManager#createChain(String,String)}
+ * JavaDoc - the property key is an ant URL path expression and the value is the comma-delimited chain definition.
  */
 public class FilterChainDefinition
 {
@@ -29,9 +30,6 @@ public class FilterChainDefinition
 	@Override
 	public String toString()
 	{
-		return "FilterChainDefinition{" +
-				"antUrlPathExpression='" + antUrlPathExpression + '\'' +
-				", chainDefinition='" + chainDefinition + '\'' +
-				'}';
+		return antUrlPathExpression + " = " + chainDefinition;
 	}
 }
