@@ -158,6 +158,14 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		clickOnBasePage("authcCabinet");
 		assertLoginPage();
 	}
+
+	@Test(groups = {"notLoggedIn"})
+	public void testContributedFilterChainDefinitionNotLoggedIn() throws Exception
+	{
+		clickOnBasePage("contributed");
+		assertLoginPage();
+	}
+
 	//----------------------------------------
 
 
@@ -352,6 +360,14 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		clickOnBasePage("permView");
 		assertSuccessInvoke();
 	}
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testContributedFilterChainDefinition() throws Exception
+	{
+		clickOnBasePage("contributed");
+		assertSuccessInvoke();
+	}
+
 	//----------------------------------------
 
 

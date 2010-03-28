@@ -24,7 +24,10 @@ import org.apache.shiro.web.WebSecurityManager;
 import org.apache.tapestry5.internal.services.PageResponseRenderer;
 import org.apache.tapestry5.internal.services.RequestPageCache;
 import org.apache.tapestry5.ioc.*;
-import org.apache.tapestry5.ioc.annotations.*;
+import org.apache.tapestry5.ioc.annotations.InjectService;
+import org.apache.tapestry5.ioc.annotations.Local;
+import org.apache.tapestry5.ioc.annotations.Match;
+import org.apache.tapestry5.ioc.annotations.Order;
 import org.apache.tapestry5.services.*;
 import org.slf4j.Logger;
 import org.tynamo.security.SecurityComponentRequestFilter;
@@ -40,7 +43,6 @@ import org.tynamo.shiro.extension.authz.aop.AopHelper;
 import org.tynamo.shiro.extension.authz.aop.DefaultSecurityInterceptor;
 import org.tynamo.shiro.extension.authz.aop.SecurityInterceptor;
 
-import javax.servlet.ServletException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -55,10 +57,13 @@ import java.util.List;
 public class SecurityModule
 {
 
+	private static final String EXCEPTION_HANDLE_METHOD_NAME = "handleRequestException";
+
 	public static void bind(final ServiceBinder binder)
 	{
 
 		binder.bind(WebSecurityManager.class, TapestryRealmSecurityManager.class);
+		binder.bind(HttpServletRequestFilter.class, SecurityRequestFilter.class).withId("SecurityRequestFilter");
 		binder.bind(ClassInterceptorsCache.class, ClassInterceptorsCacheImpl.class);
 		binder.bind(SecurityService.class, SecurityServiceImpl.class);
 		binder.bind(ComponentRequestFilter.class, SecurityComponentRequestFilter.class);
@@ -72,6 +77,8 @@ public class SecurityModule
 		configuration.add(SecuritySymbols.SUCCESS_URL, "/index");
 		configuration.add(SecuritySymbols.UNAUTHORIZED_URL, "/shiro/unauthorized");
 		configuration.add(SecuritySymbols.DEFAULTSIGNINPAGE, "/defaultSignInPage");
+		configuration.add(SecuritySymbols.CONFIG_PATH, "classpath:shiro.ini");
+		configuration.add(SecuritySymbols.SHOULD_LOAD_INI_FROM_CONFIG_PATH, "false");
 	}
 
 
@@ -191,11 +198,11 @@ public class SecurityModule
 		try
 		{
 			Class<?> serviceInterface = receiver.getInterface();
-			handleMethod = serviceInterface.getMethod(SecuritySymbols.EXCEPTION_HANDLE_METHOD_NAME, Throwable.class);
+			handleMethod = serviceInterface.getMethod(EXCEPTION_HANDLE_METHOD_NAME, Throwable.class);
 		} catch (Exception e)
 		{
 			throw new RuntimeException("Can't find method  " +
-					"RequestExceptionHandler." + SecuritySymbols.EXCEPTION_HANDLE_METHOD_NAME + ". Changed API?", e);
+					"RequestExceptionHandler." + EXCEPTION_HANDLE_METHOD_NAME + ". Changed API?", e);
 		}
 
 		MethodAdvice advice = new MethodAdvice()
@@ -240,17 +247,6 @@ public class SecurityModule
 	                                                       @InjectService("SecurityRequestFilter") HttpServletRequestFilter securityRequestFilter)
 	{
 		configuration.add("SecurityRequestFilter", securityRequestFilter, "before:*");
-	}
-
-	@ServiceId("SecurityRequestFilter")
-	public static HttpServletRequestFilter buildHttpServletRequestFilter(final ApplicationGlobals globals,
-						 Logger logger,
-						 WebSecurityManager securityManager,
-						 @Inject @Symbol(SecuritySymbols.SUCCESS_URL) String successUrl,
-						 @Inject @Symbol(SecuritySymbols.LOGIN_URL) String loginUrl,
-						 @Inject @Symbol(SecuritySymbols.UNAUTHORIZED_URL) String unauthorizedUrl) throws ServletException
-	{
-		return new SecurityRequestFilter(securityManager, logger, loginUrl, unauthorizedUrl, successUrl, globals.getServletContext());
 	}
 
 }

@@ -42,6 +42,8 @@
     	<div><t:pagelink id="permView" page="perms/view">perms/view (perms filter, permission exists)</t:pagelink></div>
     	<div><t:pagelink id="permEdit" page="perms/edit">perms/edit (perms filter, permission does not exists)</t:pagelink></div>
 
+		<div><t:pagelink id="contributed" page="contributed/index">contributed filterChainDefinition</t:pagelink></div>
+
 		<h3>Testing components work</h3>
 		<t:shiro.authenticated>
 			<div id="AuthenticatedComponent">AuthenticatedComponent - RENDERED</div>

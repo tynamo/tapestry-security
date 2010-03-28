@@ -31,6 +31,8 @@ import org.apache.tapestry5.services.RequestFilter;
 import org.apache.tapestry5.services.RequestHandler;
 import org.apache.tapestry5.services.Response;
 import org.slf4j.Logger;
+import org.tynamo.security.FilterChainDefinition;
+import org.tynamo.security.SecuritySymbols;
 import org.tynamo.security.services.SecurityModule;
 import org.tynamo.security.testapp.services.impl.AlphaServiceImpl;
 import org.tynamo.security.testapp.services.impl.BettaServiceImpl;
@@ -42,8 +44,9 @@ import java.io.IOException;
  * This module is automatically included as part of the Tapestry IoC Registry, it's a good place to
  * configure and extend Tapestry, or to place your own service definitions.
  */
-@SubModule(SecurityModule.class)
-public class AppModule {
+@SubModule(value = {SecurityModule.class, AppSubModule.class})
+public class AppModule
+{
 
 	public static void bind(ServiceBinder binder) {
 
@@ -75,6 +78,8 @@ public class AppModule {
 		// header. If existing assets are changed, the version number should also
 		// change, to force the browser to download new versions.
 		configuration.add(SymbolConstants.APPLICATION_VERSION, "0.0.1-SNAPSHOT");
+
+		configuration.add(SecuritySymbols.SHOULD_LOAD_INI_FROM_CONFIG_PATH, "true");
 	}
 
 
@@ -138,6 +143,21 @@ public class AppModule {
 		ExtendedPropertiesRealm realm = new ExtendedPropertiesRealm();
 		realm.setResourcePath("classpath:shiro-users.properties");
 		configuration.add(realm);
+	}
+
+	public static void contributeSecurityRequestFilter(OrderedConfiguration<FilterChainDefinition> configuration)
+	{
+//		commented out because they are loaded from shiro.ini
+/*
+		configuration.add("authc-signup-anon", new FilterChainDefinition("/authc/signup", "anon"));
+		configuration.add("authc-authc", new FilterChainDefinition("/authc/**", "authc"));
+		configuration.add("user-signup-anon", new FilterChainDefinition("/user/signup", "anon"));
+		configuration.add("user-user", new FilterChainDefinition("/user/**", "user"));
+		configuration.add("roles-user-roles-user", new FilterChainDefinition("/roles/user/**", "roles[user]"));
+		configuration.add("roles-manager-roles-manager", new FilterChainDefinition("/roles/manager/**", "roles[manager]"));
+		configuration.add("perms-view-perms-news-view", new FilterChainDefinition("/perms/view/**", "perms[news:view]"));
+		configuration.add("perms-edit-perms-news-edit", new FilterChainDefinition("/perms/edit/**", "perms[news:edit]"));
+*/
 	}
 
 }
