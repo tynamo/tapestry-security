@@ -158,7 +158,7 @@ public class SecurityModule
 
 	public static void contributeClasspathAssetAliasManager(MappedConfiguration<String, String> configuration)
 	{
-		configuration.add(PATH_PREFIX + "/" + version, "org/tynamo/security");
+		configuration.add(PATH_PREFIX + "-" + version, "org/tynamo/security");
 	}
 
 	/**
