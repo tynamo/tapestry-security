@@ -17,6 +17,7 @@ import org.apache.shiro.mgt.RealmSecurityManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.util.AntPathMatcher;
 import org.apache.shiro.util.PatternMatcher;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.WebUtils;
 import org.apache.shiro.web.subject.WebSubject;
 import org.apache.shiro.web.subject.support.WebSubjectThreadState;
@@ -84,6 +85,7 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 
 		WebUtils.bind(request);
 		WebUtils.bind(response);
+	        ThreadContext.bind(securityManager);
 		WebSubject subject = new WebSubject.Builder(securityManager, request, response).buildWebSubject();
 		WebSubjectThreadState threadState = new WebSubjectThreadState(subject);
 		threadState.bind();
@@ -97,11 +99,11 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 			}
 		} finally {
 			threadState.clear();
+			ThreadContext.unbindSecurityManager();
 			WebUtils.unbindServletResponse();
 			WebUtils.unbindServletRequest();
 		}
 		// ThreadContext.unbindSubject();
-		// ThreadContext.unbindSecurityManager();
 		// WebUtils.unbindServletResponse();
 		// WebUtils.unbindServletRequest();
 		// WebUtils.unbindInetAddressFromThread();

@@ -1,10 +1,11 @@
 package org.tynamo.security.services;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.tapestry5.ioc.Invocation;
 import org.apache.tapestry5.ioc.MethodAdvice;
 import org.apache.tapestry5.ioc.services.AspectDecorator;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 
 public class HttpServletRequestDecoratorImpl implements HttpServletRequestDecorator {
 	public static enum SecurityOperation {
@@ -30,8 +31,13 @@ public class HttpServletRequestDecoratorImpl implements HttpServletRequestDecora
 
 		MethodAdvice advice = new MethodAdvice() {
 			public void advise(Invocation invocation) {
-				// FIXME catch all exceptions - bad things will happen if request is not bound yet, which will happen
-				// if any of the services use Request shadow when subject is still being built
+				// It's necessary to check securityManager is bound - bad things will happen if request is not bound yet,
+				// which will happen if any of the services use Request shadow when subject is still being built
+				// A better way to do this would be to bind the securityManager, requests etc. here
+				if (ThreadContext.getSecurityManager() == null) {
+					invocation.proceed();
+					return;
+				}
 				Subject subject = SecurityUtils.getSubject();
 				Object principal = null;
 				// FIXME Should there always be a subject?
@@ -53,6 +59,7 @@ public class HttpServletRequestDecoratorImpl implements HttpServletRequestDecora
 			}
 		};
 
-		return aspectDecorator.build(serviceInterface, delegate, advice, String.format("<Security request interceptor for %s>", serviceInterface.getName()));
+		return aspectDecorator.build(serviceInterface, delegate, advice, String.format("<Security request interceptor for %s>",
+				serviceInterface.getName()));
 	}
 }
