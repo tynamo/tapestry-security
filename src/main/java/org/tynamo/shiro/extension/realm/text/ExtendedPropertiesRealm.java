@@ -32,6 +32,13 @@ public class ExtendedPropertiesRealm extends PropertiesRealm
 
 	boolean created;
 
+	public ExtendedPropertiesRealm(String resourcePath)
+	{
+		super();
+		setResourcePath(resourcePath);
+		onInit();
+	}
+
 	/**
 	 * Eliminates the error generating NullPointerException,
 	 * when trying to register for non-existent account.
