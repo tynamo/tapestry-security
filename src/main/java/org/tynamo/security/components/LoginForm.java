@@ -33,11 +33,10 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.StringUtils;
-import org.apache.shiro.web.SavedRequest;
-import org.apache.shiro.web.WebUtils;
+import org.apache.shiro.web.util.SavedRequest;
+import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.tynamo.security.services.PageService;
 import org.tynamo.security.services.SecurityService;
 

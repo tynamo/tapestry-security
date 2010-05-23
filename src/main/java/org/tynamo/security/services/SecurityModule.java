@@ -20,7 +20,7 @@ package org.tynamo.security.services;
 
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.util.ClassUtils;
-import org.apache.shiro.web.WebSecurityManager;
+import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.apache.tapestry5.internal.services.PageResponseRenderer;
 import org.apache.tapestry5.internal.services.RequestPageCache;
 import org.apache.tapestry5.ioc.*;

@@ -21,7 +21,7 @@ package org.tynamo.security.components;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.shiro.subject.Subject;
-import org.apache.shiro.web.WebUtils;
+import org.apache.shiro.web.util.WebUtils;
 
 import org.tynamo.security.services.PageService;
 import org.tynamo.security.services.SecurityService;

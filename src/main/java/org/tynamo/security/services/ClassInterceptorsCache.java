@@ -18,9 +18,10 @@
  */
 package org.tynamo.security.services;
 
-import org.tynamo.shiro.extension.authz.aop.SecurityInterceptor;
 
 import java.util.List;
+
+import org.tynamo.shiro.extension.authz.aop.SecurityInterceptor;
 
 /**
  * List of {@link org.tynamo.shiro.extension.authz.aop.SecurityInterceptor} for use
