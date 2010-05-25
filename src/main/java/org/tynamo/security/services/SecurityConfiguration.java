@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -18,9 +19,8 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.util.AntPathMatcher;
 import org.apache.shiro.util.PatternMatcher;
 import org.apache.shiro.util.ThreadContext;
-import org.apache.shiro.web.WebUtils;
 import org.apache.shiro.web.subject.WebSubject;
-import org.apache.shiro.web.subject.support.WebSubjectThreadState;
+import org.apache.shiro.web.util.WebUtils;
 import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.HttpServletRequestHandler;
 
@@ -67,46 +67,30 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 
 		String requestURI = WebUtils.getPathWithinApplication(request);
 
-		SecurityFilterChain chain = null;
+		SecurityFilterChain configureChain = null;
 		for (String path : chainMap.keySet()) {
 			// If the path does match, then pass on to the subclass implementation for specific checks:
 			if (pathMatcher.matches(path, requestURI)) {
-				chain = chainMap.get(path);
+				configureChain = chainMap.get(path);
 				break;
 			}
 		}
-		boolean handled;
 
-		// WebUtils.bindInetAddressToThread(request);
-		// WebUtils.bind(request);
-		// WebUtils.bind(response);
-		// ThreadContext.bind(securityManager);
-		// ThreadContext.bind(securityManager.getSubject());
+		final SecurityFilterChain chain = configureChain;
 
-		WebUtils.bind(request);
-		WebUtils.bind(response);
-	        ThreadContext.bind(securityManager);
+		ThreadContext.bind(securityManager);
 		WebSubject subject = new WebSubject.Builder(securityManager, request, response).buildWebSubject();
-		WebSubjectThreadState threadState = new WebSubjectThreadState(subject);
-		threadState.bind();
-		try {
-			if (chain == null) handled = handler.service(request, response);
-			else {
 
-				handled = chain.getHandler().service(request, response);
-				if (!handled) handled = handler.service(request, response);
-
+		boolean handled = subject.execute(new Callable() {
+			public Object call() throws Exception {
+				if (chain == null) return handler.service(request, response);
+				else {
+					final boolean handled = chain.getHandler().service(request, response);
+					if (!handled) return handler.service(request, response);
+					else return true;
+				}
 			}
-		} finally {
-			threadState.clear();
-			ThreadContext.unbindSecurityManager();
-			WebUtils.unbindServletResponse();
-			WebUtils.unbindServletRequest();
-		}
-		// ThreadContext.unbindSubject();
-		// WebUtils.unbindServletResponse();
-		// WebUtils.unbindServletRequest();
-		// WebUtils.unbindInetAddressFromThread();
+		});
 
 		return handled;
 	}
