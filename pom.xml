@@ -12,6 +12,20 @@
 		<artifactId>tynamo-parent</artifactId>
 		<version>0.0.5</version>
 	</parent>
+	
+	<scm>
+		<connection>scm:svn:http://svn.codehaus.org/tynamo/branches/tapestry-security-0.1.x</connection>
+		<developerConnection>scm:svn:https://svn.codehaus.org/tynamo/branches/tapestry-security-0.1.x</developerConnection>
+		<url>http://svn.tynamo.codehaus.org/tynamo/branches/tapestry-security-0.1.x</url>
+	</scm>
+	
+	<distributionManagement>
+		<site>
+			<id>tynamo-site</id>
+			<!-- Note the url. Only static files deployed in /constant/ can be decorated by Unity -->
+			<url>dav:https://dav.codehaus.org/tynamo/constant/tapestry-security-0.1.x</url>
+		</site>
+	</distributionManagement>
 
 	<dependencies>
 		<dependency>
