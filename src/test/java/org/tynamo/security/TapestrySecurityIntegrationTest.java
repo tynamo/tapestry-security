@@ -30,7 +30,6 @@ import org.tynamo.test.AbstractContainerTest;
 import java.io.IOException;
 
 import static org.testng.Assert.*;
-import static org.testng.Assert.assertEquals;
 
 public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 {
@@ -410,21 +409,74 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	}
 
 	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
-	public void testHasAnyRoleComponentSuccess() throws Exception
+	public void testHasAnyRolesComponentSuccess() throws Exception
 	{
 		openBase();
-		assertText("HasAnyRoleComponentSuccess", "HasAnyRoleComponentSuccess - RENDERED");
+		assertText("HasAnyRolesComponentSuccess", "HasAnyRolesComponentSuccess - RENDERED");
 	}
 
 	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
-	public void testHasAnyRoleComponentFailed() throws Exception
+	public void testHasAnyRolesComponentSuccessAlternateDivisor() throws Exception
 	{
 		openBase();
-		if (isElementPresent("HasAnyRoleComponentFailed"))
+		assertText("HasAnyRolesComponentSuccessAlternateDivisor", "HasAnyRolesComponentSuccessAlternateDivisor - RENDERED");
+	}
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testHasAnyRolesComponentFailed() throws Exception
+	{
+		openBase();
+		if (isElementPresent("HasAnyRolesComponentFailed"))
+		{
+			throw new AssertionError("HasAnyRoles component can't be present");
+		}
+	}
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testHasAnyRoleComponentFailedAlternateDivisor() throws Exception
+	{
+		openBase();
+		if (isElementPresent("HasAnyRolesComponentFailedAlternateDivisor"))
 		{
 			throw new AssertionError("HasAnyRole component can't be present");
 		}
 	}
+
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testHasAllRolesComponentSuccess() throws Exception
+	{
+		openBase();
+		assertText("HasAllRolesComponentSuccess", "HasAllRolesComponentSuccess - RENDERED");
+	}
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testHasAllRolesComponentSuccessAlternateDivisor() throws Exception
+	{
+		openBase();
+		assertText("HasAllRolesComponentSuccessAlternateDivisor", "HasAllRolesComponentSuccessAlternateDivisor - RENDERED");
+	}
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testHasAllRolesComponentFailed() throws Exception
+	{
+		openBase();
+		if (isElementPresent("HasAllRolesComponentFailed"))
+		{
+			throw new AssertionError("HasAllRoles component can't be present");
+		}
+	}
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testHasAllRolesComponentFailedAlternateDivisor() throws Exception
+	{
+		openBase();
+		if (isElementPresent("HasAllRolesComponentFailedAlternateDivisor"))
+		{
+			throw new AssertionError("HasAllRoles component can't be present");
+		}
+	}
+
 
 	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
 	public void testHasPermissionComponentSuccess() throws Exception
@@ -438,6 +490,41 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	{
 		openBase();
 		if (isElementPresent("HasPermissionComponentFailed"))
+		{
+			throw new AssertionError("Guest component can't be present");
+		}
+	}
+
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testHasAnyPermissionsComponentSuccess() throws Exception
+	{
+		openBase();
+		assertText("HasAnyPermissionsComponentSuccess", "HasAnyPermissionsComponentSuccess - RENDERED");
+	}
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testHasAnyPermissionsComponentFailed() throws Exception
+	{
+		openBase();
+		if (isElementPresent("HasAnyPermissionsComponentFailed"))
+		{
+			throw new AssertionError("Guest component can't be present");
+		}
+	}
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testHasAllPermissionsComponentSuccess() throws Exception
+	{
+		openBase();
+		assertText("HasAllPermissionsComponentSuccess", "HasAllPermissionsComponentSuccess - RENDERED");
+	}
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testHasAllPermissionsComponentFailed() throws Exception
+	{
+		openBase();
+		if (isElementPresent("HasAllPermissionsComponentFailed"))
 		{
 			throw new AssertionError("Guest component can't be present");
 		}
@@ -459,6 +546,113 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 			throw new AssertionError("Role component can't be present");
 		}
 	}
+
+	// new granted tests
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testIfGrantedAnyPermissionsComponentSuccess() throws Exception
+	{
+		openBase();
+		assertText("IfGrantedAnyPermissionsComponentSuccess", "IfGrantedAnyPermissionsComponentSuccess - RENDERED");
+	}
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testIfGrantedAnyPermissionsComponentFailed() throws Exception
+	{
+		openBase();
+		if (isElementPresent("IfGrantedAnyPermissionsComponentFailed"))
+		{
+			throw new AssertionError("Guest component can't be present");
+		}
+	}
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testIfGrantedAllPermissionsComponentSuccess() throws Exception
+	{
+		openBase();
+		assertText("IfGrantedAllPermissionsComponentSuccess", "IfGrantedAllPermissionsComponentSuccess - RENDERED");
+	}
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testIfGrantedAllPermissionsComponentFailed() throws Exception
+	{
+		openBase();
+		if (isElementPresent("IfGrantedAllPermissionsComponentFailed"))
+		{
+			throw new AssertionError("Guest component can't be present");
+		}
+	}
+
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testIfGrantedAnyRolesComponentSuccess() throws Exception
+	{
+		openBase();
+		assertText("IfGrantedAnyRolesComponentSuccess", "IfGrantedAnyRolesComponentSuccess - RENDERED");
+	}
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testIfGrantedAnyRolesComponentSuccessAlternateDivisor() throws Exception
+	{
+		openBase();
+		assertText("IfGrantedAnyRolesComponentSuccessAlternateDivisor", "IfGrantedAnyRolesComponentSuccessAlternateDivisor - RENDERED");
+	}
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testIfGrantedAnyRolesComponentFailed() throws Exception
+	{
+		openBase();
+		if (isElementPresent("IfGrantedAnyRolesComponentFailed"))
+		{
+			throw new AssertionError("IfGrantedAnyRoles component can't be present");
+		}
+	}
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testIfGrantedAnyRoleComponentFailedAlternateDivisor() throws Exception
+	{
+		openBase();
+		if (isElementPresent("IfGrantedAnyRolesComponentFailedAlternateDivisor"))
+		{
+			throw new AssertionError("IfGrantedAnyRole component can't be present");
+		}
+	}
+
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testIfGrantedAllRolesComponentSuccess() throws Exception
+	{
+		openBase();
+		assertText("IfGrantedAllRolesComponentSuccess", "IfGrantedAllRolesComponentSuccess - RENDERED");
+	}
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testIfGrantedAllRolesComponentSuccessAlternateDivisor() throws Exception
+	{
+		openBase();
+		assertText("IfGrantedAllRolesComponentSuccessAlternateDivisor", "IfGrantedAllRolesComponentSuccessAlternateDivisor - RENDERED");
+	}
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testIfGrantedAllRolesComponentFailed() throws Exception
+	{
+		openBase();
+		if (isElementPresent("IfGrantedAllRolesComponentFailed"))
+		{
+			throw new AssertionError("IfGrantedAllRoles component can't be present");
+		}
+	}
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testIfGrantedAllRolesComponentFailedAlternateDivisor() throws Exception
+	{
+		openBase();
+		if (isElementPresent("IfGrantedAllRolesComponentFailedAlternateDivisor"))
+		{
+			throw new AssertionError("IfGrantedAllRoles component can't be present");
+		}
+	}
+
 	//----------------------------------------
 
 

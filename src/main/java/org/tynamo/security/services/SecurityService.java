@@ -22,13 +22,13 @@ import org.apache.shiro.subject.Subject;
 
 /**
  * General interface for work with shiro api.
- * 
+ *
  * @author xibyte
  */
 public interface SecurityService {
-	
+
 	Subject getSubject();
-	
+
 	/**
 	 * Return true only if the current user has executed a <b>successful</b> authentication attempt
 	 * <em>during their current session</em>.
@@ -39,7 +39,7 @@ public interface SecurityService {
 	 * this method does.
 	 **/
 	boolean isAuthenticated();
-	
+
 	/**
 	  * Return true only if the current user has <em>not</em> executed a successful authentication
 	 * attempt <em>during their current session</em>.
@@ -47,8 +47,8 @@ public interface SecurityService {
 	 * <p>The logically opposite tag of this one is the {@link #isAuthenticated()}.
 	 */
 	boolean isNotAuthenticated();
-	
-	
+
+
 	/**
 	 *
 	 * Return true if the current user known to the system, either from a successful login attempt
@@ -63,7 +63,7 @@ public interface SecurityService {
 	 * <p>The logically opposite method of this one is the {@link #isGuest()}.
 	 */
 	boolean isUser();
-	
+
 	/**
 	 * Return true if the current user <em>is not</em> known to the system, either because they
 	 * haven't logged in yet, or because they have no 'RememberMe' identity.
@@ -78,12 +78,19 @@ public interface SecurityService {
 	 */
 	boolean hasAnyRoles(String roles);
 
+	boolean hasAllRoles(String roles);
+
+
 	boolean hasPermission(String permission);
+
+	boolean hasAnyPermissions(String permissions);
+
+	boolean hasAllPermissions(String permissions);
 
 	boolean hasRole(String role);
 
 	boolean isLacksPermission(String permission);
 
 	boolean isLacksRole(String role);
-	
+
 }
