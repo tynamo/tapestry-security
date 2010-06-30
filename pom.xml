@@ -6,7 +6,7 @@
 	<name>Tapestry Security</name>
 	<description>Tynamo Security package for Tapestry 5 based on Shiro Security</description>
 	<packaging>jar</packaging>
-	<version>0.2.1-SNAPSHOT</version>
+	<version>0.2.0-SNAPSHOT</version>
 
 	<parent>
 		<groupId>org.tynamo</groupId>
