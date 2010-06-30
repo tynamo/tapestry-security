@@ -1,12 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>tapestry-security</artifactId>
 	<name>Tapestry Security</name>
 	<description>Tynamo Security package for Tapestry 5 based on Shiro Security</description>
 	<packaging>jar</packaging>
-	<version>0.2.0-SNAPSHOT</version>
+	<version>0.2.0</version>
 
 	<parent>
 		<groupId>org.tynamo</groupId>
@@ -64,9 +63,9 @@
 	</dependencies>
 
 	<scm>
-		<connection>scm:svn:http://svn.codehaus.org/tynamo/trunk/tapestry-security</connection>
-		<developerConnection>scm:svn:https://svn.codehaus.org/tynamo/trunk/tapestry-security</developerConnection>
-		<url>http://svn.tynamo.codehaus.org/tynamo/trunk/tapestry-security</url>
+		<connection>scm:svn:http://svn.codehaus.org/tynamo/tags/tapestry-security-0.2.0</connection>
+		<developerConnection>scm:svn:https://svn.codehaus.org/tynamo/tags/tapestry-security-0.2.0</developerConnection>
+		<url>http://svn.tynamo.codehaus.org/tynamo/tags/tapestry-security-0.2.0</url>
 	</scm>
 
 	<distributionManagement>
