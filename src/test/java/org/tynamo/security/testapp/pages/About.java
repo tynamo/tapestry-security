@@ -21,6 +21,6 @@ package org.tynamo.security.testapp.pages;
 import org.tynamo.shiro.extension.authz.annotations.RequiresAuthenticationAll;
 
 @RequiresAuthenticationAll
-public class About extends AccessablePage {
+public class About extends AccessiblePage {
 
 }

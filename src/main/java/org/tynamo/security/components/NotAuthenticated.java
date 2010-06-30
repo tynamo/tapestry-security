@@ -25,7 +25,6 @@ import org.tynamo.security.services.SecurityService;
 /**
  * Render body if subject is not authenticated
  * @see SecurityService#isNotAuthenticated()
- * @author xibyte
  */
 public class NotAuthenticated {
 	

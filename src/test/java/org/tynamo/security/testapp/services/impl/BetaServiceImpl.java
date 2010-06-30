@@ -16,15 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.tynamo.security.testapp.pages;
+package org.tynamo.security.testapp.services.impl;
 
-import org.tynamo.security.testapp.services.impl.Invoker;
+import org.tynamo.security.testapp.services.BetaService;
 
+public class BetaServiceImpl implements BetaService {
 
-public abstract class AccessablePage {
-
-	
-	public String getSuccess() {
-		return Invoker.SUCCESS_SUFIX;
+	@Override
+	public String invoke() {
+		return Invoker.invoke(getClass());
 	}
+	
 }

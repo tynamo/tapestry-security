@@ -25,7 +25,6 @@ import org.apache.tapestry5.services.ExceptionReporter;
  * This page rendered if was thrown {@link ShiroException} and {@link Subject}
  * is not authenticated.
  *
- * @author xibyte
  */
 public class Unauthorized implements ExceptionReporter
 {

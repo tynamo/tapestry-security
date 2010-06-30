@@ -52,13 +52,12 @@ import java.util.Properties;
 /**
  * The main entry point for Security integration.
  *
- * @author Valentine Yerastov
  */
 public class SecurityModule
 {
 
 	private static final String EXCEPTION_HANDLE_METHOD_NAME = "handleRequestException";
-	private static final String PATH_PREFIX = "shiro";
+	private static final String PATH_PREFIX = "security";
 	private static String version = "unversioned";
 
 	static

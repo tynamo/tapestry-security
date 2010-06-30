@@ -23,7 +23,6 @@ import org.apache.shiro.subject.Subject;
 /**
  * General interface for work with shiro api.
  *
- * @author xibyte
  */
 public interface SecurityService {
 

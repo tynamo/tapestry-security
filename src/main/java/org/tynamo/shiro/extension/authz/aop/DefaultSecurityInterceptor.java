@@ -31,7 +31,6 @@ import java.lang.annotation.Annotation;
  * {@link org.tynamo.shiro.extension.authz.annotations.utils.AnnotationFactory}
  * for convert class annotation to method annotation.
  *
- * @author Valentine Yerastov
  */
 public class DefaultSecurityInterceptor implements SecurityInterceptor
 {

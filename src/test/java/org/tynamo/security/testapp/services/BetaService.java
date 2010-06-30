@@ -16,15 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.tynamo.security.testapp.services.impl;
+package org.tynamo.security.testapp.services;
 
-import org.tynamo.security.testapp.services.BettaService;
+import org.tynamo.shiro.extension.authz.annotations.RequiresAuthenticationAll;
 
-public class BettaServiceImpl implements BettaService {
+@RequiresAuthenticationAll
+public interface BetaService {
 
-	@Override
-	public String invoke() {
-		return Invoker.invoke(getClass());
-	}
+	String invoke();
 	
 }

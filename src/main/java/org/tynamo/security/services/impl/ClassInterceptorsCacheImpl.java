@@ -28,7 +28,6 @@ import org.tynamo.security.services.ClassInterceptorsCache;
 
 /**
  * @see ClassInterceptorsCache
- * @author Valentine Yerastov
  */
 public class ClassInterceptorsCacheImpl implements ClassInterceptorsCache {
 

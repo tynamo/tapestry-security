@@ -18,8 +18,8 @@
  */
 package org.tynamo.security.testapp.pages.perms;
 
-import org.tynamo.security.testapp.pages.AccessablePage;
+import org.tynamo.security.testapp.pages.AccessiblePage;
 
-public class Edit extends AccessablePage {
+public class Edit extends AccessiblePage {
 
 }

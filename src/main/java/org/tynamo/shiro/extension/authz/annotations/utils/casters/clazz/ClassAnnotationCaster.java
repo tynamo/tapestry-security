@@ -29,7 +29,6 @@ import java.lang.annotation.Annotation;
  * <p/>
  * Provides call the desired method of the visitor, depending on the annotation type.
  *
- * @author Valentine Yerastov
  * @see org.tynamo.shiro.extension.authz.annotations.utils.casters.clazz.ClassAnnotationCasterVisitor
  */
 public class ClassAnnotationCaster

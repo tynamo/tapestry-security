@@ -19,8 +19,8 @@
 package org.tynamo.security.testapp.pages.authc;
 
 
-import org.tynamo.security.testapp.pages.AccessablePage;
+import org.tynamo.security.testapp.pages.AccessiblePage;
 
-public class SignUp extends AccessablePage {
+public class SignUp extends AccessiblePage {
 
 }

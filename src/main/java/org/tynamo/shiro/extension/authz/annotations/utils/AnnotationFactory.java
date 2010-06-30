@@ -38,7 +38,6 @@ import org.tynamo.shiro.extension.authz.annotations.utils.casters.clazz.CreateMe
  * It is necessary for the annotation handlers, because they can only work with 
  * method annotations.  
  * 
- * @author Valentine Yerastov
  */
 public class AnnotationFactory {
 

@@ -43,7 +43,6 @@ import org.tynamo.security.services.SecurityService;
 /**
  * Login form component
  *
- * @author xibyte
  */
 public class LoginForm
 {
@@ -51,13 +50,13 @@ public class LoginForm
 	private static final Logger logger = LoggerFactory.getLogger(LoginForm.class);
 
 	@Property
-	private String shiroLogin;
+	private String tynamoLogin;
 
 	@Property
-	private String shiroPassword;
+	private String tynamoPassword;
 
 	@Property
-	private boolean shiroRememberMe;
+	private boolean tynamoRememberMe;
 
 	@Persist(PersistenceConstants.FLASH)
 	private String loginMessage;
@@ -74,7 +73,7 @@ public class LoginForm
 	@Inject
 	private PageService pageService;
 
-	public Object onActionFromshiroLoginForm()
+	public Object onActionFromTynamoLoginForm()
 	{
 
 		Subject currentUser = securityService.getSubject();
@@ -84,8 +83,8 @@ public class LoginForm
 			throw new IllegalStateException("Subject can`t be null");
 		}
 
-		UsernamePasswordToken token = new UsernamePasswordToken(shiroLogin, shiroPassword);
-		token.setRememberMe(shiroRememberMe);
+		UsernamePasswordToken token = new UsernamePasswordToken(tynamoLogin, tynamoPassword);
+		token.setRememberMe(tynamoRememberMe);
 
 
 		try

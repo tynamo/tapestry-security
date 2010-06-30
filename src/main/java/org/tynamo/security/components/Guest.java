@@ -26,7 +26,6 @@ import org.tynamo.security.services.SecurityService;
  * Render body if guest
  *
  * @see SecurityService#isGuest()
- * @author Valentine Yerastov
  */
 public class Guest {
 	@Inject

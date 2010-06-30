@@ -35,7 +35,6 @@ import java.util.*;
  * Simple util class, help work with annotations and create interceptors
  * based on annotations.
  *
- * @author Valentine Yerastov
  */
 public class AopHelper
 {
@@ -189,8 +188,8 @@ public class AopHelper
 	 * Ensure this: If a class have an interface, then method parameter from interface and
 	 * targetClass implementation.
 	 * <p/>
-	 * Если есть интерфейс, то метод приходит от интерфейса а класс -
-	 * реализация, поэтому делаем следующее
+	 * Ð•Ñ�Ð»Ð¸ ÐµÑ�Ñ‚ÑŒ Ð¸Ð½Ñ‚ÐµÑ€Ñ„ÐµÐ¹Ñ�, Ñ‚Ð¾ Ð¼ÐµÑ‚Ð¾Ð´ Ð¿Ñ€Ð¸Ñ…Ð¾Ð´Ð¸Ñ‚ Ð¾Ñ‚ Ð¸Ð½Ñ‚ÐµÑ€Ñ„ÐµÐ¹Ñ�Ð° Ð° ÐºÐ»Ð°Ñ�Ñ� -
+	 * Ñ€ÐµÐ°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ñ�, Ð¿Ð¾Ñ�Ñ‚Ð¾Ð¼Ñƒ Ð´ÐµÐ»Ð°ÐµÐ¼ Ñ�Ð»ÐµÐ´ÑƒÑŽÑ‰ÐµÐµ
 	 */
 	public static Method findTargetMethod(Method method, Class<?> targetClass)
 	{

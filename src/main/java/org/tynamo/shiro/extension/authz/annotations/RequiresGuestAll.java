@@ -27,7 +27,6 @@ import java.lang.annotation.Target;
  * Analog {@link org.apache.shiro.authz.annotation.RequiresGuest},
  * but can be applied to the type.
  *  
- * @author Valentine Yerastov
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

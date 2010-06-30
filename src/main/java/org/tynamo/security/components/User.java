@@ -24,7 +24,6 @@ import org.tynamo.security.services.SecurityService;
 
 /**
  * @see SecurityService#isUser()
- * @author xibyte
  */
 public class User {
 	

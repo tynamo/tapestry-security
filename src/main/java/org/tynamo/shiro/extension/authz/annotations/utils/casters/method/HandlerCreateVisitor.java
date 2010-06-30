@@ -34,7 +34,6 @@ import org.apache.shiro.authz.aop.UserAnnotationHandler;
 /**
  * Creates a handler based on the annotation type.  
  * 
- * @author Valentine Yerastov
  */
 public class HandlerCreateVisitor implements MethodAnnotationCasterVisitor {
 

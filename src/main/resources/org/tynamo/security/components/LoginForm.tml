@@ -1,27 +1,27 @@
 <div xmlns:t="http://tapestry.apache.org/schema/tapestry_5_0_0.xsd" xmlns:p="tapestry:parameter" 
-	id="shiroLoginFormContainer" >
+	id="tynamoLoginFormContainer" >
 	
-		<t:form t:id="shiroLoginForm" >
-			<div id="shiroLoginMessage" >${loginMessage}</div>
-			<div id="shiroLoginContainer">
-				<div><t:label for="shiroLogin">login:</t:label></div>
-				<div><t:textfield t:id="shiroLogin" validate="required"/></div>
+		<t:form t:id="tynamoLoginForm" >
+			<div id="tynamoLoginMessage" >${loginMessage}</div>
+			<div id="tynamoLoginContainer">
+				<div><t:label for="tynamoLogin">login:</t:label></div>
+				<div><t:textfield t:id="tynamoLogin" validate="required"/></div>
 			</div>
 			
-			<div id="shiroPasswordContainer">
-				<div><t:label for="shiroPassword">password:</t:label></div>
-				<div><t:passwordfield t:id="shiroPassword" validate="required"/></div>
+			<div id="tynamoPasswordContainer">
+				<div><t:label for="tynamoPassword">password:</t:label></div>
+				<div><t:passwordfield t:id="tynamoPassword" validate="required"/></div>
 			</div>
 			
-			<div id="shiroRememberMeContainer">
+			<div id="tynamoRememberMeContainer">
 				<div>
-					<t:checkbox t:id="shiroRememberMe" />
-					<t:label for="shiroRememberMe">Remember Me</t:label>
+					<t:checkbox t:id="tynamoRememberMe" />
+					<t:label for="tynamoRememberMe">Remember Me</t:label>
 				</div>
 			</div>
 			
-			<div id="shiroEnterContainer">
-				<t:submit id="shiroEnter" value="Enter" />
+			<div id="tynamoEnterContainer">
+				<t:submit id="tynamoEnter" value="Enter" />
 			</div>
 		</t:form>
 </div>

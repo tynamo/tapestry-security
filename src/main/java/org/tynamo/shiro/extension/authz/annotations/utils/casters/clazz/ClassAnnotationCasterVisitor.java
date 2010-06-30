@@ -24,7 +24,6 @@ import org.tynamo.shiro.extension.authz.annotations.*;
  * Visitor interface for use in
  * {@link org.tynamo.shiro.extension.authz.annotations.utils.casters.clazz.ClassAnnotationCaster}
  *
- * @author Valentine Yerastov
  * @see org.tynamo.shiro.extension.authz.annotations.utils.casters.clazz.ClassAnnotationCaster
  */
 public interface ClassAnnotationCasterVisitor

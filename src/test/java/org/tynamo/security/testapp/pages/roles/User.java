@@ -18,8 +18,8 @@
  */
 package org.tynamo.security.testapp.pages.roles;
 
-import org.tynamo.security.testapp.pages.AccessablePage;
+import org.tynamo.security.testapp.pages.AccessiblePage;
 
-public class User extends AccessablePage {
+public class User extends AccessiblePage {
 
 }

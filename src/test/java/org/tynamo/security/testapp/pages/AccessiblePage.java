@@ -16,13 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.tynamo.security.testapp.services;
+package org.tynamo.security.testapp.pages;
 
-import org.tynamo.shiro.extension.authz.annotations.RequiresAuthenticationAll;
+import org.tynamo.security.testapp.services.impl.Invoker;
 
-@RequiresAuthenticationAll
-public interface BettaService {
 
-	String invoke();
+public abstract class AccessiblePage {
+
 	
+	public String getSuccess() {
+		return Invoker.SUCCESS_SUFFIX;
+	}
 }

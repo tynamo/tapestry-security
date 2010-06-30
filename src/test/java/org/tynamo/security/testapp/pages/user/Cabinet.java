@@ -19,8 +19,8 @@
 package org.tynamo.security.testapp.pages.user;
 
 
-import org.tynamo.security.testapp.pages.AccessablePage;
+import org.tynamo.security.testapp.pages.AccessiblePage;
 
-public class Cabinet extends AccessablePage {
+public class Cabinet extends AccessiblePage {
 
 }

@@ -30,7 +30,6 @@ import org.tynamo.security.services.SecurityService;
  * If subject is not authenticated rendered link to login page,
  * else link to logout.
  *
- * @author xibyte
  */
 public class LoginLink
 {
@@ -42,13 +41,13 @@ public class LoginLink
 	@Inject
 	private PageService pageService;
 
-	public String onActionFromshiroLoginLink()
+	public String onActionFromTynamoLoginLink()
 	{
 		removeSavedRequest();
 		return pageService.getLoginPage();
 	}
 
-	public void onActionFromshiroLogoutLink()
+	public void onActionFromTynamoLogoutLink()
 	{
 		securityService.getSubject().logout();
 	}

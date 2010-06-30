@@ -64,7 +64,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 
 		if (STATUS_AUTH.equals(getText("status")))
 		{
-			clickOnBasePage("shiroLogout");
+			clickOnBasePage("tynamoLogout");
 		}
 	}
 
@@ -86,7 +86,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	@Test(groups = {"notLoggedIn"})
 	public void testInterceptServiceClassDeny() throws Exception
 	{
-		clickOnBasePage("bettaServiceInvoke");
+		clickOnBasePage("betaServiceInvoke");
 		assertLoginPage();
 	}
 
@@ -211,7 +211,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	@Test(dependsOnGroups = {"notLoggedIn"})
 	public void testLoginClick() throws Exception
 	{
-		clickOnBasePage("shiroLoginLink");
+		clickOnBasePage("tynamoLoginLink");
 		assertLoginPage();
 	}
 
@@ -242,7 +242,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
 	public void testInterceptServiceClassAccess() throws Exception
 	{
-		clickOnBasePage("bettaServiceInvoke");
+		clickOnBasePage("betaServiceInvoke");
 		assertSuccessInvoke();
 	}
 
@@ -659,7 +659,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	@Test(dependsOnGroups = {"loggedIn"})
 	public void testLogout() throws Exception
 	{
-		clickOnBasePage("shiroLogoutLink");
+		clickOnBasePage("tynamoLogoutLink");
 		assertNotAuthenticated();
 	}
 
@@ -684,13 +684,13 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 
 	protected void assertLoginPage()
 	{
-		assertNotNull(page.getElementById("shiroLogin"), "Page not containt login field. Not login page.");
-		assertEquals("password", getAttribute("shiroPassword", "type"),
+		assertNotNull(page.getElementById("tynamoLogin"), "Page not containt login field. Not login page.");
+		assertEquals("password", getAttribute("tynamoPassword", "type"),
 				"Page does not containt password field. Not login page.");
-		assertEquals("checkbox", getAttribute("shiroRememberMe", "type"),
+		assertEquals("checkbox", getAttribute("tynamoRememberMe", "type"),
 				"Page does containt rememberMe field. Not login page.");
 
-		assertNotNull(page.getElementById("shiroEnter"), "Page not containt login form submit button. Not login page.");
+		assertNotNull(page.getElementById("tynamoEnter"), "Page not containt login form submit button. Not login page.");
 	}
 
 // -----------------------
@@ -739,7 +739,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 
 	protected void assertSuccessInvoke()
 	{
-		assertTrue(getText("result").contains(Invoker.SUCCESS_SUFIX), "Method invocation unsuccessfully");
+		assertTrue(getText("result").contains(Invoker.SUCCESS_SUFFIX), "Method invocation unsuccessfully");
 	}
 
 
@@ -755,9 +755,9 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 
 	protected void loginAction() throws IOException
 	{
-		type("shiroLogin", "psycho");
-		type("shiroPassword", "psycho");
-		click("shiroEnter");
+		type("tynamoLogin", "psycho");
+		type("tynamoPassword", "psycho");
+		click("tynamoEnter");
 	}
 
 	private void type(String id, String value)

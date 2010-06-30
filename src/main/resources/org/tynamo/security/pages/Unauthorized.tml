@@ -5,7 +5,7 @@
 	</head>
 	<body style="text-align:center;">
 		<h1>Unauthorized</h1>
-		<div class="shiroMessage">
+		<div class="tynamoMessage">
 			${message}
 		</div>
 	</body>

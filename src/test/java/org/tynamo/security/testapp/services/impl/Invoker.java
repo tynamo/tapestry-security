@@ -20,10 +20,10 @@ package org.tynamo.security.testapp.services.impl;
 
 public class Invoker {
 	
-	public static final String SUCCESS_SUFIX = "SUCCESS";
+	public static final String SUCCESS_SUFFIX = "SUCCESS";
 
 	public static String invoke(Class<?> clazz) {
-		return clazz.getSimpleName()+"."+SUCCESS_SUFIX;
+		return clazz.getSimpleName()+"."+SUCCESS_SUFFIX;
 	}
 	
 }

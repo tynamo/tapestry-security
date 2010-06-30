@@ -9,7 +9,7 @@
     	
     	<div id="status">STATUS[${status}]</div> 
     	
-    	<div><t:shiro.loginlink /></div>
+    	<div><t:security.loginlink /></div>
     	
     	<h3>Testing interceptors work</h3>
     	
@@ -17,7 +17,7 @@
     	<div><t:pagelink id="about" page="about">link to page about (Restricted by annotation on page class)</t:pagelink></div>
     	<p />
     	<div><t:actionlink t:id="alphaServiceInvoke" id="alphaServiceInvoke">action alphaServiceInvoke (Restricted by annotation on service method)</t:actionlink></div>
-    	<div><t:actionlink t:id="bettaServiceInvoke" id="bettaServiceInvoke">action bettaServiceInvoke (Restricted by annotation on service class)</t:actionlink></div>
+    	<div><t:actionlink t:id="betaServiceInvoke" id="betaServiceInvoke">action betaServiceInvoke (Restricted by annotation on service class)</t:actionlink></div>
     	
 		<h3>Testing all annotation types</h3>
     	<div><t:actionlink t:id="alphaServiceRequiresAuthentication" id="alphaServiceRequiresAuthentication">action alphaServiceRequiresAuthentication</t:actionlink></div>
@@ -45,133 +45,133 @@
 		<div><t:pagelink id="contributed" page="contributed/index">contributed filterChainDefinition</t:pagelink></div>
 
 		<h3>Testing components work</h3>
-		<t:shiro.authenticated>
+		<t:security.authenticated>
 			<div id="AuthenticatedComponent">AuthenticatedComponent - RENDERED</div>
-		</t:shiro.authenticated>
+		</t:security.authenticated>
 		
-		<t:shiro.notAuthenticated>
+		<t:security.notAuthenticated>
 			<div id="NotAuthenticatedComponent">NotAuthenticatedComponent - RENDERED</div>
-		</t:shiro.notAuthenticated>
+		</t:security.notAuthenticated>
 		
-		<t:shiro.user>
+		<t:security.user>
 			<div id="UserComponent">UserComponent - RENDERED</div>
-		</t:shiro.user>
+		</t:security.user>
 		
-		<t:shiro.guest>
+		<t:security.guest>
 			<div id="GuestComponent">GuestComponent - RENDERED</div>
-		</t:shiro.guest>
+		</t:security.guest>
 		
-		<t:shiro.hasAnyRoles t:roles="user, driver">
+		<t:security.hasAnyRoles t:roles="user, driver">
 			<div id="HasAnyRolesComponentSuccess">HasAnyRolesComponentSuccess - RENDERED</div>
-		</t:shiro.hasAnyRoles>
+		</t:security.hasAnyRoles>
 
-		<t:shiro.hasAnyRoles t:roles="user|driver">
+		<t:security.hasAnyRoles t:roles="user|driver">
 			<div id="HasAnyRolesComponentSuccessAlternateDivisor">HasAnyRolesComponentSuccessAlternateDivisor - RENDERED</div>
-		</t:shiro.hasAnyRoles>
+		</t:security.hasAnyRoles>
 		
-		<t:shiro.hasAnyRoles t:roles="teacher, manager">
+		<t:security.hasAnyRoles t:roles="teacher, manager">
 			<div id="HasAnyRolesComponentFailed">HasAnyRolesComponentFailed - RENDERED</div>
-		</t:shiro.hasAnyRoles>
+		</t:security.hasAnyRoles>
 
-		<t:shiro.hasAnyRoles t:roles="teacher|manager">
+		<t:security.hasAnyRoles t:roles="teacher|manager">
 			<div id="HasAnyRolesComponentFailedAlternateDivisor">HasAnyRolesComponentFailedAlternateDivisor - RENDERED</div>
-		</t:shiro.hasAnyRoles>
+		</t:security.hasAnyRoles>
 
-		<t:shiro.hasAllRoles t:roles="user, student">
+		<t:security.hasAllRoles t:roles="user, student">
 			<div id="HasAllRolesComponentSuccess">HasAllRolesComponentSuccess - RENDERED</div>
-		</t:shiro.hasAllRoles>
+		</t:security.hasAllRoles>
 
-		<t:shiro.hasAllRoles t:roles="user|student">
+		<t:security.hasAllRoles t:roles="user|student">
 			<div id="HasAllRolesComponentSuccessAlternateDivisor">HasAllRolesComponentSuccessAlternateDivisor - RENDERED</div>
-		</t:shiro.hasAllRoles>
+		</t:security.hasAllRoles>
 		
-		<t:shiro.hasAllRoles t:roles="user, manager">
+		<t:security.hasAllRoles t:roles="user, manager">
 			<div id="HasAllRolesComponentFailed">HasAllRolesComponentFailed - RENDERED</div>
-		</t:shiro.hasAllRoles>
+		</t:security.hasAllRoles>
 
-		<t:shiro.hasAllRoles t:roles="user|manager">
+		<t:security.hasAllRoles t:roles="user|manager">
 			<div id="HasAllRolesComponentFailed">HasAllRolesComponentFailedAlternateDivisor - RENDERED</div>
-		</t:shiro.hasAllRoles>
+		</t:security.hasAllRoles>
 		
-		<t:shiro.hasPermission t:permission="book:read">
+		<t:security.hasPermission t:permission="book:read">
 			<div id="HasPermissionComponentSuccess">HasPermissionComponentSuccess - RENDERED</div>
-		</t:shiro.hasPermission>
+		</t:security.hasPermission>
 
-		<t:shiro.hasAnyPermissions t:permissions="book:read|book:write">
+		<t:security.hasAnyPermissions t:permissions="book:read|book:write">
 			<div id="HasAnyPermissionsComponentSuccess">HasAnyPermissionsComponentSuccess - RENDERED</div>
-		</t:shiro.hasAnyPermissions>
+		</t:security.hasAnyPermissions>
 
-		<t:shiro.hasAnyPermissions t:permissions="pen:read|book:write">
+		<t:security.hasAnyPermissions t:permissions="pen:read|book:write">
 			<div id="HasAnyPermissionsComponentFailed">HasAnyPermissionsComponentFailed - RENDERED</div>
-		</t:shiro.hasAnyPermissions>
+		</t:security.hasAnyPermissions>
 
-		<t:shiro.hasAllPermissions t:permissions="book:read|pen:write">
+		<t:security.hasAllPermissions t:permissions="book:read|pen:write">
 			<div id="HasAllPermissionsComponentSuccess">HasAllPermissionsComponentSuccess - RENDERED</div>
-		</t:shiro.hasAllPermissions>
+		</t:security.hasAllPermissions>
 
-		<t:shiro.hasAllPermissions t:permissions="book:read|book:write">
+		<t:security.hasAllPermissions t:permissions="book:read|book:write">
 			<div id="HasAllPermissionsComponentFailed">HasAllPermissionsComponentFailed - RENDERED</div>
-		</t:shiro.hasAllPermissions>
+		</t:security.hasAllPermissions>
 
-		<t:shiro.hasPermission t:permission="book:write">
+		<t:security.hasPermission t:permission="book:write">
 			<div id="HasPermissionComponentFailed">HasPermissionComponentFailed - RENDERED</div>
-		</t:shiro.hasPermission>
+		</t:security.hasPermission>
 
-		<t:shiro.hasRole t:role="user">
+		<t:security.hasRole t:role="user">
 			<div id="HasRoleComponentSuccess">HasRoleComponentSuccess - RENDERED</div>
-		</t:shiro.hasRole>
+		</t:security.hasRole>
 
-		<t:shiro.hasRole t:role="manager">
+		<t:security.hasRole t:role="manager">
 			<div id="HasRoleComponentFailed">HasRoleComponentFailed - RENDERED</div>
-		</t:shiro.hasRole>
+		</t:security.hasRole>
 
 
-		<t:shiro.ifGranted t:anyRoles="user, driver">
+		<t:security.ifGranted t:anyRoles="user, driver">
 			<div id="IfGrantedAnyRolesComponentSuccess">IfGrantedAnyRolesComponentSuccess - RENDERED</div>
-		</t:shiro.ifGranted>
+		</t:security.ifGranted>
 
-		<t:shiro.ifGranted t:anyRoles="user|driver">
+		<t:security.ifGranted t:anyRoles="user|driver">
 			<div id="IfGrantedAnyRolesComponentSuccessAlternateDivisor">IfGrantedAnyRolesComponentSuccessAlternateDivisor - RENDERED</div>
-		</t:shiro.ifGranted>
+		</t:security.ifGranted>
 
-		<t:shiro.ifGranted t:anyRoles="teacher, manager">
+		<t:security.ifGranted t:anyRoles="teacher, manager">
 			<div id="IfGrantedAnyRolesComponentFailed">IfGrantedAnyRolesComponentFailed - RENDERED</div>
-		</t:shiro.ifGranted>
+		</t:security.ifGranted>
 
-		<t:shiro.ifGranted t:anyRoles="teacher|manager">
+		<t:security.ifGranted t:anyRoles="teacher|manager">
 			<div id="IfGrantedAnyRolesComponentFailedAlternateDivisor">IfGrantedAnyRolesComponentFailedAlternateDivisor - RENDERED</div>
-		</t:shiro.ifGranted>
+		</t:security.ifGranted>
 
-		<t:shiro.ifGranted t:allRoles="user, student">
+		<t:security.ifGranted t:allRoles="user, student">
 			<div id="IfGrantedAllRolesComponentSuccess">IfGrantedAllRolesComponentSuccess - RENDERED</div>
-		</t:shiro.ifGranted>
+		</t:security.ifGranted>
 
-		<t:shiro.ifGranted t:allRoles="user|student">
+		<t:security.ifGranted t:allRoles="user|student">
 			<div id="IfGrantedAllRolesComponentSuccessAlternateDivisor">IfGrantedAllRolesComponentSuccessAlternateDivisor - RENDERED</div>
-		</t:shiro.ifGranted>
+		</t:security.ifGranted>
 
-		<t:shiro.ifGranted t:allRoles="user, manager">
+		<t:security.ifGranted t:allRoles="user, manager">
 			<div id="IfGrantedAllRolesComponentFailed">IfGrantedAllRolesComponentFailed - RENDERED</div>
-		</t:shiro.ifGranted>
+		</t:security.ifGranted>
 
-		<t:shiro.ifGranted t:allRoles="user|manager">
+		<t:security.ifGranted t:allRoles="user|manager">
 			<div id="IfGrantedAllRolesComponentFailedAlternateDivisor">IfGrantedAllRolesComponentFailedAlternateDivisor - RENDERED</div>
-		</t:shiro.ifGranted>
+		</t:security.ifGranted>
 
-		<t:shiro.ifGranted t:anyPermissions="book:read|book:write">
+		<t:security.ifGranted t:anyPermissions="book:read|book:write">
 			<div id="IfGrantedAnyPermissionsComponentSuccess">IfGrantedAnyPermissionsComponentSuccess - RENDERED</div>
-		</t:shiro.ifGranted>
+		</t:security.ifGranted>
 
-		<t:shiro.ifGranted t:anyPermissions="pen:read|book:write">
+		<t:security.ifGranted t:anyPermissions="pen:read|book:write">
 			<div id="IfGrantedAnyPermissionsComponentFailed">IfGrantedAnyPermissionsComponentFailed - RENDERED</div>
-		</t:shiro.ifGranted>
+		</t:security.ifGranted>
 
-		<t:shiro.ifGranted t:allPermissions="book:read|pen:write">
+		<t:security.ifGranted t:allPermissions="book:read|pen:write">
 		    <div id="IfGrantedAllPermissionsComponentSuccess">IfGrantedAllPermissionsComponentSuccess - RENDERED</div>
-		</t:shiro.ifGranted>
+		</t:security.ifGranted>
 
-		<t:shiro.ifGranted t:allPermissions="book:read|book:write">
+		<t:security.ifGranted t:allPermissions="book:read|book:write">
 			<div id="IfGrantedAllPermissionsComponentFailed">IfGrantedAllPermissionsComponentFailed - RENDERED</div>
-		</t:shiro.ifGranted>
+		</t:security.ifGranted>
     </body>
 </html>

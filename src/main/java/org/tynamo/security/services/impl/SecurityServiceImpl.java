@@ -22,7 +22,6 @@ import org.tynamo.security.services.SecurityService;
 /**
  * DOCUMENT ME!
  *
- * @author xibyte
  * @see SecurityService
  */
 public class SecurityServiceImpl implements SecurityService

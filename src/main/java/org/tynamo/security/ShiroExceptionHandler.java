@@ -39,7 +39,6 @@ import java.io.IOException;
 /**
  * Handler for ShiroException
  *
- * @author xibyte
  */
 public class ShiroExceptionHandler
 {

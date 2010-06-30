@@ -24,7 +24,6 @@ import org.apache.shiro.authz.annotation.*;
  * Visitor interface for use in
  * {@link org.tynamo.shiro.extension.authz.annotations.utils.casters.method.MethodAnnotationCaster}
  *
- * @author Valentine Yerastov
  * @see org.tynamo.shiro.extension.authz.annotations.utils.casters.method.MethodAnnotationCaster
  */
 public interface MethodAnnotationCasterVisitor

@@ -25,7 +25,7 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 
 import org.tynamo.security.services.SecurityService;
 import org.tynamo.security.testapp.services.AlphaService;
-import org.tynamo.security.testapp.services.BettaService;
+import org.tynamo.security.testapp.services.BetaService;
 import org.tynamo.security.testapp.services.impl.Invoker;
 
 public class Index {
@@ -37,7 +37,7 @@ public class Index {
 	private AlphaService alphaService;
 	
 	@Inject
-	private BettaService bettaService;
+	private BetaService betaService;
 
 	@Inject
 	private SecurityService securityService;
@@ -51,8 +51,8 @@ public class Index {
 		result = Invoker.invoke(getClass());
 	}
 	
-	public void onActionFromBettaServiceInvoke() {
-        result = bettaService.invoke();
+	public void onActionFromBetaServiceInvoke() {
+        result = betaService.invoke();
 	}
 	
 	public void onActionFromAlphaServiceInvoke() {

@@ -27,7 +27,6 @@ import org.tynamo.shiro.extension.authz.aop.SecurityInterceptor;
  * List of {@link org.tynamo.shiro.extension.authz.aop.SecurityInterceptor} for use
  * in security RequestFilter.
  *
- * @author Valentine Yerastov
  * @see SecurityModule#buildSecurityFilter(org.slf4j.Logger, org.apache.tapestry5.services.ComponentEventLinkEncoder, org.apache.tapestry5.services.ComponentClassResolver, ClassInterceptorsCache)
  */
 public interface ClassInterceptorsCache

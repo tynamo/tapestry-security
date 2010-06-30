@@ -40,7 +40,6 @@ import java.util.List;
  * <ul>
  * <p/>
  *
- * @author Valentine Yerastov
  * @see org.tynamo.security.services.SecurityModule#buildSecurityFilter(org.slf4j.Logger,
  *      org.apache.tapestry5.services.ComponentEventLinkEncoder,
  *      org.apache.tapestry5.services.ComponentClassResolver,

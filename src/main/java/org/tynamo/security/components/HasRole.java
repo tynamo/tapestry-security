@@ -25,7 +25,6 @@ import org.tynamo.security.services.SecurityService;
 
 /**
  * @see SecurityService#hasRole(String)
- * @author xibyte
  */
 public class HasRole {
 

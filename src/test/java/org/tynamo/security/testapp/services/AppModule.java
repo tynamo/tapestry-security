@@ -35,7 +35,7 @@ import org.tynamo.security.FilterChainDefinition;
 import org.tynamo.security.SecuritySymbols;
 import org.tynamo.security.services.SecurityModule;
 import org.tynamo.security.testapp.services.impl.AlphaServiceImpl;
-import org.tynamo.security.testapp.services.impl.BettaServiceImpl;
+import org.tynamo.security.testapp.services.impl.BetaServiceImpl;
 import org.tynamo.shiro.extension.realm.text.ExtendedPropertiesRealm;
 
 import java.io.IOException;
@@ -51,7 +51,7 @@ public class AppModule
 	public static void bind(ServiceBinder binder) {
 
 		binder.bind(AlphaService.class, AlphaServiceImpl.class);
-		binder.bind(BettaService.class, BettaServiceImpl.class);
+		binder.bind(BetaService.class, BetaServiceImpl.class);
 
 		// Make bind() calls on the binder object to define most IoC services.
 		// Use service builder methods (example below) when the implementation

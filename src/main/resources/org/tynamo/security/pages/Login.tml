@@ -4,18 +4,18 @@
 	<head>
 		<title>Login page</title>
 		<style type="text/css">
-			#shiroLoginFormContainer {
+			#tynamoLoginFormContainer {
 				background: url(${asset:classpath:org/tynamo/security/img/login-bg.png}) no-repeat;
 				width:778px;
 				height:600px;
 				margin:0 auto;
 			}
 			
-			#shiroLoginForm {
+			#tynamoLoginForm {
 				padding: 90px 110px;
 			}
 			
-			#shiroLoginMessage {
+			#tynamoLoginMessage {
 				color:red;
 				margin-bottom: 10px;	
 			}
@@ -28,30 +28,30 @@
 				font-size: 220%; width: 400px;
 			}
 			
-			#shiroLoginContainer {
+			#tynamoLoginContainer {
 				margin-bottom: 50px;
 			}
 			
-			#shiroPasswordContainer {
+			#tynamoPasswordContainer {
 				margin-bottom: 50px;
 			}
 			
-			#shiroRememberMeContainer {
+			#tynamoRememberMeContainer {
 				margin-bottom: 40px;
 			}
 			
-			.shiroMessage {
+			.tynamoMessage {
 				margin:0 auto;
 			}
 		</style>	
 	</head>
 
 	<body style="text-align:center;font-family:'lucida grande','lucida sans unicode','bitstream vera sans', 'trebuchet ms',arial,sans-serif;">
-		<div class="shiroMessage">
+		<div class="tynamoMessage">
 			${message}
 		</div>
 		
-		<t:shiro.loginform />
+		<t:security.loginform />
 			
 	</body>
 </html>

@@ -30,7 +30,6 @@ import org.tynamo.shiro.extension.authz.annotations.utils.AnnotationFactory;
 /**
  * Create method annotations based on the class annotations type.
  * 
- * @author Valentine Yerastov
  */
 public class CreateMethodAnnotationFromClassVisitor implements ClassAnnotationCasterVisitor {
 
