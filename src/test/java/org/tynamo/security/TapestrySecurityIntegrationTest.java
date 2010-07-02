@@ -684,13 +684,13 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 
 	protected void assertLoginPage()
 	{
-		assertNotNull(page.getElementById("tynamoLogin"), "Page not containt login field. Not login page.");
+		assertNotNull(page.getElementById("tynamoLogin"), "Page doesn't contain login field. Not a login page.");
 		assertEquals("password", getAttribute("tynamoPassword", "type"),
-				"Page does not containt password field. Not login page.");
+				"Page doesn't contain password field. Not a login page.");
 		assertEquals("checkbox", getAttribute("tynamoRememberMe", "type"),
-				"Page does containt rememberMe field. Not login page.");
+				"Page doesn't contain rememberMe field. Not a login page.");
 
-		assertNotNull(page.getElementById("tynamoEnter"), "Page not containt login form submit button. Not login page.");
+		assertNotNull(page.getElementById("tynamoEnter"), "Page doesn't contain login form submit button. Not a login page.");
 	}
 
 // -----------------------
