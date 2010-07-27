@@ -142,7 +142,9 @@ public class SecurityModule
 	public static void contributeComponentRequestHandler(OrderedConfiguration<ComponentRequestFilter> configuration,
 	                                                     @Local ComponentRequestFilter filter)
 	{
-		configuration.add("SecurityFilter", filter, "before:*");
+		 configuration.add("SecurityFilter", filter, "before:*");
+		 // Related to TYNAMO-55 but this is not the right way to fix it - see ShiroExceptionHandler
+//		configuration.add("SecurityFilter", filter, "after:InitializeActivePageName");
 	}
 
 	public static void contributeComponentClassTransformWorker(OrderedConfiguration<ComponentClassTransformWorker> configuration)
@@ -233,13 +235,12 @@ public class SecurityModule
 
 				ShiroException shiroException = null;
 
-				if (exception.getCause() instanceof ShiroException)
-				{
-					shiroException = (ShiroException) exception.getCause();
-				} else if (exception instanceof ShiroException)
-				{
-					shiroException = (ShiroException) exception;
-				}
+				// TODO Maybe we should just loop through the chain as done in exceptionpage module
+				// Depending on where the error was thrown, there could be several levels of wrappers..
+				// For exceptions in component operations, it's OperationException -> ComponentEventException -> ShiroException
+				if (exception.getCause() instanceof ShiroException) shiroException = (ShiroException) exception.getCause();
+				else if (exception.getCause() !=null && exception.getCause().getCause() instanceof ShiroException) shiroException = (ShiroException) exception.getCause().getCause();
+				else if (exception instanceof ShiroException) shiroException = (ShiroException) exception;
 
 				if (shiroException != null)
 				{

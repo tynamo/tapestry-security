@@ -23,9 +23,12 @@ import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.StringUtils;
 import org.apache.shiro.web.util.WebUtils;
+import org.apache.tapestry5.SymbolConstants;
 import org.apache.tapestry5.internal.services.PageResponseRenderer;
 import org.apache.tapestry5.internal.services.RequestPageCache;
 import org.apache.tapestry5.internal.structure.Page;
+import org.apache.tapestry5.ioc.annotations.Inject;
+import org.apache.tapestry5.ioc.annotations.Symbol;
 import org.apache.tapestry5.runtime.Component;
 import org.apache.tapestry5.services.ExceptionReporter;
 import org.apache.tapestry5.services.RequestGlobals;
@@ -49,10 +52,11 @@ public class ShiroExceptionHandler
 	private final PageService pageService;
 	private final RequestGlobals requestGlobals;
 	private final Response response;
+	private final boolean postTapestry52; 
 
 	public ShiroExceptionHandler(PageResponseRenderer renderer, RequestPageCache pageCache,
 	                             SecurityService securityService, PageService pageService,
-	                             RequestGlobals requestGlobals, Response response)
+	                             RequestGlobals requestGlobals, Response response, @Inject @Symbol(SymbolConstants.TAPESTRY_VERSION) String tapestryVersion)
 	{
 
 		this.renderer = renderer;
@@ -61,6 +65,9 @@ public class ShiroExceptionHandler
 		this.pageService = pageService;
 		this.requestGlobals = requestGlobals;
 		this.response = response;
+		tapestryVersion = tapestryVersion.replace(".", "").substring(0, 3);
+		int version = Integer.parseInt(tapestryVersion);
+		postTapestry52 = version >= 520 ? true : false;
 	}
 
 
@@ -81,11 +88,7 @@ public class ShiroExceptionHandler
 				return;
 			}
 
-			Page page = pageCache.get(unauthorizedPage);
-
-			reportExceptionIfPossible(exception, page);
-
-			renderer.renderPageResponse(page);
+			renderPage(exception, unauthorizedPage);
 
 		} else
 		{
@@ -100,13 +103,15 @@ public class ShiroExceptionHandler
 				}
 			}
 
-			Page page = pageCache.get(pageService.getLoginPage());
-
-			reportExceptionIfPossible(exception, page);
-
-			renderer.renderPageResponse(page);
-
+			renderPage(exception, pageService.getLoginPage());
 		}
+	}
+	
+	private void renderPage(ShiroException exception, String pageName) throws IOException {
+		Page page = pageCache.get(pageName);
+		if (postTapestry52) requestGlobals.storeActivePageName(pageName);
+		reportExceptionIfPossible(exception, page);
+		renderer.renderPageResponse(page);
 	}
 
 	private void reportExceptionIfPossible(ShiroException exception, Page page)

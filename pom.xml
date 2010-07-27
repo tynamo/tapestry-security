@@ -13,6 +13,10 @@
 		<version>0.0.5</version>
 	</parent>
 	
+	<properties>
+		<tapestry-release-version>5.2.0-SNAPSHOT</tapestry-release-version>
+	</properties>
+	
 	<!-- Developers section inherited from the parent pom -->
 	<contributors>
 		<contributor>
@@ -56,7 +60,7 @@
 		<dependency>
 			<groupId>org.tynamo</groupId>
 			<artifactId>tapestry-model-test</artifactId>
-			<version>0.0.2</version>
+			<version>0.1.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -75,6 +79,20 @@
 			<url>dav:https://dav.codehaus.org/tynamo/constant/tapestry-security</url>
 		</site>
 	</distributionManagement>
+
+	<!-- Needed as long as we depend on Tapestry snapshot -->
+	<repositories>
+		<repository>
+			<id>apache-ci-snapshots</id>
+			<url>http://repository.apache.org/snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
+	</repositories>
 
 	<build>
 		<resources>

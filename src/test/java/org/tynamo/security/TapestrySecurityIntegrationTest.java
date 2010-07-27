@@ -713,7 +713,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 
 	protected void assertUnauthorizedPage()
 	{
-		assertEquals("Unauthorized", getTitle(), "Not Unauthorized page");
+		assertEquals(getTitle(), "Unauthorized", "Not Unauthorized page");
 	}
 
 	protected void assertUnauthorizedPage401()

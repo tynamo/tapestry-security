@@ -21,7 +21,7 @@
 			</div>
 			
 			<div id="tynamoEnterContainer">
-				<t:submit id="tynamoEnter" value="Enter" />
+				<input type="submit" id="tynamoEnter" value="Enter" />
 			</div>
 		</t:form>
 </div>
