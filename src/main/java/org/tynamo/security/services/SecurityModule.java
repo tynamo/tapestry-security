@@ -38,7 +38,6 @@ import org.tynamo.security.filter.SecurityRequestFilter;
 import org.tynamo.security.services.impl.ClassInterceptorsCacheImpl;
 import org.tynamo.security.services.impl.PageServiceImpl;
 import org.tynamo.security.services.impl.SecurityServiceImpl;
-import org.tynamo.shiro.extension.authz.annotations.utils.AnnotationFactory;
 import org.tynamo.shiro.extension.authz.aop.AopHelper;
 import org.tynamo.shiro.extension.authz.aop.DefaultSecurityInterceptor;
 import org.tynamo.shiro.extension.authz.aop.SecurityInterceptor;
@@ -121,14 +120,13 @@ public class SecurityModule
 
 					while (clazz != null)
 					{
-						for (Class<? extends Annotation> annotationClass : AopHelper.getAutorizationAnnotationAllClasses())
+						for (Class<? extends Annotation> annotationClass : AopHelper.getAutorizationAnnotationClasses())
 						{
 							Annotation classAnnotation = clazz.getAnnotation(annotationClass);
 							if (classAnnotation != null)
 							{
-								Annotation annotation = AnnotationFactory.getInstance().createAuthzMethodAnnotation(classAnnotation);
 								//Add in the cache which then will be used in RequestFilter
-								classInterceptorsCache.add(className, new DefaultSecurityInterceptor(annotation));
+								classInterceptorsCache.add(className, new DefaultSecurityInterceptor(classAnnotation));
 							}
 						}
 						clazz = clazz.getSuperclass();
