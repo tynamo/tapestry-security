@@ -705,7 +705,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		assertText("userInRoleUser", "true");
 		assertText("userInRoleManager", "false");
 	}
-
+	
 	private String getAttribute(String id, String attr)
 	{
 		return page.getElementById(id).getAttribute(attr);

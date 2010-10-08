@@ -65,7 +65,7 @@ public class HandlerCreateVisitor implements MethodAnnotationCasterVisitor {
 	}
 
 	@Override
-	public void visitNotFund() {
+	public void visitNotFound() {
 		handler = null;
 		
 	}

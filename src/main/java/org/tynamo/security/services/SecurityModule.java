@@ -20,6 +20,7 @@ package org.tynamo.security.services;
 
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.util.ClassUtils;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.apache.tapestry5.internal.services.PageResponseRenderer;
 import org.apache.tapestry5.internal.services.RequestPageCache;
@@ -161,9 +162,9 @@ public class SecurityModule
 	}
 
 	/**
-	 * Secure all service methods, witch marked autorization annotations.
+	 * Secure all service methods that are marked with authorization annotations.
 	 * <p/>
-	 * <b>Resriction:</b> Annotation can present only on service interface.
+	 * <b>Restriction:</b> Only service interfaces can be annotated.
 	 */
 	@Match("*")
 	@Order("before:*")
@@ -185,8 +186,10 @@ public class SecurityModule
 					@Override
 					public void advise(Invocation invocation)
 					{
-
-						interceptor.intercept();
+						// Only (try to) intercept if subject is bound.
+						// This is useful in case background or initializing operations
+						// call service operations that are secure
+						if (ThreadContext.getSubject() != null) interceptor.intercept();
 						invocation.proceed();
 
 					}

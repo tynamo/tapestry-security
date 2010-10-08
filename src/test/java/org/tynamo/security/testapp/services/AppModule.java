@@ -25,6 +25,7 @@ import org.apache.tapestry5.ioc.MappedConfiguration;
 import org.apache.tapestry5.ioc.OrderedConfiguration;
 import org.apache.tapestry5.ioc.ServiceBinder;
 import org.apache.tapestry5.ioc.annotations.Local;
+import org.apache.tapestry5.ioc.annotations.Startup;
 import org.apache.tapestry5.ioc.annotations.SubModule;
 import org.apache.tapestry5.services.Request;
 import org.apache.tapestry5.services.RequestFilter;
@@ -50,7 +51,7 @@ public class AppModule
 
 	public static void bind(ServiceBinder binder) {
 
-		binder.bind(AlphaService.class, AlphaServiceImpl.class);
+		binder.bind(AlphaService.class, AlphaServiceImpl.class).preventReloading().eagerLoad();
 		binder.bind(BetaService.class, BetaServiceImpl.class);
 
 		// Make bind() calls on the binder object to define most IoC services.
@@ -157,6 +158,13 @@ public class AppModule
 		configuration.add("perms-view-perms-news-view", new FilterChainDefinition("/perms/view/**", "perms[news:view]"));
 		configuration.add("perms-edit-perms-news-edit", new FilterChainDefinition("/perms/edit/**", "perms[news:edit]"));
 */
+	}
+	
+	@Startup
+	public void testCallingSecureOperationInternally(AlphaService alphaService) {
+		// This is a secure operation but you should be able to call it when Subject is not bound
+		// without a security check. If this fails, it'll cause the whole app startup to fail  
+		alphaService.invoke();
 	}
 
 }

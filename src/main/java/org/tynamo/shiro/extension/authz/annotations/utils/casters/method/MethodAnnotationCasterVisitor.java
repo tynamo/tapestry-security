@@ -39,6 +39,6 @@ public interface MethodAnnotationCasterVisitor
 
 	void visitRequiresAuthentication(RequiresAuthentication annotation);
 
-	void visitNotFund();
+	void visitNotFound();
 
 }
