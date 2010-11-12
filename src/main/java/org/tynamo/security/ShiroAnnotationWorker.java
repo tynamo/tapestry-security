@@ -49,26 +49,17 @@ public class ShiroAnnotationWorker implements ComponentClassTransformWorker
 {
 
 	@Override
-	public void transform(ClassTransformation transformation,
-	                      MutableComponentModel model)
+	public void transform(ClassTransformation transformation, MutableComponentModel model)
 	{
-
 		for (Class<? extends Annotation> annotationClass : AopHelper.getAutorizationAnnotationClasses())
 		{
-
-			List<TransformMethodSignature> methodsToTransform =
-					transformation.findMethodsWithAnnotation(annotationClass);
-
-			for (TransformMethodSignature tm : methodsToTransform)
-			{
-				Annotation annotation = transformation.getMethodAnnotation(tm, annotationClass);
-				processTransform(transformation, tm, annotation);
-			}
+			List<TransformMethod> methodsToTransform = transformation.matchMethodsWithAnnotation(annotationClass);
+			
+			for (TransformMethod tm : methodsToTransform) processTransform(tm, tm.getAnnotation(annotationClass));
 		}
 	}
 
-	private void processTransform(ClassTransformation transformation,
-	                              TransformMethodSignature tm, Annotation annotation)
+	private void processTransform(TransformMethod tm, Annotation annotation)
 	{
 		final SecurityInterceptor interceptor = new DefaultSecurityInterceptor(annotation);
 
@@ -81,7 +72,7 @@ public class ShiroAnnotationWorker implements ComponentClassTransformWorker
 			}
 		};
 
-		transformation.advise(tm, advice);
+		tm.addAdvice(advice);
 
 	}
 

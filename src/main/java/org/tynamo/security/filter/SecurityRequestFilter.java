@@ -32,6 +32,7 @@ public class SecurityRequestFilter extends IniShiroFilter implements HttpServlet
 {
 
 	private IniShiroFilter shiroFilter;
+	@SuppressWarnings("unused")
 	private Logger logger;
 
 	private String loginUrl;
@@ -80,6 +81,7 @@ public class SecurityRequestFilter extends IniShiroFilter implements HttpServlet
 					return null;  //To change body of implemented methods use File | Settings | File Templates.
 				}
 
+				@SuppressWarnings("rawtypes")
 				@Override
 				public Enumeration getInitParameterNames()
 				{

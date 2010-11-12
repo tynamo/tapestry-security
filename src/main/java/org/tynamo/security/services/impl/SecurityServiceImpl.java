@@ -32,6 +32,7 @@ public class SecurityServiceImpl implements SecurityService
 	/**
 	 * Delimeter that separates role names in tag attribute
 	 */
+	@SuppressWarnings("unused")
 	private static final String ROLE_NAMES_DELIMETER = ",";
 
 	/**

@@ -96,9 +96,4 @@ public class ExtendedPropertiesRealm extends PropertiesRealm
 			setAuthorizationCache(null);
 		}
 	}
-
-	private void onCreated()
-	{
-		created = true;
-	}
 }
