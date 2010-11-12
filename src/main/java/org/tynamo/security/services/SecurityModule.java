@@ -142,8 +142,6 @@ public class SecurityModule
 	                                                     @Local ComponentRequestFilter filter)
 	{
 		 configuration.add("SecurityFilter", filter, "before:*");
-		 // Related to TYNAMO-55 but this is not the right way to fix it - see ShiroExceptionHandler
-//		configuration.add("SecurityFilter", filter, "after:InitializeActivePageName");
 	}
 
 	public static void contributeComponentClassTransformWorker(OrderedConfiguration<ComponentClassTransformWorker> configuration)
