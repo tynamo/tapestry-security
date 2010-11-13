@@ -20,8 +20,6 @@ package org.tynamo.shiro.extension.authz.aop;
 
 import org.apache.shiro.authz.annotation.*;
 import org.apache.shiro.authz.aop.AuthorizingAnnotationHandler;
-import org.tynamo.shiro.extension.authz.annotations.*;
-import org.tynamo.shiro.extension.authz.annotations.utils.AnnotationFactory;
 import org.tynamo.shiro.extension.authz.annotations.utils.casters.method.HandlerCreateVisitor;
 import org.tynamo.shiro.extension.authz.annotations.utils.casters.method.MethodAnnotationCaster;
 
@@ -40,15 +38,9 @@ public class AopHelper
 {
 
 	/**
-	 * List annotations classes which can be applied to the method.
+	 * List annotations classes which can be applied (either method or a class).
 	 */
 	private final static Collection<Class<? extends Annotation>> autorizationAnnotationClasses;
-
-	/**
-	 * List annotations classes which can be applied to the class.
-	 */
-	private final static Collection<Class<? extends Annotation>> autorizationAnnotationAllClasses;
-
 
 	/**
 	 * Initialize annotations lists.
@@ -61,13 +53,6 @@ public class AopHelper
 		autorizationAnnotationClasses.add(RequiresUser.class);
 		autorizationAnnotationClasses.add(RequiresGuest.class);
 		autorizationAnnotationClasses.add(RequiresAuthentication.class);
-
-		autorizationAnnotationAllClasses = new ArrayList<Class<? extends Annotation>>(5);
-		autorizationAnnotationAllClasses.add(RequiresPermissionsAll.class);
-		autorizationAnnotationAllClasses.add(RequiresRolesAll.class);
-		autorizationAnnotationAllClasses.add(RequiresUserAll.class);
-		autorizationAnnotationAllClasses.add(RequiresGuestAll.class);
-		autorizationAnnotationAllClasses.add(RequiresAuthenticationAll.class);
 	}
 
 	/**
@@ -104,16 +89,12 @@ public class AopHelper
 		if (isInterceptOnClassAnnotation(method.getModifiers()))
 		{
 			for (Class<? extends Annotation> ac :
-					getAutorizationAnnotationAllClasses())
+					getAutorizationAnnotationClasses())
 			{
 				Annotation annotationOnClass = clazz.getAnnotation(ac);
 				if (annotationOnClass != null)
 				{
-
-					Annotation annotation =
-							AnnotationFactory.getInstance().createAuthzMethodAnnotation(annotationOnClass);
-
-					result.add(new DefaultSecurityInterceptor(annotation));
+					result.add(new DefaultSecurityInterceptor(annotationOnClass));
 				}
 			}
 		}
@@ -188,8 +169,6 @@ public class AopHelper
 	 * Ensure this: If a class have an interface, then method parameter from interface and
 	 * targetClass implementation.
 	 * <p/>
-	 * Ð•Ñ�Ð»Ð¸ ÐµÑ�Ñ‚ÑŒ Ð¸Ð½Ñ‚ÐµÑ€Ñ„ÐµÐ¹Ñ�, Ñ‚Ð¾ Ð¼ÐµÑ‚Ð¾Ð´ Ð¿Ñ€Ð¸Ñ…Ð¾Ð´Ð¸Ñ‚ Ð¾Ñ‚ Ð¸Ð½Ñ‚ÐµÑ€Ñ„ÐµÐ¹Ñ�Ð° Ð° ÐºÐ»Ð°Ñ�Ñ� -
-	 * Ñ€ÐµÐ°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ñ�, Ð¿Ð¾Ñ�Ñ‚Ð¾Ð¼Ñƒ Ð´ÐµÐ»Ð°ÐµÐ¼ Ñ�Ð»ÐµÐ´ÑƒÑŽÑ‰ÐµÐµ
 	 */
 	public static Method findTargetMethod(Method method, Class<?> targetClass)
 	{
@@ -240,10 +219,4 @@ public class AopHelper
 	{
 		return autorizationAnnotationClasses;
 	}
-
-	public static Collection<Class<? extends Annotation>> getAutorizationAnnotationAllClasses()
-	{
-		return autorizationAnnotationAllClasses;
-	}
-
 }

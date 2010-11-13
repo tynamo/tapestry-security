@@ -18,9 +18,9 @@
  */
 package org.tynamo.security.testapp.pages;
 
-import org.tynamo.shiro.extension.authz.annotations.RequiresAuthenticationAll;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 
-@RequiresAuthenticationAll
+@RequiresAuthentication
 public class About extends AccessiblePage {
 
 }

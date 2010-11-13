@@ -71,7 +71,7 @@ public class MethodAnnotationCaster
 		} else
 		{
 
-			visitor.visitNotFund();
+			visitor.visitNotFound();
 
 		}
 	}

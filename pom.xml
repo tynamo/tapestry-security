@@ -10,11 +10,11 @@
 	<parent>
 		<groupId>org.tynamo</groupId>
 		<artifactId>tynamo-parent</artifactId>
-		<version>0.0.5</version>
+		<version>0.0.6</version>
 	</parent>
 	
 	<properties>
-		<tapestry-release-version>5.2.0-SNAPSHOT</tapestry-release-version>
+		<tapestry-release-version>5.1.0.5</tapestry-release-version>
 	</properties>
 	
 	<!-- Developers section inherited from the parent pom -->
@@ -33,7 +33,7 @@
 		<dependency>
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-web</artifactId>
-			<version>1.0.0-incubating</version>
+			<version>1.1.0</version>
 		</dependency>
 
 		<dependency>
@@ -60,7 +60,7 @@
 		<dependency>
 			<groupId>org.tynamo</groupId>
 			<artifactId>tapestry-model-test</artifactId>
-			<version>0.1.0-SNAPSHOT</version>
+			<version>0.0.2</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -80,7 +80,7 @@
 		</site>
 	</distributionManagement>
 
-	<!-- Needed as long as we depend on Tapestry snapshot -->
+	<!-- Needed as long as we depend on Tapestry snapshot 
 	<repositories>
 		<repository>
 			<id>apache-ci-snapshots</id>
@@ -93,6 +93,7 @@
 			</releases>
 		</repository>
 	</repositories>
+	-->
 
 	<build>
 		<resources>

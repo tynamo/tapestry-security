@@ -18,9 +18,9 @@
  */
 package org.tynamo.security.testapp.services;
 
-import org.tynamo.shiro.extension.authz.annotations.RequiresAuthenticationAll;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 
-@RequiresAuthenticationAll
+@RequiresAuthentication
 public interface BetaService {
 
 	String invoke();

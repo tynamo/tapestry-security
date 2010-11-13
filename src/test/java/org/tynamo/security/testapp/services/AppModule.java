@@ -50,7 +50,7 @@ public class AppModule
 
 	public static void bind(ServiceBinder binder) {
 
-		binder.bind(AlphaService.class, AlphaServiceImpl.class);
+		binder.bind(AlphaService.class, AlphaServiceImpl.class).eagerLoad();
 		binder.bind(BetaService.class, BetaServiceImpl.class);
 
 		// Make bind() calls on the binder object to define most IoC services.
@@ -139,9 +139,13 @@ public class AppModule
 		configuration.add("Timing", filter);
 	}
 
-	public static void contributeWebSecurityManager(Configuration<Realm> configuration) {
+	public static void contributeWebSecurityManager(Configuration<Realm> configuration, AlphaService alphaService) {
 		ExtendedPropertiesRealm realm = new ExtendedPropertiesRealm("classpath:shiro-users.properties");
 		configuration.add(realm);
+		// Test calling secured operation without security Subject context
+		// This is a secure operation but you should be able to call it when Subject is not bound
+		// without a security check. If this fails, it'll cause the whole app startup to fail  
+		alphaService.invoke();
 	}
 
 	public static void contributeSecurityRequestFilter(OrderedConfiguration<FilterChainDefinition> configuration)
@@ -158,5 +162,4 @@ public class AppModule
 		configuration.add("perms-edit-perms-news-edit", new FilterChainDefinition("/perms/edit/**", "perms[news:edit]"));
 */
 	}
-
 }

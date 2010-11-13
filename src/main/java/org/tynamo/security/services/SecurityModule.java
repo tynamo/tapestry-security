@@ -20,6 +20,7 @@ package org.tynamo.security.services;
 
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.util.ClassUtils;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.apache.tapestry5.internal.services.PageResponseRenderer;
 import org.apache.tapestry5.internal.services.RequestPageCache;
@@ -38,7 +39,6 @@ import org.tynamo.security.filter.SecurityRequestFilter;
 import org.tynamo.security.services.impl.ClassInterceptorsCacheImpl;
 import org.tynamo.security.services.impl.PageServiceImpl;
 import org.tynamo.security.services.impl.SecurityServiceImpl;
-import org.tynamo.shiro.extension.authz.annotations.utils.AnnotationFactory;
 import org.tynamo.shiro.extension.authz.aop.AopHelper;
 import org.tynamo.shiro.extension.authz.aop.DefaultSecurityInterceptor;
 import org.tynamo.shiro.extension.authz.aop.SecurityInterceptor;
@@ -121,14 +121,13 @@ public class SecurityModule
 
 					while (clazz != null)
 					{
-						for (Class<? extends Annotation> annotationClass : AopHelper.getAutorizationAnnotationAllClasses())
+						for (Class<? extends Annotation> annotationClass : AopHelper.getAutorizationAnnotationClasses())
 						{
 							Annotation classAnnotation = clazz.getAnnotation(annotationClass);
 							if (classAnnotation != null)
 							{
-								Annotation annotation = AnnotationFactory.getInstance().createAuthzMethodAnnotation(classAnnotation);
 								//Add in the cache which then will be used in RequestFilter
-								classInterceptorsCache.add(className, new DefaultSecurityInterceptor(annotation));
+								classInterceptorsCache.add(className, new DefaultSecurityInterceptor(classAnnotation));
 							}
 						}
 						clazz = clazz.getSuperclass();
@@ -143,8 +142,6 @@ public class SecurityModule
 	                                                     @Local ComponentRequestFilter filter)
 	{
 		 configuration.add("SecurityFilter", filter, "before:*");
-		 // Related to TYNAMO-55 but this is not the right way to fix it - see ShiroExceptionHandler
-//		configuration.add("SecurityFilter", filter, "after:InitializeActivePageName");
 	}
 
 	public static void contributeComponentClassTransformWorker(OrderedConfiguration<ComponentClassTransformWorker> configuration)
@@ -163,9 +160,9 @@ public class SecurityModule
 	}
 
 	/**
-	 * Secure all service methods, witch marked autorization annotations.
+	 * Secure all service methods that are marked with authorization annotations.
 	 * <p/>
-	 * <b>Resriction:</b> Annotation can present only on service interface.
+	 * <b>Restriction:</b> Only service interfaces can be annotated.
 	 */
 	@Match("*")
 	@Order("before:*")
@@ -187,8 +184,10 @@ public class SecurityModule
 					@Override
 					public void advise(Invocation invocation)
 					{
-
-						interceptor.intercept();
+						// Only (try to) intercept if subject is bound.
+						// This is useful in case background or initializing operations
+						// call service operations that are secure
+						if (ThreadContext.getSubject() != null) interceptor.intercept();
 						invocation.proceed();
 
 					}
