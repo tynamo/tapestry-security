@@ -129,6 +129,19 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		clickOnBasePage("alphaServiceRequiresGuest");
 		assertSuccessInvoke();
 	}
+	
+	@Test(groups = {"notLoggedIn"})
+	public void testRequiresRole() throws Exception
+	{
+		clickOnBasePage("tynamoLoginLink");
+		type("tynamoLogin", "student");
+		type("tynamoPassword", "student");
+		click("tynamoEnter");
+		clickOnBasePage("annotated");
+		assertUnauthorizedPage();
+		clickOnBasePage("tynamoLogoutLink");
+	}
+	
 	//----------------------------------------
 
 

@@ -4,7 +4,6 @@ import org.apache.tapestry5.ioc.annotations.Inject;
 import org.tynamo.security.testapp.pages.AccessiblePage;
 
 import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
 
 public class Index extends AccessiblePage
 {

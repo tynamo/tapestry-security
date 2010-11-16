@@ -75,13 +75,6 @@ public class ExtendedPropertiesRealm extends PropertiesRealm
 	 * when not specified the name of realm, respectively,
 	 * are generated nekkorektnye account with the name of the default realm,
 	 * which then changed to the name specified in the config.
-	 * <p/>
-	 * <b>RU:</b>
-	 * Ð£Ð±Ð¸Ñ€Ð°ÐµÐ¼ Ð¸Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð°Ñ†Ð¸ÑŽ Ð¿Ð¾Ñ�Ð»Ðµ ÑƒÑ�Ñ‚Ð°Ð½Ð¾Ð²ÐºÐ¸ cacheManager.
-	 * Ñ�Ñ‚Ð¾ Ñ�Ð¾Ð·Ð´Ð°Ð²Ð°Ð»Ð¾ Ð¿Ñ€Ð¾Ð±Ð»ÐµÐ¼Ð¼Ñƒ Ð¿Ñ€ÐµÐ¶Ð´ÐµÐ²Ñ€ÐµÐ¼ÐµÐ½Ð½Ð¾Ð¹ Ð¸Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ð¸,
-	 * ÐºÐ¾Ð³Ð´Ð° ÐµÑ‰Ðµ Ð½Ðµ Ð·Ð°Ð´Ð°Ð½Ð¾ Ð¸Ð¼Ñ� realm, Ñ�Ð¾Ð¾Ñ‚Ð²ÐµÑ‚Ñ�Ñ‚Ð²ÐµÐ½Ð½Ð¾ Ñ�Ñ‚Ð¾ Ð¿Ð¾Ñ€Ð¾Ð¶Ð´Ð°Ð»Ð¾
-	 * Ð½ÐµÐºÐºÐ¾Ñ€ÐµÐºÑ‚Ð½Ñ‹Ðµ Ð°ÐºÐºÐ°ÑƒÐ½Ñ‚Ñ‹ Ñ� Ð¸Ð¼ÐµÐ½ÐµÐ¼ realm Ð¿Ð¾ ÑƒÐ¼Ð¾Ð»Ñ‡Ð°Ð½Ð¸Ðµ, ÐºÐ¾Ñ‚Ð¾Ñ€Ð¾Ðµ Ð¿Ð¾Ñ‚Ð¾Ð¼ Ð¼ÐµÐ½Ñ�Ð»Ð¾Ñ�ÑŒ
-	 * Ð½Ð° Ð¸Ð¼Ñ� Ð·Ð°Ð´Ð°Ð½Ð½Ð¾Ðµ Ð² ÐºÐ¾Ð½Ñ„Ð¸Ð³Ðµ.
 	 *
 	 * @see org.apache.shiro.realm.AuthorizingRealm#afterCacheManagerSet()
 	 */
