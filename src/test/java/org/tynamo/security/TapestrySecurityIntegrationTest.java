@@ -170,6 +170,9 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	{
 		clickOnBasePage("authcCabinet");
 		assertLoginPage();
+		// test case insensitive access
+		openPage("authC/cabinet");
+		assertLoginPage();
 	}
 
 	@Test(groups = {"notLoggedIn"})

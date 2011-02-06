@@ -1,7 +1,10 @@
 package org.tynamo.security.filter;
 
+import org.apache.shiro.util.AntPathMatcher;
 import org.apache.shiro.util.StringUtils;
 import org.apache.shiro.web.filter.AccessControlFilter;
+import org.apache.shiro.web.filter.PathMatchingFilter;
+import org.apache.shiro.web.filter.PathMatchingFilterPatternMatcherChanger;
 import org.apache.shiro.web.filter.authc.AuthenticationFilter;
 import org.apache.shiro.web.filter.authz.AuthorizationFilter;
 import org.apache.shiro.web.filter.mgt.DefaultFilterChainManager;
@@ -118,11 +121,18 @@ public class SecurityRequestFilter extends IniShiroFilter implements HttpServlet
 			chainResolver.setFilterChainManager(manager);
 			shiroFilter.setFilterChainResolver(chainResolver);
 		}
+		chainResolver.setPathMatcher(new AntPathMatcher() {
+			@Override
+			public boolean match(String pattern, String string) {
+				return super.match(pattern, string.toLowerCase());
+			}
+		});
 
 		Map<String, Filter> defaultFilters = chainResolver.getFilterChainManager().getFilters();
 		//apply global settings if necessary:
 		for (Filter filter : defaultFilters.values())
 		{
+			if(filter instanceof PathMatchingFilter) PathMatchingFilterPatternMatcherChanger.setLowercasingPathMatcher((PathMatchingFilter)filter);
 			applyGlobalPropertiesIfNecessary(filter);
 		}
 
