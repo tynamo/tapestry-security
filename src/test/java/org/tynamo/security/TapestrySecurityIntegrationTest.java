@@ -353,7 +353,9 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	public void testRolesFilterDeny() throws Exception
 	{
 		clickOnBasePage("rolesManager");
-		assertUnauthorizedPage();
+//		assertUnauthorizedPage();
+		// FIXME What determines which one gets returned? 
+		assertUnauthorizedPage401();
 	}
 
 	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
@@ -367,7 +369,9 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	public void testPermsFilterDeny() throws Exception
 	{
 		clickOnBasePage("permEdit");
-		assertUnauthorizedPage();
+		// assertUnauthorizedPage();
+		// FIXME What determines which one gets returned? 
+		assertUnauthorizedPage401();
 	}
 
 	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})

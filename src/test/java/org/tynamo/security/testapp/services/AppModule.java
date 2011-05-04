@@ -18,12 +18,26 @@
  */
 package org.tynamo.security.testapp.services;
 
+import org.apache.shiro.authc.AbstractAuthenticator;
+import org.apache.shiro.authc.AuthenticationListener;
+import org.apache.shiro.mgt.DefaultSecurityManager;
+import org.apache.shiro.mgt.RealmSecurityManager;
+import org.apache.shiro.mgt.SubjectFactory;
 import org.apache.shiro.realm.Realm;
+import org.apache.shiro.web.filter.authc.AnonymousFilter;
+import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
+import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
+import org.apache.shiro.web.filter.authc.UserFilter;
+import org.apache.shiro.web.filter.authz.PermissionsAuthorizationFilter;
+import org.apache.shiro.web.filter.authz.RolesAuthorizationFilter;
+import org.apache.shiro.web.mgt.WebSecurityManager;
+import org.apache.shiro.web.session.mgt.ServletContainerSessionManager;
 import org.apache.tapestry5.SymbolConstants;
 import org.apache.tapestry5.ioc.Configuration;
 import org.apache.tapestry5.ioc.MappedConfiguration;
 import org.apache.tapestry5.ioc.OrderedConfiguration;
 import org.apache.tapestry5.ioc.ServiceBinder;
+import org.apache.tapestry5.ioc.annotations.InjectService;
 import org.apache.tapestry5.ioc.annotations.Local;
 import org.apache.tapestry5.ioc.annotations.Startup;
 import org.apache.tapestry5.ioc.annotations.SubModule;
@@ -34,7 +48,10 @@ import org.apache.tapestry5.services.Response;
 import org.slf4j.Logger;
 import org.tynamo.security.FilterChainDefinition;
 import org.tynamo.security.SecuritySymbols;
+import org.tynamo.security.services.SecurityFilterChainFactory;
 import org.tynamo.security.services.SecurityModule;
+import org.tynamo.security.services.impl.SecurityFilterChain;
+import org.tynamo.security.services.impl.SecurityFilterConfiguration;
 import org.tynamo.security.testapp.services.impl.AlphaServiceImpl;
 import org.tynamo.security.testapp.services.impl.BetaServiceImpl;
 import org.tynamo.shiro.extension.realm.text.ExtendedPropertiesRealm;
@@ -145,20 +162,73 @@ public class AppModule
 		configuration.add(realm);
 	}
 
-	public static void contributeSecurityRequestFilter(OrderedConfiguration<FilterChainDefinition> configuration)
-	{
+//	public static void contributeSecurityRequestFilter(OrderedConfiguration<FilterChainDefinition> configuration)
+//	{
 //		commented out because they are loaded from shiro.ini
-/*
-		configuration.add("authc-signup-anon", new FilterChainDefinition("/authc/signup", "anon"));
-		configuration.add("authc-authc", new FilterChainDefinition("/authc/**", "authc"));
-		configuration.add("user-signup-anon", new FilterChainDefinition("/user/signup", "anon"));
-		configuration.add("user-user", new FilterChainDefinition("/user/**", "user"));
-		configuration.add("roles-user-roles-user", new FilterChainDefinition("/roles/user/**", "roles[user]"));
-		configuration.add("roles-manager-roles-manager", new FilterChainDefinition("/roles/manager/**", "roles[manager]"));
-		configuration.add("perms-view-perms-news-view", new FilterChainDefinition("/perms/view/**", "perms[news:view]"));
-		configuration.add("perms-edit-perms-news-edit", new FilterChainDefinition("/perms/edit/**", "perms[news:edit]"));
-*/
-	}
+//		configuration.add("authc-signup-anon", new FilterChainDefinition("/authc/signup", "anon"));
+//		configuration.add("authc-authc", new FilterChainDefinition("/authc/**", "authc"));
+//		configuration.add("user-signup-anon", new FilterChainDefinition("/user/signup", "anon"));
+//		configuration.add("user-user", new FilterChainDefinition("/user/**", "user"));
+//		configuration.add("roles-user-roles-user", new FilterChainDefinition("/roles/user/**", "roles[user]"));
+//		configuration.add("roles-manager-roles-manager", new FilterChainDefinition("/roles/manager/**", "roles[manager]"));
+//		configuration.add("perms-view-perms-news-view", new FilterChainDefinition("/perms/view/**", "perms[news:view]"));
+//		configuration.add("perms-edit-perms-news-edit", new FilterChainDefinition("/perms/edit/**", "perms[news:edit]"));
+//	}
+
+	public static void contributeSecurityConfiguration(OrderedConfiguration<SecurityFilterChain> configuration,
+			SecurityFilterChainFactory securityFilterChainFactory, AnonymousFilter anon, UserFilter user, FormAuthenticationFilter authc,
+			BasicHttpAuthenticationFilter authcBasic, RolesAuthorizationFilter roles, PermissionsAuthorizationFilter perms,
+			WebSecurityManager securityManager) {
+//		if (securityManager instanceof DefaultSecurityManager) {
+//			DefaultSecurityManager defaultManager = (DefaultSecurityManager) securityManager;
+//
+//			// BlowfishCipher cipher = new BlowfishCipher();
+//			// defaultManager.setRememberMeCipherKey(cipher.getKey().getEncoded());
+//			// defaultManager.setRememberMeCipher(cipher);
+//			ServletContainerSessionManager sessionManager = new ServletContainerSessionManager();
+//			defaultManager.setSessionManager(sessionManager);
+//			defaultManager.setSubjectFactory(subjectFactory);
+//		}
+		
+//		/authc/signup = anon
+//		/authc/** = authc
+//
+//		/user/signup = anon
+//		/user/** = user
+//		/roles/user/** = roles[user]
+//		/roles/manager/** = roles[manager]
+//		/perms/view/** = perms[news:view]
+//		/perms/edit/** = perms[news:edit]
+		authc.setLoginUrl("/security/login");
+		
+		// Create an exception for reviewer signup
+		SecurityFilterConfiguration filterConfiguration = new SecurityFilterConfiguration();
+		configuration.add("/authc/signup", securityFilterChainFactory.createChain("/authc/signup", filterConfiguration.add(anon)));
+		
+		filterConfiguration = new SecurityFilterConfiguration();
+		configuration.add("/authc/**", securityFilterChainFactory.createChain("/authc/**", filterConfiguration.add(authc)));
+		
+		filterConfiguration = new SecurityFilterConfiguration();
+		configuration.add("/contributed/**", securityFilterChainFactory.createChain("/contributed/**", filterConfiguration.add(authc)));
+
+		filterConfiguration = new SecurityFilterConfiguration();
+		configuration.add("/user/signup", securityFilterChainFactory.createChain("/user/signup", filterConfiguration.add(anon)));
+		
+		filterConfiguration = new SecurityFilterConfiguration();
+		configuration.add("/user/**", securityFilterChainFactory.createChain("/user/**", filterConfiguration.add(user)));
+		
+		filterConfiguration = new SecurityFilterConfiguration();
+		configuration.add("/roles/user/**", securityFilterChainFactory.createChain("/roles/user/**", filterConfiguration.add(roles, "user")));
+
+		filterConfiguration = new SecurityFilterConfiguration();
+		configuration.add("/roles/manager/**", securityFilterChainFactory.createChain("/roles/manager/**", filterConfiguration.add(roles, "manager")));
+		
+		filterConfiguration = new SecurityFilterConfiguration();
+		configuration.add("/perms/view/**", securityFilterChainFactory.createChain("/perms/view/**", filterConfiguration.add(perms, "news:view")));
+
+		filterConfiguration = new SecurityFilterConfiguration();
+		configuration.add("/perms/edit/**", securityFilterChainFactory.createChain("/perms/edit/**", filterConfiguration.add(perms, "news:edit")));
+	}	
 	
 	@Startup
 	public void testCallingSecureOperationInternally(AlphaService alphaService) {

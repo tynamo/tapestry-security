@@ -21,6 +21,14 @@ package org.tynamo.security.services;
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.util.ClassUtils;
 import org.apache.shiro.util.ThreadContext;
+import org.apache.shiro.web.filter.PathMatchingFilter;
+import org.apache.shiro.web.filter.PathMatchingFilterPatternMatcherChanger;
+import org.apache.shiro.web.filter.authc.AnonymousFilter;
+import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
+import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
+import org.apache.shiro.web.filter.authc.UserFilter;
+import org.apache.shiro.web.filter.authz.PermissionsAuthorizationFilter;
+import org.apache.shiro.web.filter.authz.RolesAuthorizationFilter;
 import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.apache.tapestry5.internal.services.PageResponseRenderer;
 import org.apache.tapestry5.internal.services.RequestPageCache;
@@ -38,6 +46,8 @@ import org.tynamo.security.ShiroExceptionHandler;
 import org.tynamo.security.filter.SecurityRequestFilter;
 import org.tynamo.security.services.impl.ClassInterceptorsCacheImpl;
 import org.tynamo.security.services.impl.PageServiceImpl;
+import org.tynamo.security.services.impl.SecurityConfiguration;
+import org.tynamo.security.services.impl.SecurityFilterChainFactoryImpl;
 import org.tynamo.security.services.impl.SecurityServiceImpl;
 import org.tynamo.shiro.extension.authz.aop.AopHelper;
 import org.tynamo.shiro.extension.authz.aop.DefaultSecurityInterceptor;
@@ -77,9 +87,11 @@ public class SecurityModule
 	{
 
 		binder.bind(WebSecurityManager.class, TapestryRealmSecurityManager.class);
+		binder.bind(HttpServletRequestFilter.class, SecurityConfiguration.class).withId("SecurityConfiguration");
 		binder.bind(HttpServletRequestFilter.class, SecurityRequestFilter.class).withId("SecurityRequestFilter");
 		binder.bind(ClassInterceptorsCache.class, ClassInterceptorsCacheImpl.class);
 		binder.bind(SecurityService.class, SecurityServiceImpl.class);
+		binder.bind(SecurityFilterChainFactory.class, SecurityFilterChainFactoryImpl.class);
 		binder.bind(ComponentRequestFilter.class, SecurityComponentRequestFilter.class);
 		binder.bind(ShiroExceptionHandler.class);
 		binder.bind(PageService.class, PageServiceImpl.class);
@@ -263,9 +275,62 @@ public class SecurityModule
 	}
 
 	public static void contributeHttpServletRequestHandler(OrderedConfiguration<HttpServletRequestFilter> configuration,
-	                                                       @InjectService("SecurityRequestFilter") HttpServletRequestFilter securityRequestFilter)
-	{
-		configuration.add("SecurityRequestFilter", securityRequestFilter, "before:*");
+			@InjectService("SecurityConfiguration") HttpServletRequestFilter securityConfiguration) {
+		configuration.add("SecurityConfiguration", securityConfiguration, "before:*");
+	}
+	
+	private static String defaultSignInPage = "/security/login";
+	
+	public static AnonymousFilter buildAnonymousFilter() throws Exception {
+		String name = "anon";
+		AnonymousFilter filter = new AnonymousFilter();
+		filter.setName(name);
+		PathMatchingFilterPatternMatcherChanger.setLowercasingPathMatcher((PathMatchingFilter)filter);
+		return filter;
+	}
+
+	public static UserFilter buildUserFilter() throws Exception {
+		String name = "user";
+		UserFilter filter = new UserFilter();
+		filter.setName(name);
+		filter.setLoginUrl(defaultSignInPage);
+		PathMatchingFilterPatternMatcherChanger.setLowercasingPathMatcher((PathMatchingFilter)filter);
+		return filter;
+	}
+
+	public static FormAuthenticationFilter buildFormAuthenticationFilter() throws Exception {
+		String name = "authc";
+		FormAuthenticationFilter filter = new FormAuthenticationFilter();
+		filter.setName(name);
+		PathMatchingFilterPatternMatcherChanger.setLowercasingPathMatcher((PathMatchingFilter)filter);
+		return filter;
+	}
+
+	public static BasicHttpAuthenticationFilter buildBasicHttpAuthenticationFilter() throws Exception {
+		String name = "authcBasic";
+		BasicHttpAuthenticationFilter filter = new BasicHttpAuthenticationFilter();
+		filter.setName(name);
+		filter.setLoginUrl(defaultSignInPage);
+		PathMatchingFilterPatternMatcherChanger.setLowercasingPathMatcher((PathMatchingFilter)filter);
+		return filter;
+	}
+
+	public static RolesAuthorizationFilter buildRolesAuthorizationFilter() throws Exception {
+		String name = "roles";
+		RolesAuthorizationFilter filter = new RolesAuthorizationFilter();
+		filter.setName(name);
+		filter.setLoginUrl(defaultSignInPage);
+		PathMatchingFilterPatternMatcherChanger.setLowercasingPathMatcher((PathMatchingFilter)filter);
+		return filter;
+	}
+
+	public static PermissionsAuthorizationFilter buildPermissionsAuthorizationFilter() throws Exception {
+		String name = "perms";
+		PermissionsAuthorizationFilter filter = new PermissionsAuthorizationFilter();
+		filter.setName(name);
+		filter.setLoginUrl(defaultSignInPage);
+		PathMatchingFilterPatternMatcherChanger.setLowercasingPathMatcher((PathMatchingFilter)filter);
+		return filter;
 	}
 
 }
