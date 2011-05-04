@@ -75,10 +75,15 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 
 	}
 
-	public boolean service(final HttpServletRequest request, final HttpServletResponse response, final HttpServletRequestHandler handler)
+	public boolean service(final HttpServletRequest originalRequest, final HttpServletResponse response, final HttpServletRequestHandler handler)
 			throws IOException {
+		// TODO consider whether this guard is necessary at all? I think possibly if container forwards the request internally
+		// or, more generically, if the same thread/container-level filter mapping handles the request twice 
+		if (originalRequest instanceof ShiroHttpServletRequest) return handler.service(originalRequest, response);
 
-		String requestURI = WebUtils.getPathWithinApplication(request);
+		final HttpServletRequest request = new ShiroHttpServletRequest(originalRequest, servletContext, false);
+
+		String requestURI = WebUtils.getPathWithinApplication(originalRequest);
 
 		SecurityFilterChain configureChain = null;
 		for (String path : chainMap.keySet()) {
@@ -92,18 +97,14 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 		final SecurityFilterChain chain = configureChain;
 
 		ThreadContext.bind(securityManager);
-		WebSubject subject = new WebSubject.Builder(securityManager, request, response).buildWebSubject();
+		WebSubject subject = new WebSubject.Builder(securityManager, originalRequest, response).buildWebSubject();
 
 		boolean handled = (Boolean) subject.execute(new Callable() {
 			public Object call() throws Exception {
-				if (chain == null) return handler.service(request, response);
+				if (chain == null) return handler.service(originalRequest, response);
 				else {
-					HttpServletRequest request2;
-					if (request instanceof ShiroHttpServletRequest) request2 = request; 
-					else request2 = new ShiroHttpServletRequest(request, servletContext, false);
-					
-					final boolean handled = chain.getHandler().service(request2, response);
-					if (!handled) return handler.service(request2, response);
+					final boolean handled = chain.getHandler().service(request, response);
+					if (!handled) return handler.service(request, response);
 					else return true;
 				}
 			}
