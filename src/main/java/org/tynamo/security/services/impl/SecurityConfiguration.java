@@ -1,6 +1,7 @@
 package org.tynamo.security.services.impl;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +16,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.shiro.mgt.RealmSecurityManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.util.AntPathMatcher;
 import org.apache.shiro.util.PatternMatcher;
@@ -44,7 +44,7 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 	};
 	
 
-	public SecurityConfiguration(ApplicationGlobals applicationGlobals, final WebSecurityManager securityManager, final List<SecurityFilterChain> chains) {
+	public SecurityConfiguration(ApplicationGlobals applicationGlobals, final WebSecurityManager securityManager, final Collection<SecurityFilterChain> chains) {
 		this.securityManager = securityManager;
 		servletContext = applicationGlobals.getServletContext();
 		// The order of securityFilterChains is meaningful, so we need to construct the map ourselves rather
