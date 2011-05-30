@@ -1,14 +1,7 @@
 package org.tynamo.security.services.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.Filter;
-
+import org.apache.shiro.web.filter.authc.AnonymousFilter;
 import org.apache.tapestry5.ioc.services.PipelineBuilder;
-import org.apache.tapestry5.services.HttpServletRequestFilter;
-import org.apache.tapestry5.services.HttpServletRequestHandler;
-import org.apache.shiro.web.filter.PathMatchingFilter;
 import org.slf4j.Logger;
 import org.tynamo.security.services.SecurityFilterChainFactory;
 
@@ -22,14 +15,8 @@ public class SecurityFilterChainFactoryImpl implements SecurityFilterChainFactor
 		this.logger = logger;
 	}
 
-	public SecurityFilterChain createChain(String path, final SecurityFilterConfiguration filterConfiguration) {
-		List<HttpServletRequestFilter> configuration = new ArrayList<HttpServletRequestFilter>(filterConfiguration.getMap().size());
-		for (Filter filter : filterConfiguration.getMap().keySet()) {
-			if (filter instanceof PathMatchingFilter) ((PathMatchingFilter) filter).processPathConfig(path, filterConfiguration.getMap().get(filter));
-			configuration.add(new HttpServletRequestFilterWrapper(filter));
-		}
-		return new SecurityFilterChain(path, builder.build(logger, HttpServletRequestHandler.class, HttpServletRequestFilter.class, configuration));
-
+	public SecurityFilterChain.Builder createChain(String path) {
+		return new SecurityFilterChain.Builder(logger, builder, path);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -37,5 +24,8 @@ public class SecurityFilterChainFactoryImpl implements SecurityFilterChainFactor
 		// TODO should add package, or maybe use Tapestry util operation for it?
 		return "/" + pageClass.getSimpleName().toLowerCase();
 	}
+	
+	public Class<AnonymousFilter> anon() {return AnonymousFilter.class;}
+	
 
 }

@@ -18,8 +18,12 @@
  */
 package org.tynamo.security;
 
-import com.gargoylesoftware.htmlunit.html.HtmlInput;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+
+import java.io.IOException;
+
 import org.mortbay.jetty.webapp.WebAppContext;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeGroups;
@@ -27,9 +31,8 @@ import org.testng.annotations.Test;
 import org.tynamo.security.testapp.services.impl.Invoker;
 import org.tynamo.test.AbstractContainerTest;
 
-import java.io.IOException;
-
-import static org.testng.Assert.*;
+import com.gargoylesoftware.htmlunit.html.HtmlInput;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 {

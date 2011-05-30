@@ -1,10 +1,12 @@
 package org.tynamo.security.services;
 
+import org.apache.shiro.web.filter.authc.AnonymousFilter;
 import org.tynamo.security.services.impl.SecurityFilterChain;
-import org.tynamo.security.services.impl.SecurityFilterConfiguration;
 
 public interface SecurityFilterChainFactory {
-	public SecurityFilterChain createChain(String path, final SecurityFilterConfiguration filterConfiguration);
+	public SecurityFilterChain.Builder createChain(String path);
 
 	public String getLogicalUrl(Class pageClass);
+	
+	public Class<AnonymousFilter> anon();
 }

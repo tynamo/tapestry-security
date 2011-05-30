@@ -45,7 +45,6 @@ import org.tynamo.security.SecuritySymbols;
 import org.tynamo.security.services.SecurityFilterChainFactory;
 import org.tynamo.security.services.SecurityModule;
 import org.tynamo.security.services.impl.SecurityFilterChain;
-import org.tynamo.security.services.impl.SecurityFilterConfiguration;
 import org.tynamo.security.testapp.services.impl.AlphaServiceImpl;
 import org.tynamo.security.testapp.services.impl.BetaServiceImpl;
 import org.tynamo.shiro.extension.realm.text.ExtendedPropertiesRealm;
@@ -168,7 +167,7 @@ public class AppModule
 //	}
 
 	public static void contributeSecurityConfiguration(Configuration<SecurityFilterChain> configuration,
-			SecurityFilterChainFactory securityFilterChainFactory, AnonymousFilter anon, UserFilter user, FormAuthenticationFilter authc,
+			SecurityFilterChainFactory factory, AnonymousFilter anon, UserFilter user, FormAuthenticationFilter authc,
 			BasicHttpAuthenticationFilter authcBasic, RolesAuthorizationFilter roles, PermissionsAuthorizationFilter perms,
 			WebSecurityManager securityManager) {
 //		if (securityManager instanceof DefaultSecurityManager) {
@@ -194,32 +193,23 @@ public class AppModule
 		authc.setLoginUrl("/security/login");
 		
 		// Create an exception for reviewer signup
-		SecurityFilterConfiguration filterConfiguration = new SecurityFilterConfiguration();
-		configuration.add(securityFilterChainFactory.createChain("/authc/signup", filterConfiguration.add(anon)));
+		configuration.add(factory.createChain("/authc/signup").add(anon).build());
 		
-		filterConfiguration = new SecurityFilterConfiguration();
-		configuration.add(securityFilterChainFactory.createChain("/authc/**", filterConfiguration.add(authc)));
+		configuration.add(factory.createChain("/authc/**").add(authc).build());
 		
-		filterConfiguration = new SecurityFilterConfiguration();
-		configuration.add(securityFilterChainFactory.createChain("/contributed/**", filterConfiguration.add(authc)));
+		configuration.add(factory.createChain("/contributed/**").add(authc).build());
 
-		filterConfiguration = new SecurityFilterConfiguration();
-		configuration.add(securityFilterChainFactory.createChain("/user/signup", filterConfiguration.add(anon)));
+		configuration.add(factory.createChain("/user/signup").add(anon).build());
 		
-		filterConfiguration = new SecurityFilterConfiguration();
-		configuration.add(securityFilterChainFactory.createChain("/user/**", filterConfiguration.add(user)));
+		configuration.add(factory.createChain("/user/**").add(user).build());
 		
-		filterConfiguration = new SecurityFilterConfiguration();
-		configuration.add(securityFilterChainFactory.createChain("/roles/user/**", filterConfiguration.add(roles, "user")));
+		configuration.add(factory.createChain("/roles/user/**").add(roles, "user").build());
 
-		filterConfiguration = new SecurityFilterConfiguration();
-		configuration.add(securityFilterChainFactory.createChain("/roles/manager/**", filterConfiguration.add(roles, "manager")));
+		configuration.add(factory.createChain("/roles/manager/**").add(roles, "manager").build());
 		
-		filterConfiguration = new SecurityFilterConfiguration();
-		configuration.add(securityFilterChainFactory.createChain("/perms/view/**", filterConfiguration.add(perms, "news:view")));
+		configuration.add(factory.createChain("/perms/view/**").add(perms, "news:view").build());
 
-		filterConfiguration = new SecurityFilterConfiguration();
-		configuration.add(securityFilterChainFactory.createChain("/perms/edit/**", filterConfiguration.add(perms, "news:edit")));
+		configuration.add(factory.createChain("/perms/edit/**").add(perms, "news:edit").build());
 	}	
 	
 	@Startup
