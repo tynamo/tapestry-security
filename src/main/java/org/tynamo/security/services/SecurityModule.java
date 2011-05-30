@@ -18,26 +18,45 @@
  */
 package org.tynamo.security.services;
 
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Properties;
+
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.util.ClassUtils;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.filter.PathMatchingFilter;
 import org.apache.shiro.web.filter.PathMatchingFilterPatternMatcherChanger;
-import org.apache.shiro.web.filter.authc.AnonymousFilter;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
-import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.apache.shiro.web.filter.authc.UserFilter;
 import org.apache.shiro.web.filter.authz.PermissionsAuthorizationFilter;
 import org.apache.shiro.web.filter.authz.RolesAuthorizationFilter;
 import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.apache.tapestry5.internal.services.PageResponseRenderer;
 import org.apache.tapestry5.internal.services.RequestPageCache;
-import org.apache.tapestry5.ioc.*;
+import org.apache.tapestry5.ioc.Configuration;
+import org.apache.tapestry5.ioc.Invocation;
+import org.apache.tapestry5.ioc.MappedConfiguration;
+import org.apache.tapestry5.ioc.MethodAdvice;
+import org.apache.tapestry5.ioc.MethodAdviceReceiver;
+import org.apache.tapestry5.ioc.OrderedConfiguration;
+import org.apache.tapestry5.ioc.ServiceBinder;
 import org.apache.tapestry5.ioc.annotations.InjectService;
 import org.apache.tapestry5.ioc.annotations.Local;
 import org.apache.tapestry5.ioc.annotations.Match;
 import org.apache.tapestry5.ioc.annotations.Order;
-import org.apache.tapestry5.services.*;
+import org.apache.tapestry5.services.ApplicationInitializer;
+import org.apache.tapestry5.services.ApplicationInitializerFilter;
+import org.apache.tapestry5.services.ComponentClassResolver;
+import org.apache.tapestry5.services.ComponentClassTransformWorker;
+import org.apache.tapestry5.services.ComponentRequestFilter;
+import org.apache.tapestry5.services.Context;
+import org.apache.tapestry5.services.HttpServletRequestFilter;
+import org.apache.tapestry5.services.LibraryMapping;
+import org.apache.tapestry5.services.RequestGlobals;
+import org.apache.tapestry5.services.Response;
 import org.slf4j.Logger;
 import org.tynamo.security.SecurityComponentRequestFilter;
 import org.tynamo.security.SecuritySymbols;
@@ -49,15 +68,11 @@ import org.tynamo.security.services.impl.PageServiceImpl;
 import org.tynamo.security.services.impl.SecurityConfiguration;
 import org.tynamo.security.services.impl.SecurityFilterChainFactoryImpl;
 import org.tynamo.security.services.impl.SecurityServiceImpl;
+import org.tynamo.security.shiro.authc.AnonymousFilter;
+import org.tynamo.security.shiro.authc.FormAuthenticationFilter;
 import org.tynamo.shiro.extension.authz.aop.AopHelper;
 import org.tynamo.shiro.extension.authz.aop.DefaultSecurityInterceptor;
 import org.tynamo.shiro.extension.authz.aop.SecurityInterceptor;
-
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Properties;
 
 /**
  * The main entry point for Security integration.
@@ -285,7 +300,6 @@ public class SecurityModule
 		String name = "anon";
 		AnonymousFilter filter = new AnonymousFilter();
 		filter.setName(name);
-		PathMatchingFilterPatternMatcherChanger.setLowercasingPathMatcher((PathMatchingFilter)filter);
 		return filter;
 	}
 
@@ -302,7 +316,6 @@ public class SecurityModule
 		String name = "authc";
 		FormAuthenticationFilter filter = new FormAuthenticationFilter();
 		filter.setName(name);
-		PathMatchingFilterPatternMatcherChanger.setLowercasingPathMatcher((PathMatchingFilter)filter);
 		return filter;
 	}
 
