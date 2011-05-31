@@ -1,5 +1,20 @@
 package org.tynamo.security.filter;
 
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.shiro.util.AntPathMatcher;
 import org.apache.shiro.util.StringUtils;
 import org.apache.shiro.web.filter.AccessControlFilter;
@@ -22,14 +37,6 @@ import org.slf4j.Logger;
 import org.tynamo.security.FilterChainDefinition;
 import org.tynamo.security.SecuritySymbols;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
-
 @ServiceId("SecurityRequestFilter")
 public class SecurityRequestFilter extends IniShiroFilter implements HttpServletRequestFilter
 {
@@ -48,8 +55,8 @@ public class SecurityRequestFilter extends IniShiroFilter implements HttpServlet
 	                             @Inject @Symbol(SecuritySymbols.SUCCESS_URL) String successUrl,
 	                             @Inject @Symbol(SecuritySymbols.LOGIN_URL) String loginUrl,
 	                             @Inject @Symbol(SecuritySymbols.UNAUTHORIZED_URL) String unauthorizedUrl,
-	                             @Inject @Symbol(SecuritySymbols.CONFIG_PATH) String configPath,
-	                             @Inject @Symbol(SecuritySymbols.SHOULD_LOAD_INI_FROM_CONFIG_PATH) boolean shouldLoadIniFromPath,
+	                             /*@Inject @Symbol(SecuritySymbols.CONFIG_PATH)*/ String configPath,
+	                             /*@Inject @Symbol(SecuritySymbols.SHOULD_LOAD_INI_FROM_CONFIG_PATH)*/ boolean shouldLoadIniFromPath,
 	                             ApplicationGlobals globals) throws Exception
 	{
 		final ServletContext servletContext = globals.getServletContext();

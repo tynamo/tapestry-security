@@ -56,7 +56,6 @@ import org.tynamo.security.SecurityComponentRequestFilter;
 import org.tynamo.security.SecuritySymbols;
 import org.tynamo.security.ShiroAnnotationWorker;
 import org.tynamo.security.ShiroExceptionHandler;
-import org.tynamo.security.filter.SecurityRequestFilter;
 import org.tynamo.security.services.impl.ClassInterceptorsCacheImpl;
 import org.tynamo.security.services.impl.PageServiceImpl;
 import org.tynamo.security.services.impl.SecurityConfiguration;
@@ -95,7 +94,7 @@ public class SecurityModule
 
 		binder.bind(WebSecurityManager.class, TapestryRealmSecurityManager.class);
 		binder.bind(HttpServletRequestFilter.class, SecurityConfiguration.class).withId("SecurityConfiguration");
-		binder.bind(HttpServletRequestFilter.class, SecurityRequestFilter.class).withId("SecurityRequestFilter");
+		// binder.bind(HttpServletRequestFilter.class, SecurityRequestFilter.class).withId("SecurityRequestFilter");
 		binder.bind(ClassInterceptorsCache.class, ClassInterceptorsCacheImpl.class);
 		binder.bind(SecurityService.class, SecurityServiceImpl.class);
 		binder.bind(SecurityFilterChainFactory.class, SecurityFilterChainFactoryImpl.class);
@@ -109,9 +108,6 @@ public class SecurityModule
 		configuration.add(SecuritySymbols.LOGIN_URL, "/" + PATH_PREFIX + "/login");
 		configuration.add(SecuritySymbols.SUCCESS_URL, "/index");
 		configuration.add(SecuritySymbols.UNAUTHORIZED_URL, "/" + PATH_PREFIX + "/unauthorized");
-		configuration.add(SecuritySymbols.DEFAULTSIGNINPAGE, "/defaultSignInPage");
-		configuration.add(SecuritySymbols.CONFIG_PATH, "classpath:shiro.ini");
-		configuration.add(SecuritySymbols.SHOULD_LOAD_INI_FROM_CONFIG_PATH, "false");
 	}
 
 

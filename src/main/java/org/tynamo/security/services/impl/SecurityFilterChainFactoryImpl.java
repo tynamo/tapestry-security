@@ -1,8 +1,12 @@
 package org.tynamo.security.services.impl;
 
+import org.apache.tapestry5.ioc.annotations.Inject;
+import org.apache.tapestry5.ioc.annotations.Symbol;
 import org.apache.tapestry5.ioc.services.PipelineBuilder;
 import org.slf4j.Logger;
+import org.tynamo.security.SecuritySymbols;
 import org.tynamo.security.services.SecurityFilterChainFactory;
+import org.tynamo.security.shiro.AccessControlFilter;
 import org.tynamo.security.shiro.authc.AnonymousFilter;
 import org.tynamo.security.shiro.authc.BasicHttpAuthenticationFilter;
 import org.tynamo.security.shiro.authc.FormAuthenticationFilter;
@@ -18,9 +22,16 @@ public class SecurityFilterChainFactoryImpl implements SecurityFilterChainFactor
 	@Deprecated
 	private String defaultSignInPage = "/security/login";
 
-	public SecurityFilterChainFactoryImpl(PipelineBuilder builder, Logger logger) {
+	public SecurityFilterChainFactoryImpl(PipelineBuilder builder, Logger logger,
+      @Inject @Symbol(SecuritySymbols.SUCCESS_URL) String successUrl,
+      @Inject @Symbol(SecuritySymbols.LOGIN_URL) String loginUrl,
+      @Inject @Symbol(SecuritySymbols.UNAUTHORIZED_URL) String unauthorizedUrl
+	) {
 		this.builder = builder;
 		this.logger = logger;
+		AccessControlFilter.LOGIN_URL = loginUrl;
+		AccessControlFilter.SUCCESS_URL = successUrl;
+		AccessControlFilter.UNAUTHORIZED_URL = unauthorizedUrl;
 	}
 
 	public SecurityFilterChain.Builder createChain(String path) {

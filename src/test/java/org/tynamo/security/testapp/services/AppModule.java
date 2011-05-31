@@ -35,7 +35,6 @@ import org.apache.tapestry5.services.RequestFilter;
 import org.apache.tapestry5.services.RequestHandler;
 import org.apache.tapestry5.services.Response;
 import org.slf4j.Logger;
-import org.tynamo.security.SecuritySymbols;
 import org.tynamo.security.services.SecurityFilterChainFactory;
 import org.tynamo.security.services.SecurityModule;
 import org.tynamo.security.services.impl.SecurityFilterChain;
@@ -47,7 +46,7 @@ import org.tynamo.shiro.extension.realm.text.ExtendedPropertiesRealm;
  * This module is automatically included as part of the Tapestry IoC Registry, it's a good place to
  * configure and extend Tapestry, or to place your own service definitions.
  */
-@SubModule(value = {SecurityModule.class, AppSubModule.class})
+@SubModule(SecurityModule.class)
 public class AppModule
 {
 
@@ -81,8 +80,6 @@ public class AppModule
 		// header. If existing assets are changed, the version number should also
 		// change, to force the browser to download new versions.
 		configuration.add(SymbolConstants.APPLICATION_VERSION, "0.0.1-SNAPSHOT");
-
-		configuration.add(SecuritySymbols.SHOULD_LOAD_INI_FROM_CONFIG_PATH, "true");
 	}
 
 

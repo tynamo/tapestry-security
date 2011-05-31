@@ -75,10 +75,6 @@ public class FormAuthenticationFilter extends AuthenticatingFilter {
 
     private String failureKeyAttribute = DEFAULT_ERROR_KEY_ATTRIBUTE_NAME;
 
-    public FormAuthenticationFilter() {
-        setLoginUrl(DEFAULT_LOGIN_URL);
-    }
-
     @Override
     public void setLoginUrl(String loginUrl) {
         super.setLoginUrl(loginUrl);

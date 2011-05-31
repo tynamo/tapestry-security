@@ -34,39 +34,6 @@ import org.tynamo.security.shiro.AccessControlFilter;
  */
 public abstract class AuthenticationFilter extends AccessControlFilter {
 
-    //TODO - complete JavaDoc
-
-    public static final String DEFAULT_SUCCESS_URL = "/";
-
-    private String successUrl = DEFAULT_SUCCESS_URL;
-
-    /**
-     * Returns the success url to use as the default location a user is sent after logging in.  Typically a redirect
-     * after login will redirect to the originally request URL; this property is provided mainly as a fallback in case
-     * the original request URL is not available or not specified.
-     * <p/>
-     * The default value is {@link #DEFAULT_SUCCESS_URL}.
-     *
-     * @return the success url to use as the default location a user is sent after logging in.
-     */
-    public String getSuccessUrl() {
-        return successUrl;
-    }
-
-    /**
-     * Sets the default/fallback success url to use as the default location a user is sent after logging in.  Typically
-     * a redirect after login will redirect to the originally request URL; this property is provided mainly as a
-     * fallback in case the original request URL is not available or not specified.
-     * <p/>
-     * The default value is {@link #DEFAULT_SUCCESS_URL}.
-     *
-     * @param successUrl the success URL to redirect the user to after a successful login.
-     */
-    public void setSuccessUrl(String successUrl) {
-        this.successUrl = successUrl;
-    }
-
-
     /**
      * Determines whether the current subject is authenticated.
      * <p/>

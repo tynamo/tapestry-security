@@ -41,6 +41,9 @@ import org.apache.shiro.web.util.WebUtils;
  * @since 0.9
  */
 public abstract class AccessControlFilter extends AdviceFilter {
+	// default values - populated by the ChainFactory from symbols 
+	public static String LOGIN_URL, SUCCESS_URL, UNAUTHORIZED_URL;
+	
     protected PatternMatcher pathMatcher = new AntPathMatcher() {
 			@Override
 			public boolean match(String pattern, String string) {
@@ -56,12 +59,6 @@ public abstract class AccessControlFilter extends AdviceFilter {
 		}
 
     /**
-     * Simple default login URL equal to <code>/login.jsp</code>, which can be overridden by calling the
-     * {@link #setLoginUrl(String) setLoginUrl} method.
-     */
-    public static final String DEFAULT_LOGIN_URL = "/login.jsp";
-
-    /**
      * Constant representing the HTTP 'GET' request method, equal to <code>GET</code>.
      */
     public static final String GET_METHOD = "GET";
@@ -74,8 +71,39 @@ public abstract class AccessControlFilter extends AdviceFilter {
     /**
      * The login url to used to authenticate a user, used when redirecting users if authentication is required.
      */
-    private String loginUrl = DEFAULT_LOGIN_URL;
+    private String loginUrl = LOGIN_URL;
 
+    private String successUrl = SUCCESS_URL;
+    
+    private String unauthorizedUrl = UNAUTHORIZED_URL;
+
+    /**
+     * Returns the success url to use as the default location a user is sent after logging in.  Typically a redirect
+     * after login will redirect to the originally request URL; this property is provided mainly as a fallback in case
+     * the original request URL is not available or not specified.
+     * <p/>
+     * The default value is {@link #DEFAULT_SUCCESS_URL}.
+     *
+     * @return the success url to use as the default location a user is sent after logging in.
+     */
+    public String getSuccessUrl() {
+        return successUrl;
+    }
+
+    /**
+     * Sets the default/fallback success url to use as the default location a user is sent after logging in.  Typically
+     * a redirect after login will redirect to the originally request URL; this property is provided mainly as a
+     * fallback in case the original request URL is not available or not specified.
+     * <p/>
+     * The default value is {@link #DEFAULT_SUCCESS_URL}.
+     *
+     * @param successUrl the success URL to redirect the user to after a successful login.
+     */
+    public void setSuccessUrl(String successUrl) {
+        this.successUrl = successUrl;
+    }
+    
+    
     /**
      * Returns the login URL used to authenticate a user.
      * <p/>
@@ -102,7 +130,15 @@ public abstract class AccessControlFilter extends AdviceFilter {
         this.loginUrl = loginUrl;
     }
 
-    /**
+    public String getUnauthorizedUrl() {
+			return unauthorizedUrl;
+		}
+
+		public void setUnauthorizedUrl(String unauthorizedUrl) {
+			this.unauthorizedUrl = unauthorizedUrl;
+		}
+
+		/**
      * Convenience method that acquires the Subject associated with the request.
      * <p/>
      * The default implementation simply returns
