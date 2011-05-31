@@ -39,8 +39,6 @@ public class HttpServletRequestFilterWrapper implements HttpServletRequestFilter
 
 	public final boolean service(final HttpServletRequest request, final HttpServletResponse response, final HttpServletRequestHandler handler)
 			throws IOException {
-
-		// TODO: Thread safety!
 		// Assume request handled if filter chain is NOT executed
 		final boolean[] res = new boolean[] { true };
 		try {

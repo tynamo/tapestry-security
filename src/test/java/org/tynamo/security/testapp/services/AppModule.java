@@ -183,7 +183,6 @@ public class AppModule
 //		/perms/view/** = perms[news:view]
 //		/perms/edit/** = perms[news:edit]
 		
-		// Create an exception for reviewer signup
 		configuration.add(factory.createChain("/authc/signup").add(factory.anon()).build());
 		
 		configuration.add(factory.createChain("/authc/**").add(factory.authc()).build());
