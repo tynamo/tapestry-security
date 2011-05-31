@@ -21,10 +21,6 @@ package org.tynamo.security.testapp.services;
 import java.io.IOException;
 
 import org.apache.shiro.realm.Realm;
-import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
-import org.apache.shiro.web.filter.authc.UserFilter;
-import org.apache.shiro.web.filter.authz.PermissionsAuthorizationFilter;
-import org.apache.shiro.web.filter.authz.RolesAuthorizationFilter;
 import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.apache.tapestry5.SymbolConstants;
 import org.apache.tapestry5.ioc.Configuration;
@@ -43,8 +39,6 @@ import org.tynamo.security.SecuritySymbols;
 import org.tynamo.security.services.SecurityFilterChainFactory;
 import org.tynamo.security.services.SecurityModule;
 import org.tynamo.security.services.impl.SecurityFilterChain;
-import org.tynamo.security.shiro.authc.AnonymousFilter;
-import org.tynamo.security.shiro.authc.FormAuthenticationFilter;
 import org.tynamo.security.testapp.services.impl.AlphaServiceImpl;
 import org.tynamo.security.testapp.services.impl.BetaServiceImpl;
 import org.tynamo.shiro.extension.realm.text.ExtendedPropertiesRealm;
@@ -167,9 +161,7 @@ public class AppModule
 //	}
 
 	public static void contributeSecurityConfiguration(Configuration<SecurityFilterChain> configuration,
-			SecurityFilterChainFactory factory, AnonymousFilter anon, UserFilter user, FormAuthenticationFilter authc,
-			BasicHttpAuthenticationFilter authcBasic, RolesAuthorizationFilter roles, PermissionsAuthorizationFilter perms,
-			WebSecurityManager securityManager) {
+			SecurityFilterChainFactory factory, WebSecurityManager securityManager) {
 //		if (securityManager instanceof DefaultSecurityManager) {
 //			DefaultSecurityManager defaultManager = (DefaultSecurityManager) securityManager;
 //
@@ -190,26 +182,25 @@ public class AppModule
 //		/roles/manager/** = roles[manager]
 //		/perms/view/** = perms[news:view]
 //		/perms/edit/** = perms[news:edit]
-		authc.setLoginUrl("/security/login");
 		
 		// Create an exception for reviewer signup
-		configuration.add(factory.createChain("/authc/signup").add(anon).build());
+		configuration.add(factory.createChain("/authc/signup").add(factory.anon()).build());
 		
-		configuration.add(factory.createChain("/authc/**").add(authc).build());
+		configuration.add(factory.createChain("/authc/**").add(factory.authc()).build());
 		
-		configuration.add(factory.createChain("/contributed/**").add(authc).build());
+		configuration.add(factory.createChain("/contributed/**").add(factory.authc()).build());
 
-		configuration.add(factory.createChain("/user/signup").add(anon).build());
+		configuration.add(factory.createChain("/user/signup").add(factory.anon()).build());
 		
-		configuration.add(factory.createChain("/user/**").add(user).build());
+		configuration.add(factory.createChain("/user/**").add(factory.user()).build());
 		
-		configuration.add(factory.createChain("/roles/user/**").add(roles, "user").build());
+		configuration.add(factory.createChain("/roles/user/**").add(factory.roles(), "user").build());
 
-		configuration.add(factory.createChain("/roles/manager/**").add(roles, "manager").build());
+		configuration.add(factory.createChain("/roles/manager/**").add(factory.roles(), "manager").build());
 		
-		configuration.add(factory.createChain("/perms/view/**").add(perms, "news:view").build());
+		configuration.add(factory.createChain("/perms/view/**").add(factory.perms(), "news:view").build());
 
-		configuration.add(factory.createChain("/perms/edit/**").add(perms, "news:edit").build());
+		configuration.add(factory.createChain("/perms/edit/**").add(factory.perms(), "news:edit").build());
 	}	
 	
 	@Startup

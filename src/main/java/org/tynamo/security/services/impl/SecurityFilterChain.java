@@ -5,11 +5,11 @@ import java.util.List;
 
 import javax.servlet.Filter;
 
-import org.apache.shiro.web.filter.PathMatchingFilter;
 import org.apache.tapestry5.ioc.services.PipelineBuilder;
 import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.HttpServletRequestHandler;
 import org.slf4j.Logger;
+import org.tynamo.security.shiro.AccessControlFilter;
 
 public class SecurityFilterChain {
 	private String path;
@@ -54,14 +54,13 @@ public class SecurityFilterChain {
 		
 		@Deprecated
 		public Builder add(Filter filter) {
-			if (filter instanceof PathMatchingFilter) ((PathMatchingFilter) filter).processPathConfig(path, null);
 			filters.add(new HttpServletRequestFilterWrapper(filter));
 			return this;
 		}
 		
 		@Deprecated
-		public Builder add(PathMatchingFilter filter, String pathConfig) {
-			filter.processPathConfig(path, pathConfig);
+		public Builder add(AccessControlFilter filter, String pathConfig) {
+			filter.setPathConfig(pathConfig);
 			filters.add(new HttpServletRequestFilterWrapper(filter));
 			return this;
 		}

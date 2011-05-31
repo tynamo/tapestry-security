@@ -18,6 +18,8 @@
  */
 package org.tynamo.security.shiro;
 
+import static org.apache.shiro.util.StringUtils.split;
+
 import java.io.IOException;
 
 import javax.servlet.ServletRequest;
@@ -45,6 +47,13 @@ public abstract class AccessControlFilter extends AdviceFilter {
 				return super.match(pattern, string.toLowerCase());
 			}
 		};
+		
+		private String[] pathConfig;
+		
+		@Deprecated
+		public void setPathConfig(String config) {
+      if (config != null) pathConfig = split(config);
+		}
 
     /**
      * Simple default login URL equal to <code>/login.jsp</code>, which can be overridden by calling the
@@ -173,7 +182,7 @@ public abstract class AccessControlFilter extends AdviceFilter {
     }
     
     protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
-    	  return onPreHandle(request, response, null);
+    	  return onPreHandle(request, response, pathConfig);
     }
 
     /**

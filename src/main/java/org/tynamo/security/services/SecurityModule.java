@@ -27,12 +27,6 @@ import java.util.Properties;
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.util.ClassUtils;
 import org.apache.shiro.util.ThreadContext;
-import org.apache.shiro.web.filter.PathMatchingFilter;
-import org.apache.shiro.web.filter.PathMatchingFilterPatternMatcherChanger;
-import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
-import org.apache.shiro.web.filter.authc.UserFilter;
-import org.apache.shiro.web.filter.authz.PermissionsAuthorizationFilter;
-import org.apache.shiro.web.filter.authz.RolesAuthorizationFilter;
 import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.apache.tapestry5.internal.services.PageResponseRenderer;
 import org.apache.tapestry5.internal.services.RequestPageCache;
@@ -68,8 +62,6 @@ import org.tynamo.security.services.impl.PageServiceImpl;
 import org.tynamo.security.services.impl.SecurityConfiguration;
 import org.tynamo.security.services.impl.SecurityFilterChainFactoryImpl;
 import org.tynamo.security.services.impl.SecurityServiceImpl;
-import org.tynamo.security.shiro.authc.AnonymousFilter;
-import org.tynamo.security.shiro.authc.FormAuthenticationFilter;
 import org.tynamo.shiro.extension.authz.aop.AopHelper;
 import org.tynamo.shiro.extension.authz.aop.DefaultSecurityInterceptor;
 import org.tynamo.shiro.extension.authz.aop.SecurityInterceptor;
@@ -293,57 +285,4 @@ public class SecurityModule
 			@InjectService("SecurityConfiguration") HttpServletRequestFilter securityConfiguration) {
 		configuration.add("SecurityConfiguration", securityConfiguration, "before:*");
 	}
-	
-	private static String defaultSignInPage = "/security/login";
-	
-	public static AnonymousFilter buildAnonymousFilter() throws Exception {
-		String name = "anon";
-		AnonymousFilter filter = new AnonymousFilter();
-		filter.setName(name);
-		return filter;
-	}
-
-	public static UserFilter buildUserFilter() throws Exception {
-		String name = "user";
-		UserFilter filter = new UserFilter();
-		filter.setName(name);
-		filter.setLoginUrl(defaultSignInPage);
-		PathMatchingFilterPatternMatcherChanger.setLowercasingPathMatcher((PathMatchingFilter)filter);
-		return filter;
-	}
-
-	public static FormAuthenticationFilter buildFormAuthenticationFilter() throws Exception {
-		String name = "authc";
-		FormAuthenticationFilter filter = new FormAuthenticationFilter();
-		filter.setName(name);
-		return filter;
-	}
-
-	public static BasicHttpAuthenticationFilter buildBasicHttpAuthenticationFilter() throws Exception {
-		String name = "authcBasic";
-		BasicHttpAuthenticationFilter filter = new BasicHttpAuthenticationFilter();
-		filter.setName(name);
-		filter.setLoginUrl(defaultSignInPage);
-		PathMatchingFilterPatternMatcherChanger.setLowercasingPathMatcher((PathMatchingFilter)filter);
-		return filter;
-	}
-
-	public static RolesAuthorizationFilter buildRolesAuthorizationFilter() throws Exception {
-		String name = "roles";
-		RolesAuthorizationFilter filter = new RolesAuthorizationFilter();
-		filter.setName(name);
-		filter.setLoginUrl(defaultSignInPage);
-		PathMatchingFilterPatternMatcherChanger.setLowercasingPathMatcher((PathMatchingFilter)filter);
-		return filter;
-	}
-
-	public static PermissionsAuthorizationFilter buildPermissionsAuthorizationFilter() throws Exception {
-		String name = "perms";
-		PermissionsAuthorizationFilter filter = new PermissionsAuthorizationFilter();
-		filter.setName(name);
-		filter.setLoginUrl(defaultSignInPage);
-		PathMatchingFilterPatternMatcherChanger.setLowercasingPathMatcher((PathMatchingFilter)filter);
-		return filter;
-	}
-
 }
