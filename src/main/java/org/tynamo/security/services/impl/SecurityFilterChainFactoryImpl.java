@@ -19,9 +19,6 @@ public class SecurityFilterChainFactoryImpl implements SecurityFilterChainFactor
 
 	private Logger logger;
 	
-	@Deprecated
-	private String defaultSignInPage = "/security/login";
-
 	public SecurityFilterChainFactoryImpl(PipelineBuilder builder, Logger logger,
       @Inject @Symbol(SecuritySymbols.SUCCESS_URL) String successUrl,
       @Inject @Symbol(SecuritySymbols.LOGIN_URL) String loginUrl,
@@ -44,11 +41,6 @@ public class SecurityFilterChainFactoryImpl implements SecurityFilterChainFactor
 		return "/" + pageClass.getSimpleName().toLowerCase();
 	}
 	
-	@Override
-	public void setDefaultSignInPage(String defaultSignInPage) {
-		this.defaultSignInPage = defaultSignInPage;
-	}
-	
 	public AnonymousFilter anon() {
 		String name = "anon";
 		AnonymousFilter filter = new AnonymousFilter();
@@ -60,7 +52,6 @@ public class SecurityFilterChainFactoryImpl implements SecurityFilterChainFactor
 		String name = "user";
 		UserFilter filter = new UserFilter();
 		filter.setName(name);
-		filter.setLoginUrl(defaultSignInPage);
 		return filter;
 	}
 
@@ -68,7 +59,6 @@ public class SecurityFilterChainFactoryImpl implements SecurityFilterChainFactor
 		String name = "authc";
 		FormAuthenticationFilter filter = new FormAuthenticationFilter();
 		filter.setName(name);
-		filter.setLoginUrl(defaultSignInPage);		
 		return filter;
 	}
 
@@ -76,7 +66,6 @@ public class SecurityFilterChainFactoryImpl implements SecurityFilterChainFactor
 		String name = "authcBasic";
 		BasicHttpAuthenticationFilter filter = new BasicHttpAuthenticationFilter();
 		filter.setName(name);
-		filter.setLoginUrl(defaultSignInPage);
 		return filter;
 	}
 
@@ -84,7 +73,6 @@ public class SecurityFilterChainFactoryImpl implements SecurityFilterChainFactor
 		String name = "roles";
 		RolesAuthorizationFilter filter = new RolesAuthorizationFilter();
 		filter.setName(name);
-		filter.setLoginUrl(defaultSignInPage);
 		return filter;
 	}
 	
@@ -93,7 +81,6 @@ public class SecurityFilterChainFactoryImpl implements SecurityFilterChainFactor
 		String name = "perms";
 		PermissionsAuthorizationFilter filter = new PermissionsAuthorizationFilter();
 		filter.setName(name);
-		filter.setLoginUrl(defaultSignInPage);
 		return filter;
 	}
 	

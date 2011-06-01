@@ -144,19 +144,6 @@ public class AppModule
 		configuration.add(realm);
 	}
 
-//	public static void contributeSecurityRequestFilter(OrderedConfiguration<FilterChainDefinition> configuration)
-//	{
-//		commented out because they are loaded from shiro.ini
-//		configuration.add("authc-signup-anon", new FilterChainDefinition("/authc/signup", "anon"));
-//		configuration.add("authc-authc", new FilterChainDefinition("/authc/**", "authc"));
-//		configuration.add("user-signup-anon", new FilterChainDefinition("/user/signup", "anon"));
-//		configuration.add("user-user", new FilterChainDefinition("/user/**", "user"));
-//		configuration.add("roles-user-roles-user", new FilterChainDefinition("/roles/user/**", "roles[user]"));
-//		configuration.add("roles-manager-roles-manager", new FilterChainDefinition("/roles/manager/**", "roles[manager]"));
-//		configuration.add("perms-view-perms-news-view", new FilterChainDefinition("/perms/view/**", "perms[news:view]"));
-//		configuration.add("perms-edit-perms-news-edit", new FilterChainDefinition("/perms/edit/**", "perms[news:edit]"));
-//	}
-
 	public static void contributeSecurityConfiguration(Configuration<SecurityFilterChain> configuration,
 			SecurityFilterChainFactory factory, WebSecurityManager securityManager) {
 //		if (securityManager instanceof DefaultSecurityManager) {
@@ -181,21 +168,13 @@ public class AppModule
 //		/perms/edit/** = perms[news:edit]
 		
 		configuration.add(factory.createChain("/authc/signup").add(factory.anon()).build());
-		
 		configuration.add(factory.createChain("/authc/**").add(factory.authc()).build());
-		
 		configuration.add(factory.createChain("/contributed/**").add(factory.authc()).build());
-
 		configuration.add(factory.createChain("/user/signup").add(factory.anon()).build());
-		
 		configuration.add(factory.createChain("/user/**").add(factory.user()).build());
-		
 		configuration.add(factory.createChain("/roles/user/**").add(factory.roles(), "user").build());
-
 		configuration.add(factory.createChain("/roles/manager/**").add(factory.roles(), "manager").build());
-		
 		configuration.add(factory.createChain("/perms/view/**").add(factory.perms(), "news:view").build());
-
 		configuration.add(factory.createChain("/perms/edit/**").add(factory.perms(), "news:edit").build());
 	}	
 	

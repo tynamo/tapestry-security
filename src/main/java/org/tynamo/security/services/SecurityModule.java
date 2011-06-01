@@ -94,7 +94,6 @@ public class SecurityModule
 
 		binder.bind(WebSecurityManager.class, TapestryRealmSecurityManager.class);
 		binder.bind(HttpServletRequestFilter.class, SecurityConfiguration.class).withId("SecurityConfiguration");
-		// binder.bind(HttpServletRequestFilter.class, SecurityRequestFilter.class).withId("SecurityRequestFilter");
 		binder.bind(ClassInterceptorsCache.class, ClassInterceptorsCacheImpl.class);
 		binder.bind(SecurityService.class, SecurityServiceImpl.class);
 		binder.bind(SecurityFilterChainFactory.class, SecurityFilterChainFactoryImpl.class);

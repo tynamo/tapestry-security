@@ -13,8 +13,6 @@ public interface SecurityFilterChainFactory {
 
 	public String getLogicalUrl(Class pageClass);
 	
-	public void setDefaultSignInPage(String defaultSignInPage);
-	
 	public AnonymousFilter anon();
 
 	public UserFilter user();
