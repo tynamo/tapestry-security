@@ -52,15 +52,14 @@ public class SecurityFilterChain {
 			return this;
 		}
 		
-		@Deprecated
 		public Builder add(Filter filter) {
-			filters.add(new HttpServletRequestFilterWrapper(filter));
+			if (filter instanceof AccessControlFilter) add((AccessControlFilter)filter, null);
+			else filters.add(new HttpServletRequestFilterWrapper(filter));
 			return this;
 		}
 		
-		@Deprecated
-		public Builder add(AccessControlFilter filter, String pathConfig) {
-			filter.setPathConfig(pathConfig);
+		public Builder add(AccessControlFilter filter, String config) {
+			filter.addConfig(config);
 			filters.add(new HttpServletRequestFilterWrapper(filter));
 			return this;
 		}

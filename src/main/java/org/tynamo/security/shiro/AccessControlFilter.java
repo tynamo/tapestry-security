@@ -55,11 +55,26 @@ public abstract class AccessControlFilter extends AdviceFilter {
 			}
 		};
 		
-		private String[] pathConfig;
+		private String[] configElements;
+
+		private String config;
 		
-		@Deprecated
-		public void setPathConfig(String config) {
-      if (config != null) pathConfig = split(config);
+		/*
+		 * Same as {@link #setConfig()} except throws an {@link IllegalArgumentException} if config is already set.
+		 * Mostly used in the initialization logic  
+		 */
+		public void addConfig(String config) {
+			if (config == null && this.config == null && configElements != null) return;
+			if (config != null && config.equals(this.config)) return;
+			if (configElements != null) throw new IllegalArgumentException("Configuration is already add for this filter, existing config is " + this.configElements + ". Use setConfig if you want to override the existing configuration");
+			setConfig(config);
+		}
+
+		
+		public void setConfig(String config) {
+      if (config != null) configElements = split(config);
+      else configElements = new String[0];
+      this.config = config;
 		}
 
     /**
@@ -222,7 +237,7 @@ public abstract class AccessControlFilter extends AdviceFilter {
     }
     
     protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
-    	  return onPreHandle(request, response, pathConfig);
+    	  return onPreHandle(request, response, configElements);
     }
 
     /**
