@@ -1,5 +1,6 @@
 package org.tynamo.security.services.impl;
 
+import org.apache.tapestry5.ioc.annotations.EagerLoad;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.annotations.Symbol;
 import org.apache.tapestry5.ioc.services.PipelineBuilder;
@@ -14,6 +15,8 @@ import org.tynamo.security.shiro.authc.UserFilter;
 import org.tynamo.security.shiro.authz.PermissionsAuthorizationFilter;
 import org.tynamo.security.shiro.authz.RolesAuthorizationFilter;
 
+// Eager load since this service is initializes the global filter defaults
+@EagerLoad
 public class SecurityFilterChainFactoryImpl implements SecurityFilterChainFactory {
 	private PipelineBuilder builder;
 
