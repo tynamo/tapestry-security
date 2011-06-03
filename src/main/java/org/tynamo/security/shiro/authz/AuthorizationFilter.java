@@ -35,7 +35,7 @@ import org.tynamo.security.shiro.AccessControlFilter;
  * provides reasonable handling for most applications.
  *
  * @see #onAccessDenied(javax.servlet.ServletRequest, javax.servlet.ServletResponse)
- * @since 0.9
+ * @since 0.4.0
  */
 public abstract class AuthorizationFilter extends AccessControlFilter {
 

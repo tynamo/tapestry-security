@@ -37,8 +37,12 @@ import org.apache.shiro.web.util.WebUtils;
  * if they are not authenticated.  This superclass provides the method
  * {@link #saveRequestAndRedirectToLogin(javax.servlet.ServletRequest, javax.servlet.ServletResponse)}
  * which is used by many subclasses as the behavior when a user is unauthenticated.
+ * 
+ * This class and the subclasses that are used as Shiro's built-in filters were copied from Shiro 1.1.0
+ * and modified locally to implement same behavior as specified in https://issues.apache.org/jira/browse/SHIRO-256
+ * We'll revert to using Shiro's filters if the feature gets implemented in Shiro 2.x
  *
- * @since 0.9
+ * @since 0.4.0
  */
 public abstract class AccessControlFilter extends AdviceFilter {
 	// default values - populated by the ChainFactory from symbols 

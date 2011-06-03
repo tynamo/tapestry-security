@@ -56,7 +56,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see <a href="ftp://ftp.isi.edu/in-notes/rfc2617.txt">RFC 2617</a>
  * @see <a href="http://en.wikipedia.org/wiki/Basic_access_authentication">Basic Access Authentication</a>
- * @since 0.9
+ * @since 0.4.0
  */
 public class BasicHttpAuthenticationFilter extends AuthenticatingFilter {
 

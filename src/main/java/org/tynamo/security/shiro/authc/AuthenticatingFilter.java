@@ -18,19 +18,19 @@
  */
 package org.tynamo.security.shiro.authc;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-
 /**
  * An <code>AuthenticationFilter</code> that is capable of automatically performing an authentication attempt
  * based on the incoming request.
  *
- * @since 0.9
+ * @since 0.4.0
  */
 public abstract class AuthenticatingFilter extends AuthenticationFilter {
 

@@ -19,6 +19,7 @@
 package org.tynamo.security.shiro.authz;
 
 import java.io.IOException;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
@@ -28,7 +29,7 @@ import org.apache.shiro.subject.Subject;
  * Filter that allows access if the current user has the permissions specified by the mapped value, or denies access
  * if the user does not have all of the permissions specified.
  *
- * @since 0.9
+ * @since 0.4.0
  */
 public class PermissionsAuthorizationFilter extends AuthorizationFilter {
 

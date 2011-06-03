@@ -31,7 +31,7 @@ import org.tynamo.security.shiro.AccessControlFilter;
  * <p/>
  * If the accessor is not a known user, then they will be redirected to the {@link #setLoginUrl(String) loginUrl}</p>
  *
- * @since 0.9
+ * @since 0.4.0
  */
 public class UserFilter extends AccessControlFilter {
 

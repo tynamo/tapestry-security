@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
  * {@link #loginUrl} to pass through to your application's code directly.
  *
  * @see PassThruAuthenticationFilter
- * @since 0.9
+ * @since 0.4.0
  */
 public class FormAuthenticationFilter extends AuthenticatingFilter {
 
