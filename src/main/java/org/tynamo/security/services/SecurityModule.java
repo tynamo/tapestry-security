@@ -18,11 +18,9 @@
  */
 package org.tynamo.security.services;
 
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.util.ClassUtils;
@@ -52,6 +50,7 @@ import org.apache.tapestry5.services.LibraryMapping;
 import org.apache.tapestry5.services.RequestGlobals;
 import org.apache.tapestry5.services.Response;
 import org.slf4j.Logger;
+import org.tynamo.common.ModuleProperties;
 import org.tynamo.security.SecurityComponentRequestFilter;
 import org.tynamo.security.SecuritySymbols;
 import org.tynamo.security.ShiroAnnotationWorker;
@@ -74,20 +73,7 @@ public class SecurityModule
 
 	private static final String EXCEPTION_HANDLE_METHOD_NAME = "handleRequestException";
 	private static final String PATH_PREFIX = "security";
-	private static String version = "unversioned";
-
-	static
-	{
-		Properties moduleProperties = new Properties();
-		try
-		{
-			moduleProperties.load(SecurityModule.class.getResourceAsStream("module.properties"));
-			version = moduleProperties.getProperty("module.version");
-		} catch (IOException e)
-		{
-			// ignore
-		}
-	}
+	private static final String version = ModuleProperties.getVersion(SecurityModule.class);
 
 	public static void bind(final ServiceBinder binder)
 	{

@@ -59,6 +59,12 @@
 
 		<dependency>
 			<groupId>org.tynamo</groupId>
+			<artifactId>tynamo-common</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.tynamo</groupId>
 			<artifactId>tapestry-model-test</artifactId>
 			<version>0.1.0</version>
 			<scope>test</scope>
