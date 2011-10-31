@@ -99,17 +99,14 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 		ThreadContext.bind(securityManager);
 		WebSubject subject = new WebSubject.Builder(securityManager, originalRequest, response).buildWebSubject();
 
-		boolean handled = (Boolean) subject.execute(new Callable() {
-			public Object call() throws Exception {
+		return subject.execute(new Callable<Boolean>() {
+			public Boolean call() throws Exception {
 				if (chain == null) return handler.service(originalRequest, response);
 				else {
-					final boolean handled = chain.getHandler().service(request, response);
-					if (!handled) return handler.service(request, response);
-					else return true;
+					boolean handled = chain.getHandler().service(request, response);
+					return handled || handler.service(request, response);
 				}
 			}
 		});
-
-		return handled;
 	}
 }
