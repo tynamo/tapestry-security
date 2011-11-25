@@ -5,7 +5,7 @@
 		<title>Login page</title>
 		<style type="text/css">
 			#tynamoLoginFormContainer {
-				background: url(${asset:classpath:org/tynamo/security/img/login-bg.png}) no-repeat;
+				background: url(${asset:classpath:org/tynamo/security/img/login-bg.jpg}) no-repeat;
 				width:778px;
 				height:600px;
 				margin:0 auto;
