@@ -14,7 +14,7 @@
 	</parent>
 	
 	<properties>
-		<tapestry-release-version>5.3</tapestry-release-version>
+		<tapestry-release-version>5.3.1</tapestry-release-version>
 	</properties>
 	
 	<!-- Developers section inherited from the parent pom -->
@@ -33,7 +33,7 @@
 		<dependency>
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-web</artifactId>
-			<version>1.1.0</version>
+			<version>1.2.0-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
