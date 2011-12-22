@@ -87,6 +87,7 @@
 	</distributionManagement>
 
 	<!-- Needed as long as we depend on Tapestry snapshot 
+	-->
 	<repositories>
 		<repository>
 			<id>apache-ci-snapshots</id>
@@ -99,7 +100,6 @@
 			</releases>
 		</repository>
 	</repositories>
-	-->
 
 	<build>
 		<resources>
