@@ -28,6 +28,7 @@ import org.apache.tapestry5.internal.services.RequestPageCache;
 import org.apache.tapestry5.internal.structure.Page;
 import org.apache.tapestry5.runtime.Component;
 import org.apache.tapestry5.services.ExceptionReporter;
+import org.apache.tapestry5.services.PageRenderLinkSource;
 import org.apache.tapestry5.services.RequestGlobals;
 import org.apache.tapestry5.services.Response;
 import org.tynamo.security.services.PageService;
@@ -35,6 +36,7 @@ import org.tynamo.security.services.SecurityService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collections;
 
 /**
  * Handler for ShiroException
@@ -49,10 +51,11 @@ public class ShiroExceptionHandler
 	private final PageService pageService;
 	private final RequestGlobals requestGlobals;
 	private final Response response;
+	private final PageRenderLinkSource pageRenderLinkSource;
 
 	public ShiroExceptionHandler(PageResponseRenderer renderer, RequestPageCache pageCache,
 	                             SecurityService securityService, PageService pageService,
-	                             RequestGlobals requestGlobals, Response response)
+	                             RequestGlobals requestGlobals, Response response, PageRenderLinkSource pageRenderLinkSource)
 	{
 
 		this.renderer = renderer;
@@ -61,6 +64,7 @@ public class ShiroExceptionHandler
 		this.pageService = pageService;
 		this.requestGlobals = requestGlobals;
 		this.response = response;
+		this.pageRenderLinkSource = pageRenderLinkSource;
 	}
 
 
@@ -104,7 +108,12 @@ public class ShiroExceptionHandler
 
 			reportExceptionIfPossible(exception, page);
 
-			renderer.renderPageResponse(page);
+			WebUtils.issueRedirect(requestGlobals.getHTTPServletRequest(),
+					requestGlobals.getHTTPServletResponse(),
+					pageRenderLinkSource.createPageRenderLink(pageService.getLoginPage()).toURI(),
+					Collections.emptyMap(),
+					false,
+					true);
 
 		}
 	}
