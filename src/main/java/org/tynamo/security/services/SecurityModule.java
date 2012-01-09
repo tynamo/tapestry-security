@@ -35,6 +35,7 @@ import org.apache.tapestry5.ioc.MethodAdvice;
 import org.apache.tapestry5.ioc.MethodAdviceReceiver;
 import org.apache.tapestry5.ioc.OrderedConfiguration;
 import org.apache.tapestry5.ioc.ServiceBinder;
+import org.apache.tapestry5.ioc.annotations.Advise;
 import org.apache.tapestry5.ioc.annotations.InjectService;
 import org.apache.tapestry5.ioc.annotations.Local;
 import org.apache.tapestry5.ioc.annotations.Match;
@@ -47,6 +48,7 @@ import org.apache.tapestry5.services.ComponentRequestFilter;
 import org.apache.tapestry5.services.Context;
 import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.LibraryMapping;
+import org.apache.tapestry5.services.RequestExceptionHandler;
 import org.apache.tapestry5.services.RequestGlobals;
 import org.apache.tapestry5.services.Response;
 import org.slf4j.Logger;
@@ -203,6 +205,7 @@ public class SecurityModule
 	 *
 	 * @see org.tynamo.security.ShiroExceptionHandler
 	 */
+	@Advise(serviceInterface=RequestExceptionHandler.class, id="SecurityRequestExceptionHandler")
 	public static void adviseRequestExceptionHandler(MethodAdviceReceiver receiver,
 	                                                 final PageResponseRenderer renderer,
 	                                                 final RequestPageCache pageCache,
