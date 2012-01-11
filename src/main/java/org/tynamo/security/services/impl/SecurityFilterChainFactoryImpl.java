@@ -13,7 +13,9 @@ import org.tynamo.security.shiro.authc.BasicHttpAuthenticationFilter;
 import org.tynamo.security.shiro.authc.FormAuthenticationFilter;
 import org.tynamo.security.shiro.authc.UserFilter;
 import org.tynamo.security.shiro.authz.PermissionsAuthorizationFilter;
+import org.tynamo.security.shiro.authz.PortFilter;
 import org.tynamo.security.shiro.authz.RolesAuthorizationFilter;
+import org.tynamo.security.shiro.authz.SslFilter;
 
 // Eager load since this service is initializes the global filter defaults
 @EagerLoad
@@ -86,7 +88,19 @@ public class SecurityFilterChainFactoryImpl implements SecurityFilterChainFactor
 		filter.setName(name);
 		return filter;
 	}
-	
-	
+
+	@Override
+	public SslFilter ssl() {
+		SslFilter filter = new SslFilter();
+		filter.setName("ssl");
+		return filter;
+	}
+
+	@Override
+	public PortFilter port() {
+		PortFilter filter = new PortFilter();
+		filter.setName("port");
+		return filter;
+	}
 
 }

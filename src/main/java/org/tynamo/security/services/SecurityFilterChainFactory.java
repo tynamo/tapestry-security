@@ -6,7 +6,9 @@ import org.tynamo.security.shiro.authc.BasicHttpAuthenticationFilter;
 import org.tynamo.security.shiro.authc.FormAuthenticationFilter;
 import org.tynamo.security.shiro.authc.UserFilter;
 import org.tynamo.security.shiro.authz.PermissionsAuthorizationFilter;
+import org.tynamo.security.shiro.authz.PortFilter;
 import org.tynamo.security.shiro.authz.RolesAuthorizationFilter;
+import org.tynamo.security.shiro.authz.SslFilter;
 
 public interface SecurityFilterChainFactory {
 	public SecurityFilterChain.Builder createChain(String path);
@@ -24,4 +26,8 @@ public interface SecurityFilterChainFactory {
 	public RolesAuthorizationFilter roles();
 	
 	public PermissionsAuthorizationFilter perms();
+
+	SslFilter ssl();
+
+	PortFilter port();
 }
