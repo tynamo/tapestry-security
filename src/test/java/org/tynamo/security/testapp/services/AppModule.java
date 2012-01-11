@@ -176,8 +176,13 @@ public class AppModule
 		configuration.add(factory.createChain("/roles/manager/**").add(factory.roles(), "manager").build());
 		configuration.add(factory.createChain("/perms/view/**").add(factory.perms(), "news:view").build());
 		configuration.add(factory.createChain("/perms/edit/**").add(factory.perms(), "news:edit").build());
-	}	
-	
+
+		configuration.add(factory.createChain("/ports/ssl").add(factory.ssl()).build());
+		configuration.add(factory.createChain("/ports/port8180").add(factory.port(), "8180").build());
+		configuration.add(factory.createChain("/ports/port9090").add(factory.port(), "9090").build());
+
+	}
+
 	@Startup
 	public void testCallingSecureOperationInternally(AlphaService alphaService) {
 		// This is a secure operation but you should be able to call it when Subject is not bound

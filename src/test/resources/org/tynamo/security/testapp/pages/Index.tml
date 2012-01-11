@@ -45,7 +45,14 @@
 
 		<div><t:pagelink id="contributed" page="contributed/index">contributed filterChainDefinition</t:pagelink></div>
 
-		<h3>Testing components work</h3>
+		<h4> ports filters </h4>
+		<ul>
+			<li><t:pagelink id="ssl" page="ports/ssl">ports/ssl (ssl filter, no SSL support)</t:pagelink></li>
+			<li><t:pagelink id="port8180" page="ports/port8180">ports/port8180 (port filter, default test port 8180 works!)</t:pagelink></li>
+			<li><t:pagelink id="port9090" page="ports/port9090">ports/port9090 (port filter, arbitrary port 9090 it's blocked)</t:pagelink></li>
+		</ul>
+
+	    <h3>Testing components work</h3>
 		<t:security.authenticated>
 			<div id="AuthenticatedComponent">AuthenticatedComponent - RENDERED</div>
 		</t:security.authenticated>

@@ -18,11 +18,8 @@
  */
 package org.tynamo.security;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-
 import java.io.IOException;
+import java.net.ConnectException;
 
 import org.mortbay.jetty.webapp.WebAppContext;
 import org.testng.annotations.BeforeClass;
@@ -33,6 +30,8 @@ import org.tynamo.test.AbstractContainerTest;
 
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+
+import static org.testng.Assert.*;
 
 public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 {
@@ -704,6 +703,42 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		loginAction();
 		assertEquals(BASEURI + "authc/cabinet", getLocation(), "Don't redirect to remebered url");
 	}
+
+
+	@Test
+	public void testPort8180Filter() throws Exception
+	{
+		openBase();
+		clickOnBasePage("port8180");
+		assertSuccessInvoke();
+	}
+
+//	@Test
+	public void testPort9090Filter() throws Exception
+	{
+		openBase();
+		try {
+			clickOnBasePage("port9090");
+			fail("ConnectException expected");
+		} catch (RuntimeException e) {
+			assertEquals(e.getCause().getClass(), ConnectException.class);
+			assertEquals(e.getCause().getMessage(), "Connection refused");
+		}
+	}
+
+//	@Test
+	public void testSslFilter() throws Exception
+	{
+		openBase();
+		try {
+			clickOnBasePage("ssl");
+			fail("ConnectException expected");
+		} catch (RuntimeException e) {
+			assertEquals(e.getCause().getClass(), ConnectException.class);
+			assertEquals(e.getCause().getMessage(), "Connection refused");
+		}
+	}
+
 
 	protected void assertLoginPage()
 	{
