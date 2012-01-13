@@ -63,6 +63,12 @@
 
 		<dependency>
 			<groupId>org.tynamo</groupId>
+			<artifactId>tapestry-exceptionpage</artifactId>
+			<version>0.1.0-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.tynamo</groupId>
 			<artifactId>tapestry-model-test</artifactId>
 			<version>0.1.0</version>
 			<scope>test</scope>

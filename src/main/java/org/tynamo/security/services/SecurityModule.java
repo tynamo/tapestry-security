@@ -18,16 +18,24 @@
  */
 package org.tynamo.security.services;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.shiro.ShiroException;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ClassUtils;
+import org.apache.shiro.util.StringUtils;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.mgt.WebSecurityManager;
+import org.apache.shiro.web.util.WebUtils;
 import org.apache.tapestry5.internal.services.PageResponseRenderer;
 import org.apache.tapestry5.internal.services.RequestPageCache;
+import org.apache.tapestry5.internal.structure.Page;
 import org.apache.tapestry5.ioc.Configuration;
 import org.apache.tapestry5.ioc.Invocation;
 import org.apache.tapestry5.ioc.MappedConfiguration;
@@ -35,11 +43,11 @@ import org.apache.tapestry5.ioc.MethodAdvice;
 import org.apache.tapestry5.ioc.MethodAdviceReceiver;
 import org.apache.tapestry5.ioc.OrderedConfiguration;
 import org.apache.tapestry5.ioc.ServiceBinder;
-import org.apache.tapestry5.ioc.annotations.Advise;
 import org.apache.tapestry5.ioc.annotations.InjectService;
 import org.apache.tapestry5.ioc.annotations.Local;
 import org.apache.tapestry5.ioc.annotations.Match;
 import org.apache.tapestry5.ioc.annotations.Order;
+import org.apache.tapestry5.ioc.annotations.SubModule;
 import org.apache.tapestry5.services.ApplicationInitializer;
 import org.apache.tapestry5.services.ApplicationInitializerFilter;
 import org.apache.tapestry5.services.ComponentClassResolver;
@@ -48,15 +56,15 @@ import org.apache.tapestry5.services.ComponentRequestFilter;
 import org.apache.tapestry5.services.Context;
 import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.LibraryMapping;
-import org.apache.tapestry5.services.RequestExceptionHandler;
+import org.apache.tapestry5.services.PageRenderLinkSource;
 import org.apache.tapestry5.services.RequestGlobals;
 import org.apache.tapestry5.services.Response;
-import org.slf4j.Logger;
 import org.tynamo.common.ModuleProperties;
+import org.tynamo.exceptionpage.ExceptionHandlerAssistant;
+import org.tynamo.exceptionpage.services.ExceptionPageModule;
 import org.tynamo.security.SecurityComponentRequestFilter;
 import org.tynamo.security.SecuritySymbols;
 import org.tynamo.security.ShiroAnnotationWorker;
-import org.tynamo.security.ShiroExceptionHandler;
 import org.tynamo.security.services.impl.ClassInterceptorsCacheImpl;
 import org.tynamo.security.services.impl.PageServiceImpl;
 import org.tynamo.security.services.impl.SecurityConfiguration;
@@ -70,6 +78,7 @@ import org.tynamo.shiro.extension.authz.aop.SecurityInterceptor;
  * The main entry point for Security integration.
  *
  */
+@SubModule(ExceptionPageModule.class)
 public class SecurityModule
 {
 
@@ -86,7 +95,7 @@ public class SecurityModule
 		binder.bind(SecurityService.class, SecurityServiceImpl.class);
 		binder.bind(SecurityFilterChainFactory.class, SecurityFilterChainFactoryImpl.class);
 		binder.bind(ComponentRequestFilter.class, SecurityComponentRequestFilter.class);
-		binder.bind(ShiroExceptionHandler.class);
+//		binder.bind(ShiroExceptionHandler.class);
 		binder.bind(PageService.class, PageServiceImpl.class);
 	}
 
@@ -199,70 +208,33 @@ public class SecurityModule
 
 		}
 	}
-
-	/**
-	 * Advise current RequestExceptionHandler for we can catch ShiroException exceptions and handle this.
-	 *
-	 * @see org.tynamo.security.ShiroExceptionHandler
-	 */
-	@Advise(serviceInterface=RequestExceptionHandler.class, id="SecurityRequestExceptionHandler")
-	public static void adviseRequestExceptionHandler(MethodAdviceReceiver receiver,
-	                                                 final PageResponseRenderer renderer,
-	                                                 final RequestPageCache pageCache,
-	                                                 final Logger logger,
-	                                                 final RequestGlobals requestGlobals,
-	                                                 final Response response,
-	                                                 final SecurityService securityService,
-	                                                 final ShiroExceptionHandler handler)
-	{
-
-		Method handleMethod;
-
-		try
-		{
-			Class<?> serviceInterface = receiver.getInterface();
-			handleMethod = serviceInterface.getMethod(EXCEPTION_HANDLE_METHOD_NAME, Throwable.class);
-		} catch (Exception e)
-		{
-			throw new RuntimeException("Can't find method  " +
-					"RequestExceptionHandler." + EXCEPTION_HANDLE_METHOD_NAME + ". Changed API?", e);
-		}
-
-		MethodAdvice advice = new MethodAdvice()
-		{
+	
+	public void contributeExceptionHandler(MappedConfiguration<Class, Object> configuration,
+		final PageResponseRenderer renderer, final RequestPageCache pageCache, final SecurityService securityService,
+		final PageService pageService, final RequestGlobals requestGlobals, final Response response,
+		final PageRenderLinkSource pageRenderLinkSource) {
+		final ExceptionHandlerAssistant assistant = new ExceptionHandlerAssistant() {
 			@Override
-			public void advise(Invocation invocation)
-			{
-				Throwable exception = (Throwable) invocation.getParameter(0);
+			public String handleRequestException(Throwable exception, List<Object> exceptionContext) throws IOException {
+				if (securityService.isAuthenticated()) {
+					String unauthorizedPage = pageService.getUnauthorizedPage();
+					response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+					if (!StringUtils.hasText(unauthorizedPage)) return null;
 
-				ShiroException shiroException = null;
-
-				// TODO Maybe we should just loop through the chain as done in exceptionpage module
-				// Depending on where the error was thrown, there could be several levels of wrappers..
-				// For exceptions in component operations, it's OperationException -> ComponentEventException -> ShiroException
-				if (exception.getCause() instanceof ShiroException) shiroException = (ShiroException) exception.getCause();
-				else if (exception.getCause() !=null && exception.getCause().getCause() instanceof ShiroException) shiroException = (ShiroException) exception.getCause().getCause();
-				else if (exception instanceof ShiroException) shiroException = (ShiroException) exception;
-
-				if (shiroException != null)
-				{
-
-					try
-					{
-						handler.handle(shiroException);
-					} catch (Exception e)
-					{
-						logger.error("Error handling SecurityException", e);
-						invocation.proceed();
-					}
-
-				} else
-				{
-					invocation.proceed();
+					Page page = pageCache.get(unauthorizedPage);
+					renderer.renderPageResponse(page);
+					return null;
 				}
+				Subject subject = securityService.getSubject();
+				if (subject != null) {
+					Session session = subject.getSession();
+					if (session != null) WebUtils.saveRequest(requestGlobals.getHTTPServletRequest());
+				}
+
+				return pageService.getLoginPage();
 			}
 		};
-		receiver.adviseMethod(handleMethod, advice);
+		configuration.add(ShiroException.class, assistant);
 	}
 
 	public static void contributeHttpServletRequestHandler(OrderedConfiguration<HttpServletRequestFilter> configuration,
