@@ -22,6 +22,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.tapestry5.internal.services.LinkSource;
+import org.tynamo.security.services.PageService;
 
 /**
  * Filter that allows access to a path immeidately without performing security checks of any kind.
@@ -50,6 +52,9 @@ import org.apache.shiro.authc.AuthenticationToken;
  * @since 0.4.0
  */
 public class AnonymousFilter extends AuthenticatingFilter {
+	public AnonymousFilter(LinkSource linkSource, PageService pageService) {
+		super(linkSource, pageService);
+	}
 
     /**
      * Always returns <code>true</code> allowing unchecked access to the underlying path or resource.

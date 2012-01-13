@@ -18,14 +18,17 @@
  */
 package org.tynamo.security.shiro.authz;
 
-import org.apache.shiro.config.ConfigurationException;
-import org.apache.shiro.util.StringUtils;
-import org.apache.shiro.web.util.WebUtils;
+import java.io.IOException;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
+
+import org.apache.shiro.config.ConfigurationException;
+import org.apache.shiro.util.StringUtils;
+import org.apache.shiro.web.util.WebUtils;
+import org.apache.tapestry5.internal.services.LinkSource;
+import org.tynamo.security.services.PageService;
 
 /**
  * A copy of Shiro's 1.2.0 PortFilter that works with tapestry-security 0.4.x
@@ -35,6 +38,9 @@ import java.io.IOException;
  * @since 0.4.1
  */
 public class PortFilter extends AuthorizationFilter {
+	public PortFilter(LinkSource linkSource, PageService pageService) {
+		super(linkSource, pageService);
+	}
 
 	public static final int DEFAULT_HTTP_PORT = 80;
 	public static final String HTTP_SCHEME = "http";

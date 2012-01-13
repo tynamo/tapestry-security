@@ -31,6 +31,8 @@ import org.apache.shiro.util.AntPathMatcher;
 import org.apache.shiro.util.PatternMatcher;
 import org.apache.shiro.web.servlet.AdviceFilter;
 import org.apache.shiro.web.util.WebUtils;
+import org.apache.tapestry5.internal.services.LinkSource;
+import org.tynamo.security.services.PageService;
 
 /**
  * Superclass for any filter that controls access to a resource and may redirect the user to the login page
@@ -58,6 +60,14 @@ public abstract class AccessControlFilter extends AdviceFilter {
 		private String[] configElements;
 
 		private String config;
+		
+		private final LinkSource linkSource;
+		private final PageService pageService;
+		
+		public AccessControlFilter(LinkSource linkSource, PageService pageService) {
+			this.linkSource = linkSource;
+			this.pageService = pageService;
+		}
 		
 		/*
 		 * Same as {@link #setConfig()} except throws an {@link IllegalArgumentException} if config is already set.

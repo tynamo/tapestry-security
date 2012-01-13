@@ -18,6 +18,11 @@
  */
 package org.tynamo.security;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
+
 import java.io.IOException;
 import java.net.ConnectException;
 
@@ -30,8 +35,6 @@ import org.tynamo.test.AbstractContainerTest;
 
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-
-import static org.testng.Assert.*;
 
 public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 {
@@ -166,6 +169,14 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		clickOnBasePage("userCabinet");
 		assertLoginPage();
 	}
+	
+	@Test(groups = {"notLoggedIn"})
+	public void testLocalizedUserFilterDeny() throws Exception
+	{
+		openPage("fi_FI/authc/cabinet");
+		assertLoginPage();
+	}
+	
 
 	@Test(groups = {"notLoggedIn"})
 	public void testAuthcFilterDeny() throws Exception

@@ -25,6 +25,8 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.apache.tapestry5.internal.services.LinkSource;
+import org.tynamo.security.services.PageService;
 
 /**
  * An <code>AuthenticationFilter</code> that is capable of automatically performing an authentication attempt
@@ -33,6 +35,9 @@ import org.apache.shiro.subject.Subject;
  * @since 0.4.0
  */
 public abstract class AuthenticatingFilter extends AuthenticationFilter {
+	public AuthenticatingFilter(LinkSource linkSource, PageService pageService) {
+		super(linkSource, pageService);
+	}
 
     //TODO - complete JavaDoc
 

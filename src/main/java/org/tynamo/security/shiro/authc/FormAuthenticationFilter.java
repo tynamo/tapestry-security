@@ -28,8 +28,10 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.PassThruAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
+import org.apache.tapestry5.internal.services.LinkSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.tynamo.security.services.PageService;
 
 
 /**
@@ -58,6 +60,9 @@ import org.slf4j.LoggerFactory;
  * @since 0.4.0
  */
 public class FormAuthenticationFilter extends AuthenticatingFilter {
+	public FormAuthenticationFilter(LinkSource linkSource, PageService pageService) {
+		super(linkSource, pageService);
+	}
 
     //TODO - complete JavaDoc
 

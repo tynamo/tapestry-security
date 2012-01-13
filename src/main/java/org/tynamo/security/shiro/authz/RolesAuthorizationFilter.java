@@ -26,6 +26,8 @@ import javax.servlet.ServletResponse;
 
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.CollectionUtils;
+import org.apache.tapestry5.internal.services.LinkSource;
+import org.tynamo.security.services.PageService;
 
 
 /**
@@ -35,6 +37,9 @@ import org.apache.shiro.util.CollectionUtils;
  * @since 0.4.0
  */
 public class RolesAuthorizationFilter extends AuthorizationFilter {
+	public RolesAuthorizationFilter(LinkSource linkSource, PageService pageService) {
+		super(linkSource, pageService);
+	}
 
     //TODO - complete JavaDoc
 

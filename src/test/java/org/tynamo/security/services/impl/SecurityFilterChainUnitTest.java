@@ -16,7 +16,7 @@ public class SecurityFilterChainUnitTest {
 	@BeforeTest
 	public void setUp() {
 		builder = new SecurityFilterChain.Builder(null, null, "");
-		factory = new SecurityFilterChainFactoryImpl(null, null, "", "", "");
+		factory = new SecurityFilterChainFactoryImpl(null, null, null, null, "", "", "");
 	}
 	
 	@Test(expectedExceptions = {IllegalArgumentException.class})
