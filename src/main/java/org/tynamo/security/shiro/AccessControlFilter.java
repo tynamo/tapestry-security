@@ -31,7 +31,6 @@ import org.apache.shiro.util.AntPathMatcher;
 import org.apache.shiro.util.PatternMatcher;
 import org.apache.shiro.web.servlet.AdviceFilter;
 import org.apache.shiro.web.util.WebUtils;
-import org.apache.tapestry5.internal.services.LinkSource;
 import org.tynamo.security.services.PageService;
 
 /**
@@ -61,11 +60,9 @@ public abstract class AccessControlFilter extends AdviceFilter {
 
 		private String config;
 		
-		private final LinkSource linkSource;
 		private final PageService pageService;
 		
-		public AccessControlFilter(LinkSource linkSource, PageService pageService) {
-			this.linkSource = linkSource;
+		public AccessControlFilter(PageService pageService) {
 			this.pageService = pageService;
 		}
 		
@@ -311,8 +308,11 @@ public abstract class AccessControlFilter extends AdviceFilter {
      * @throws IOException if an error occurs.
      */
     protected void redirectToLogin(ServletRequest request, ServletResponse response) throws IOException {
-        String loginUrl = getLoginUrl();
-        WebUtils.issueRedirect(request, response, loginUrl);
+//        String loginUrl = getLoginUrl();
+    	String localeName = pageService.getLocaleFromPath(WebUtils.getPathWithinApplication(WebUtils.toHttp(request)));
+    	String loginUrl = localeName == null ? '/' + pageService.getLoginPage() : '/' + localeName + '/' + pageService.getLoginPage();
+      // FIXME should handle XHR request as well
+      WebUtils.issueRedirect(request, response, loginUrl);
     }
 
 }

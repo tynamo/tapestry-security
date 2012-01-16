@@ -21,7 +21,6 @@ package org.tynamo.security.shiro.authz;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.apache.tapestry5.internal.services.LinkSource;
 import org.tynamo.security.services.PageService;
 
 /**
@@ -42,8 +41,8 @@ public class SslFilter extends PortFilter {
 	public static final int DEFAULT_HTTPS_PORT = 443;
 	public static final String HTTPS_SCHEME = "https";
 
-	public SslFilter(LinkSource linkSource, PageService pageService) {
-		super(linkSource, pageService);
+	public SslFilter(PageService pageService) {
+		super(pageService);
 		setPort(DEFAULT_HTTPS_PORT);
 	}
 

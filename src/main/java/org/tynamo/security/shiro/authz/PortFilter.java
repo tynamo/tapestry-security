@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.shiro.config.ConfigurationException;
 import org.apache.shiro.util.StringUtils;
 import org.apache.shiro.web.util.WebUtils;
-import org.apache.tapestry5.internal.services.LinkSource;
 import org.tynamo.security.services.PageService;
 
 /**
@@ -38,8 +37,8 @@ import org.tynamo.security.services.PageService;
  * @since 0.4.1
  */
 public class PortFilter extends AuthorizationFilter {
-	public PortFilter(LinkSource linkSource, PageService pageService) {
-		super(linkSource, pageService);
+	public PortFilter(PageService pageService) {
+		super(pageService);
 	}
 
 	public static final int DEFAULT_HTTP_PORT = 80;

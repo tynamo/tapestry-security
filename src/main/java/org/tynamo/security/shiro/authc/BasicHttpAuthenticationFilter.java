@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.web.util.WebUtils;
-import org.apache.tapestry5.internal.services.LinkSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tynamo.security.services.PageService;
@@ -61,8 +60,8 @@ import org.tynamo.security.services.PageService;
  * @since 0.4.0
  */
 public class BasicHttpAuthenticationFilter extends AuthenticatingFilter {
-	public BasicHttpAuthenticationFilter(LinkSource linkSource, PageService pageService) {
-		super(linkSource, pageService);
+	public BasicHttpAuthenticationFilter(PageService pageService) {
+		super(pageService);
 	}
     /**
      * This class's private logger.

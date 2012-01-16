@@ -22,7 +22,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.tapestry5.internal.services.LinkSource;
 import org.tynamo.security.services.PageService;
 
 /**
@@ -52,8 +51,8 @@ import org.tynamo.security.services.PageService;
  * @since 0.4.0
  */
 public class AnonymousFilter extends AuthenticatingFilter {
-	public AnonymousFilter(LinkSource linkSource, PageService pageService) {
-		super(linkSource, pageService);
+	public AnonymousFilter(PageService pageService) {
+		super(pageService);
 	}
 
     /**

@@ -23,14 +23,16 @@ import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.apache.shiro.web.servlet.ShiroHttpServletRequest;
 import org.apache.shiro.web.subject.WebSubject;
-import org.apache.shiro.web.util.WebUtils;
 import org.apache.tapestry5.services.ApplicationGlobals;
 import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.HttpServletRequestHandler;
+import org.tynamo.security.services.PageService;
 
 public class SecurityConfiguration implements HttpServletRequestFilter {
 	private SecurityManager securityManager;
-	private ServletContext servletContext;
+	private final ServletContext servletContext;
+	private final PageService pageService;
+	
 
 	private Map<String, SecurityFilterChain> chainMap = new LinkedHashMap<String, SecurityFilterChain>();
 
@@ -42,10 +44,10 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
     	return super.matches(pattern, source.toLowerCase());
     }
 	};
-	
 
-	public SecurityConfiguration(ApplicationGlobals applicationGlobals, final WebSecurityManager securityManager, final Collection<SecurityFilterChain> chains) {
+	public SecurityConfiguration(ApplicationGlobals applicationGlobals, final WebSecurityManager securityManager, PageService pageService, final Collection<SecurityFilterChain> chains) {
 		this.securityManager = securityManager;
+		this.pageService = pageService;
 		servletContext = applicationGlobals.getServletContext();
 		// The order of securityFilterChains is meaningful, so we need to construct the map ourselves rather
 		// than simply use MappedConfiguration
@@ -83,7 +85,7 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 
 		final HttpServletRequest request = new ShiroHttpServletRequest(originalRequest, servletContext, false);
 
-		String requestURI = WebUtils.getPathWithinApplication(originalRequest);
+		String requestURI = pageService.getLocalelessPathWithinApplication();
 
 		SecurityFilterChain configureChain = null;
 		for (String path : chainMap.keySet()) {

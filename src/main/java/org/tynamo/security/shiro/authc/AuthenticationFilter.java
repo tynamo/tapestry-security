@@ -23,7 +23,6 @@ import javax.servlet.ServletResponse;
 
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.util.WebUtils;
-import org.apache.tapestry5.internal.services.LinkSource;
 import org.tynamo.security.services.PageService;
 import org.tynamo.security.shiro.AccessControlFilter;
 
@@ -35,8 +34,8 @@ import org.tynamo.security.shiro.AccessControlFilter;
  * @since 0.9
  */
 public abstract class AuthenticationFilter extends AccessControlFilter {
-	public AuthenticationFilter(LinkSource linkSource, PageService pageService) {
-		super(linkSource, pageService);
+	public AuthenticationFilter(PageService pageService) {
+		super(pageService);
 	}
 
     /**
