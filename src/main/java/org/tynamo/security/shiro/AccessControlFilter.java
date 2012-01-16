@@ -21,6 +21,7 @@ package org.tynamo.security.shiro;
 import static org.apache.shiro.util.StringUtils.split;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -311,8 +312,16 @@ public abstract class AccessControlFilter extends AdviceFilter {
 //        String loginUrl = getLoginUrl();
     	String localeName = pageService.getLocaleFromPath(WebUtils.getPathWithinApplication(WebUtils.toHttp(request)));
     	String loginUrl = localeName == null ? '/' + pageService.getLoginPage() : '/' + localeName + '/' + pageService.getLoginPage();
-      // FIXME should handle XHR request as well
-      WebUtils.issueRedirect(request, response, loginUrl);
+    	
+    	// We are not in the response pipeline yet, and it's possible that a tapestry isn't handling this response, but it's still probably 
+    	// better than sending a 302 and the full the page
+    	if ("XMLHttpRequest".equals(WebUtils.toHttp(request).getHeader("X-Requested-With"))) {
+    		WebUtils.toHttp(response).setContentType("application/json;charset=UTF-8");
+    		OutputStream os = WebUtils.toHttp(response).getOutputStream();
+				os.write(("{\"script\":\"window.location.replace('" + loginUrl + "');\"}").getBytes());
+				os.close();
+    	}
+    	else WebUtils.issueRedirect(request, response, loginUrl);
     }
 
 }
