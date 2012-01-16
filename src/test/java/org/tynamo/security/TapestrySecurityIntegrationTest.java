@@ -101,6 +101,16 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		clickOnBasePage("componentMethodInterceptor");
 		assertLoginPage();
 	}
+	
+	@Test(groups = {"notLoggedIn"})
+	public void testInterceptComponentMethodWithAjaxDeny() throws Exception
+	{
+		clickOnBasePage("componentMethodInterceptorWithAjax");
+		// this executes window.location.replace so we have to wait for it. is there an event we could listen instead?
+		webClient.waitForBackgroundJavaScript(500);
+		page = (HtmlPage) webClient.getCurrentWindow().getEnclosedPage();
+		assertLoginPage();
+	}
 
 	@Test(groups = {"notLoggedIn"})
 	public void testInterceptComponentClassDeny() throws Exception
@@ -167,6 +177,22 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	public void testUserFilterDeny() throws Exception
 	{
 		clickOnBasePage("userCabinet");
+		assertLoginPage();
+	}
+	
+	@Test(groups = {"notLoggedIn"})
+	public void testUserFilterWithAjaxDeny() throws Exception
+	{
+		clickOnBasePage("tynamoLoginLink");
+		loginAction();
+		clickOnBasePage("contributed");
+		// now go log out in a different "window"
+		HtmlPage indexPage = webClient.getPage(BASEURI);
+		indexPage.getElementById("tynamoLogoutLink").click();
+		// then try invoking the ajax link on the page protected by a filter
+		page.getElementById("ajaxLink").click();
+		webClient.waitForBackgroundJavaScript(500);
+		page = (HtmlPage) webClient.getCurrentWindow().getEnclosedPage();
 		assertLoginPage();
 	}
 	

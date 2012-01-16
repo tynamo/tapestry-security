@@ -52,6 +52,15 @@
 			<li><t:pagelink id="port9090" page="ports/port9090">ports/port9090 (port filter, arbitrary port 9090 it's blocked)</t:pagelink></li>
 		</ul>
 
+		<h3>Testing ajax response</h3>
+		<div>
+			<t:zone t:id="targetZone">
+				<div>RESULT[${result}]</div>
+			</t:zone>
+    	<div><t:actionlink zone="targetZone" t:id="componentMethodInterceptorWithAjax" id="componentMethodInterceptorWithAjax">action componentMethodInterceptor (Restricted by annotation on page method), targeting targetZone</t:actionlink> </div>
+		</div>
+
+
 	    <h3>Testing components work</h3>
 		<t:security.authenticated>
 			<div id="AuthenticatedComponent">AuthenticatedComponent - RENDERED</div>

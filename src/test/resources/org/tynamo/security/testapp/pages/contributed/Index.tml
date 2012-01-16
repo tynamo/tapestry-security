@@ -9,5 +9,13 @@
 	User Principal <div id="userPrincipal">${userPrincipal}</div>
 	is user in role "user"? <div id="userInRoleUser">${userInRoleUser}</div>
 	is user in role "manager"?<div id="userInRoleManager">${userInRoleManager}</div>
+	
+	<div>
+		<t:zone t:id="targetZone" t:visible="false">
+			<div>${success}</div>
+		</t:zone>
+   	<div><t:actionlink t:zone="targetZone" t:id="ajaxLink" id="ajaxLink">ajax link</t:actionlink> </div>
+	</div>
+	
 </body>
 </html>

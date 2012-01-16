@@ -18,11 +18,12 @@
  */
 package org.tynamo.security.testapp.pages;
 
-import org.apache.tapestry5.PersistenceConstants;
-import org.apache.tapestry5.annotations.Persist;
-import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
-
+import org.apache.tapestry5.PersistenceConstants;
+import org.apache.tapestry5.annotations.InjectComponent;
+import org.apache.tapestry5.annotations.Persist;
+import org.apache.tapestry5.corelib.components.Zone;
+import org.apache.tapestry5.ioc.annotations.Inject;
 import org.tynamo.security.services.SecurityService;
 import org.tynamo.security.testapp.services.AlphaService;
 import org.tynamo.security.testapp.services.BetaService;
@@ -49,6 +50,15 @@ public class Index {
 	@RequiresAuthentication
 	public void onActionFromComponentMethodInterceptor() {
 		result = Invoker.invoke(getClass());
+	}
+	
+	@InjectComponent
+	private Zone targetZone;	
+	
+	@RequiresAuthentication
+	public Object onActionFromComponentMethodInterceptorWithAjax() {
+		result = Invoker.invoke(getClass());
+		return targetZone.getBody();
 	}
 	
 	public void onActionFromBetaServiceInvoke() {

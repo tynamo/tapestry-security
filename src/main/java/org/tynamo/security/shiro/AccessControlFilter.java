@@ -313,12 +313,12 @@ public abstract class AccessControlFilter extends AdviceFilter {
     	String localeName = pageService.getLocaleFromPath(WebUtils.getPathWithinApplication(WebUtils.toHttp(request)));
     	String loginUrl = localeName == null ? '/' + pageService.getLoginPage() : '/' + localeName + '/' + pageService.getLoginPage();
     	
-    	// We are not in the response pipeline yet, and it's possible that a tapestry isn't handling this response, but it's still probably 
+    	// We are not in the response pipeline yet, and it's possible that Tapestry isn't handling this response, but it's still probably 
     	// better than sending a 302 and the full the page
     	if ("XMLHttpRequest".equals(WebUtils.toHttp(request).getHeader("X-Requested-With"))) {
     		WebUtils.toHttp(response).setContentType("application/json;charset=UTF-8");
     		OutputStream os = WebUtils.toHttp(response).getOutputStream();
-				os.write(("{\"script\":\"window.location.replace('" + loginUrl + "');\"}").getBytes());
+				os.write(("{\"redirectURL\":\"" + loginUrl + "\"}").getBytes());
 				os.close();
     	}
     	else WebUtils.issueRedirect(request, response, loginUrl);

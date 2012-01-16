@@ -1,9 +1,11 @@
 package org.tynamo.security.testapp.pages.contributed;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.tapestry5.annotations.InjectComponent;
+import org.apache.tapestry5.corelib.components.Zone;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.tynamo.security.testapp.pages.AccessiblePage;
-
-import javax.servlet.http.HttpServletRequest;
 
 public class Index extends AccessiblePage
 {
@@ -36,6 +38,11 @@ public class Index extends AccessiblePage
 	{
 		return isUserInRole("manager");
 	}
+	
+	@InjectComponent
+	private Zone targetZone;
 
-
+	public Object onActionFromAjaxLink() {
+		return targetZone.getBody();
+	}
 }
