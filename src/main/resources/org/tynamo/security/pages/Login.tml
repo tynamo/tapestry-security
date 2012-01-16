@@ -31,10 +31,12 @@
 			#tynamoLoginContainer {
 				margin-bottom: 50px;
 			}
+			#tynamoLoginContainer label:after { content: ": " }
 			
 			#tynamoPasswordContainer {
 				margin-bottom: 50px;
 			}
+			#tynamoPasswordContainer label:after { content: ": " }
 			
 			#tynamoRememberMeContainer {
 				margin-bottom: 40px;

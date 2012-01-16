@@ -173,8 +173,11 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	@Test(groups = {"notLoggedIn"})
 	public void testLocalizedUserFilterDeny() throws Exception
 	{
+		// this test can fail either if acl rules don't correctly handle path matching with the requested locale,
+		// or that resulting login page is not correctly localized anymore (requested locale is lost)
 		openPage("fi_FI/authc/cabinet");
 		assertLoginPage();
+		page.getElementById("tynamoEnter").asText().contains("Kirjaudu sisään");
 	}
 	
 

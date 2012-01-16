@@ -4,24 +4,24 @@
 		<t:form t:id="tynamoLoginForm" >
 			<div id="tynamoLoginMessage" >${loginMessage}</div>
 			<div id="tynamoLoginContainer">
-				<div><t:label for="tynamoLogin">login:</t:label></div>
+				<div><t:label for="tynamoLogin">${message:loginLabel}</t:label></div>
 				<div><t:textfield t:id="tynamoLogin" validate="required"/></div>
 			</div>
 			
 			<div id="tynamoPasswordContainer">
-				<div><t:label for="tynamoPassword">password:</t:label></div>
+				<div><t:label for="tynamoPassword">${message:passwordLabel}</t:label></div>
 				<div><t:passwordfield t:id="tynamoPassword" validate="required"/></div>
 			</div>
 			
 			<div id="tynamoRememberMeContainer">
 				<div>
 					<t:checkbox t:id="tynamoRememberMe" />
-					<t:label for="tynamoRememberMe">Remember Me</t:label>
+					<t:label for="tynamoRememberMe">${message:rememberMeLabel}</t:label>
 				</div>
 			</div>
 			
 			<div id="tynamoEnterContainer">
-				<input type="submit" id="tynamoEnter" value="Enter" />
+				<input type="submit" id="tynamoEnter" value="${message:loginSubmit}" />
 			</div>
 		</t:form>
 </div>
