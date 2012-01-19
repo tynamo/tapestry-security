@@ -62,7 +62,8 @@ public abstract class AuthenticationFilter extends AccessControlFilter {
      * @throws Exception if there is a problem redirecting.
      */
     protected void issueSuccessRedirect(ServletRequest request, ServletResponse response) throws Exception {
-        WebUtils.redirectToSavedRequest(request, response, getSuccessUrl());
+    		if (isRedirectToSavedUrl()) WebUtils.redirectToSavedRequest(request, response, getSuccessUrl());
+    		else WebUtils.issueRedirect(request, response, getSuccessUrl());
     }
 
 }

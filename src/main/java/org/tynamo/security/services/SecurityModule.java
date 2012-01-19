@@ -104,6 +104,7 @@ public class SecurityModule
 		configuration.add(SecuritySymbols.LOGIN_URL, "/" + PATH_PREFIX + "/login");
 		configuration.add(SecuritySymbols.SUCCESS_URL, "/index");
 		configuration.add(SecuritySymbols.UNAUTHORIZED_URL, "/" + PATH_PREFIX + "/unauthorized");
+		configuration.add(SecuritySymbols.REDIRECT_TO_SAVED_URL, "true");
 	}
 
 

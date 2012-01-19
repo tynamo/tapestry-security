@@ -49,6 +49,7 @@ import org.tynamo.security.services.PageService;
 public abstract class AccessControlFilter extends AdviceFilter {
 	// default values - populated by the ChainFactory from symbols 
 	public static String LOGIN_URL, SUCCESS_URL, UNAUTHORIZED_URL;
+	public static boolean REDIRECT_TO_SAVED_URL;
 	
     protected PatternMatcher pathMatcher = new AntPathMatcher() {
 			@Override
@@ -103,6 +104,8 @@ public abstract class AccessControlFilter extends AdviceFilter {
     private String successUrl = SUCCESS_URL;
     
     private String unauthorizedUrl = UNAUTHORIZED_URL;
+    
+    private boolean redirectToSavedUrl = REDIRECT_TO_SAVED_URL;
 
     /**
      * Returns the success url to use as the default location a user is sent after logging in.  Typically a redirect
@@ -291,7 +294,8 @@ public abstract class AccessControlFilter extends AdviceFilter {
      * @param request the incoming ServletRequest to save for re-use later (for example, after a redirect).
      */
     protected void saveRequest(ServletRequest request) {
-        WebUtils.saveRequest(request);
+//    	if (WebUtils.toHttp(request).getSession(false) != null) 
+    		WebUtils.saveRequest(request);
     }
 
     /**
@@ -323,5 +327,13 @@ public abstract class AccessControlFilter extends AdviceFilter {
     	}
     	else WebUtils.issueRedirect(request, response, loginUrl);
     }
+
+		public boolean isRedirectToSavedUrl() {
+			return redirectToSavedUrl;
+		}
+
+		public void setRedirectToSavedUrl(boolean redirectToSavedUrl) {
+			this.redirectToSavedUrl = redirectToSavedUrl;
+		}
 
 }

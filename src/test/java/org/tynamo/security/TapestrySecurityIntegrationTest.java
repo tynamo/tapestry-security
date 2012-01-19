@@ -731,7 +731,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		clickOnBasePage("about");
 		assertLoginPage();
 		loginAction();
-		assertEquals(BASEURI + "about", getLocation(), "Don't redirect to remebered url");
+		assertEquals(getLocation(), BASEURI + "about", "Request wasn't redirected to the remebered url");
 	}
 
 	@Test(dependsOnMethods = {"testSaveRequestAnnotationHandler"})
@@ -741,7 +741,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		clickOnBasePage("authcCabinet");
 		assertLoginPage();
 		loginAction();
-		assertEquals(BASEURI + "authc/cabinet", getLocation(), "Don't redirect to remebered url");
+		assertEquals(getLocation(), BASEURI + "authc/cabinet", "Request wasn't redirected to the remebered url");
 	}
 
 

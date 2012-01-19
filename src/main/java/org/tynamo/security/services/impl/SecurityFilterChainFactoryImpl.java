@@ -30,7 +30,7 @@ public class SecurityFilterChainFactoryImpl implements SecurityFilterChainFactor
 	public SecurityFilterChainFactoryImpl(Logger logger, PipelineBuilder builder, PageService pageService,
       @Inject @Symbol(SecuritySymbols.SUCCESS_URL) String successUrl,
       @Inject @Symbol(SecuritySymbols.LOGIN_URL) String loginUrl,
-      @Inject @Symbol(SecuritySymbols.UNAUTHORIZED_URL) String unauthorizedUrl
+      @Inject @Symbol(SecuritySymbols.UNAUTHORIZED_URL) String unauthorizedUrl, @Inject @Symbol(SecuritySymbols.REDIRECT_TO_SAVED_URL) boolean redirectToSavedUrl
 	) {
 		this.builder = builder;
 		this.logger = logger;
