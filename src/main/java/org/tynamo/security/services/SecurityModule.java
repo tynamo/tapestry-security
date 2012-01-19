@@ -215,7 +215,7 @@ public class SecurityModule
 		final PageRenderLinkSource pageRenderLinkSource) {
 		final ExceptionHandlerAssistant assistant = new ExceptionHandlerAssistant() {
 			@Override
-			public String handleRequestException(Throwable exception, List<Object> exceptionContext) throws IOException {
+			public Object handleRequestException(Throwable exception, List<Object> exceptionContext) throws IOException {
 				if (securityService.isAuthenticated()) {
 					String unauthorizedPage = pageService.getUnauthorizedPage();
 					response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
