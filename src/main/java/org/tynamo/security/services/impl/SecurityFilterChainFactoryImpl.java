@@ -44,12 +44,6 @@ public class SecurityFilterChainFactoryImpl implements SecurityFilterChainFactor
 		return new SecurityFilterChain.Builder(logger, builder, path);
 	}
 
-	@SuppressWarnings("unchecked")
-	public String getLogicalUrl(Class pageClass) {
-		// TODO should add package, or maybe use Tapestry util operation for it?
-		return "/" + pageClass.getSimpleName().toLowerCase();
-	}
-	
 	public AnonymousFilter anon() {
 		String name = "anon";
 		AnonymousFilter filter = new AnonymousFilter(pageService);

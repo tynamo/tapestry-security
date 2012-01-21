@@ -13,8 +13,6 @@ import org.tynamo.security.shiro.authz.SslFilter;
 public interface SecurityFilterChainFactory {
 	public SecurityFilterChain.Builder createChain(String path);
 
-	public String getLogicalUrl(Class pageClass);
-	
 	public AnonymousFilter anon();
 
 	public UserFilter user();
