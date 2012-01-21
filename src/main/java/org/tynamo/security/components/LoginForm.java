@@ -20,12 +20,6 @@ package org.tynamo.security.components;
 
 import java.io.IOException;
 
-import org.apache.tapestry5.PersistenceConstants;
-import org.apache.tapestry5.annotations.Persist;
-import org.apache.tapestry5.annotations.Property;
-import org.apache.tapestry5.ioc.annotations.Inject;
-import org.apache.tapestry5.services.RequestGlobals;
-import org.apache.tapestry5.services.Response;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
@@ -33,10 +27,17 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.StringUtils;
-import org.apache.shiro.web.util.SavedRequest;
-import org.apache.shiro.web.util.WebUtils;
+import org.apache.tapestry5.PersistenceConstants;
+import org.apache.tapestry5.annotations.Persist;
+import org.apache.tapestry5.annotations.Property;
+import org.apache.tapestry5.ioc.annotations.Inject;
+import org.apache.tapestry5.ioc.annotations.Symbol;
+import org.apache.tapestry5.services.Cookies;
+import org.apache.tapestry5.services.RequestGlobals;
+import org.apache.tapestry5.services.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.tynamo.security.SecuritySymbols;
 import org.tynamo.security.services.PageService;
 import org.tynamo.security.services.SecurityService;
 
@@ -72,8 +73,15 @@ public class LoginForm
 
 	@Inject
 	private PageService pageService;
+	
+	@Inject 
+	private Cookies cookies;
+	
+	@Inject 
+	@Symbol(SecuritySymbols.REDIRECT_TO_SAVED_URL) 
+	private boolean redirectToSavedUrl;
 
-	public Object onActionFromTynamoLoginForm()
+	public Object onActionFromTynamoLoginForm() throws IOException
 	{
 
 		Subject currentUser = securityService.getSubject();
@@ -109,24 +117,36 @@ public class LoginForm
 		}
 
 
-		SavedRequest savedRequest = WebUtils.getAndClearSavedRequest(requestGlobals.getHTTPServletRequest());
-
-		if (savedRequest != null && savedRequest.getMethod().equalsIgnoreCase("GET"))
-		{
-			try
-			{
-				response.sendRedirect(savedRequest.getRequestUrl());
-				return null;
-			} catch (IOException e)
-			{
-				logger.warn("Can't redirect to saved request.");
-				return pageService.getSuccessPage();
-			}
-		} else
-		{
-			return pageService.getSuccessPage();
+//		SavedRequest savedRequest = WebUtils.getAndClearSavedRequest(requestGlobals.getHTTPServletRequest());
+//
+//		if (savedRequest != null && savedRequest.getMethod().equalsIgnoreCase("GET"))
+//		{
+//			try
+//			{
+//				response.sendRedirect(savedRequest.getRequestUrl());
+//				return null;
+//			} catch (IOException e)
+//			{
+//				logger.warn("Can't redirect to saved request.");
+//				return pageService.getSuccessPage();
+//			}
+//		} else
+//		{
+//			return pageService.getSuccessPage();
+//		}
+		if (redirectToSavedUrl) {
+			String contextPath = requestGlobals.getHTTPServletRequest().getContextPath();
+	  	if ("/".equals(contextPath)) contextPath = "";
+			pageService.redirectToSavedRequest(contextPath + "/" + pageService.getSuccessPage());
+			return null;
 		}
-
+//		Cookie[] cookies = requestGlobals.getHTTPServletRequest().getCookies();
+//		if (cookies != null) for (Cookie cookie : cookies) if (WebUtils.SAVED_REQUEST_KEY.equals(cookie.getName())) {
+//			String requestUri = cookie.getValue();
+//			WebUtils.issueRedirect(requestGlobals.getHTTPServletRequest(), requestGlobals.getHTTPServletResponse(), requestUri);
+//			return null;
+//		}
+		return pageService.getSuccessPage();
 	}
 
 	public void setLoginMessage(String loginMessage)

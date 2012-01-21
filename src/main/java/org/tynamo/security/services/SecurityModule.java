@@ -23,11 +23,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.ShiroException;
-import org.apache.shiro.session.Session;
-import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ClassUtils;
 import org.apache.shiro.util.StringUtils;
 import org.apache.shiro.util.ThreadContext;
@@ -54,10 +53,9 @@ import org.apache.tapestry5.services.ComponentClassResolver;
 import org.apache.tapestry5.services.ComponentClassTransformWorker;
 import org.apache.tapestry5.services.ComponentRequestFilter;
 import org.apache.tapestry5.services.Context;
+import org.apache.tapestry5.services.Cookies;
 import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.LibraryMapping;
-import org.apache.tapestry5.services.PageRenderLinkSource;
-import org.apache.tapestry5.services.RequestGlobals;
 import org.apache.tapestry5.services.Response;
 import org.tynamo.common.ModuleProperties;
 import org.tynamo.exceptionpage.ExceptionHandlerAssistant;
@@ -212,8 +210,8 @@ public class SecurityModule
 	
 	public void contributeExceptionHandler(MappedConfiguration<Class, Object> configuration,
 		final PageResponseRenderer renderer, final RequestPageCache pageCache, final SecurityService securityService,
-		final PageService pageService, final RequestGlobals requestGlobals, final Response response,
-		final PageRenderLinkSource pageRenderLinkSource) {
+		final PageService pageService, final HttpServletRequest servletRequest, final Response response,
+		final Cookies cookies) {
 		final ExceptionHandlerAssistant assistant = new ExceptionHandlerAssistant() {
 			@Override
 			public Object handleRequestException(Throwable exception, List<Object> exceptionContext) throws IOException {
@@ -226,12 +224,14 @@ public class SecurityModule
 					renderer.renderPageResponse(page);
 					return null;
 				}
-				Subject subject = securityService.getSubject();
-				if (subject != null) {
-					Session session = subject.getSession();
-					if (session != null) WebUtils.saveRequest(requestGlobals.getHTTPServletRequest());
-				}
-
+//				Subject subject = securityService.getSubject();
+//				if (subject != null) {
+//					Session session = subject.getSession();
+//					if (session != null) WebUtils.saveRequest(requestGlobals.getHTTPServletRequest());
+//				}
+	    	String contextPath = servletRequest.getContextPath();
+	    	if ("".equals(contextPath)) contextPath = "/";
+	    	cookies.writeCookieValue(WebUtils.SAVED_REQUEST_KEY, WebUtils.getPathWithinApplication(servletRequest), contextPath);
 				return pageService.getLoginPage();
 			}
 		};

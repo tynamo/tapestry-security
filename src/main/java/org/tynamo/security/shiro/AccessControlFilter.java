@@ -277,8 +277,8 @@ public abstract class AccessControlFilter extends AdviceFilter {
      * @throws IOException if an error occurs.
      */
     protected void saveRequestAndRedirectToLogin(ServletRequest request, ServletResponse response) throws IOException {
-        saveRequest(request);
-        redirectToLogin(request, response);
+    	saveRequest(request);
+    	redirectToLogin(request, response);
     }
 
     /**
@@ -294,8 +294,9 @@ public abstract class AccessControlFilter extends AdviceFilter {
      * @param request the incoming ServletRequest to save for re-use later (for example, after a redirect).
      */
     protected void saveRequest(ServletRequest request) {
-//    	if (WebUtils.toHttp(request).getSession(false) != null) 
-    		WebUtils.saveRequest(request);
+    	pageService.saveRequest();
+//    	if (WebUtils.toHttp(request).getSession(false) != null) WebUtils.saveRequest(request);
+//    	pageService.getCookies().writeCookieValue(WebUtils.SAVED_REQUEST_KEY, WebUtils.getPathWithinApplication(WebUtils.toHttp(request)));
     }
 
     /**
@@ -334,6 +335,10 @@ public abstract class AccessControlFilter extends AdviceFilter {
 
 		public void setRedirectToSavedUrl(boolean redirectToSavedUrl) {
 			this.redirectToSavedUrl = redirectToSavedUrl;
+		}
+		
+		protected PageService getPageService() {
+			return pageService;
 		}
 
 }

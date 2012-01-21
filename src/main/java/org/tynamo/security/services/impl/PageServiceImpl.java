@@ -1,6 +1,10 @@
 package org.tynamo.security.services.impl;
 
+import java.io.IOException;
+
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.web.util.WebUtils;
 import org.apache.tapestry5.ioc.annotations.Inject;
@@ -15,13 +19,16 @@ public class PageServiceImpl implements PageService {
 	private String successPage;
 	private String unauthorizedPage;
 	private final HttpServletRequest request;
+	private final HttpServletResponse response;
 	private final LocalizationSetter localizationSetter;
 
 	public PageServiceImpl(@Inject @Symbol(SecuritySymbols.SUCCESS_URL) String successUrl,
 		@Inject @Symbol(SecuritySymbols.LOGIN_URL) String loginUrl,
 		@Inject @Symbol(SecuritySymbols.UNAUTHORIZED_URL) String unauthorizedUrl, HttpServletRequest request,
+		HttpServletResponse response,
 		LocalizationSetter localizationSetter) {
 		this.request = request;
+		this.response = response;
 		this.localizationSetter = localizationSetter;
 		this.loginPage = urlToPage(loginUrl);
 		this.successPage = urlToPage(successUrl);
@@ -69,5 +76,33 @@ public class PageServiceImpl implements PageService {
 		}
 		return null;
 	}
-
+	
+	private Cookie createSavedRequestCookie() {
+  	Cookie cookie = new Cookie(WebUtils.SAVED_REQUEST_KEY, WebUtils.getPathWithinApplication(request));
+  	String contextPath = request.getContextPath();
+  	if ("".equals(contextPath)) contextPath = "/";
+  	cookie.setPath(contextPath);
+  	return cookie;
+	}
+	
+	@Override
+  public void saveRequest() {
+  	response.addCookie(createSavedRequestCookie());
+  }
+	
+	@Override
+  public void redirectToSavedRequest(String fallbackUrl) throws IOException {
+		Cookie[] cookies = request.getCookies();
+		String requestUri = null;
+		for (Cookie cookie : cookies) if (WebUtils.SAVED_REQUEST_KEY.equals(cookie.getName())) {
+			requestUri = cookie.getValue();
+			Cookie deleteCookie = createSavedRequestCookie();
+			deleteCookie.setMaxAge(0);
+			response.addCookie(deleteCookie);
+			WebUtils.issueRedirect(request, response, requestUri);
+			break;
+		}
+  	
+  }
+	
 }
