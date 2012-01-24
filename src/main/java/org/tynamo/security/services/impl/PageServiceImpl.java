@@ -78,7 +78,9 @@ public class PageServiceImpl implements PageService {
 	}
 	
 	private Cookie createSavedRequestCookie() {
-  	Cookie cookie = new Cookie(WebUtils.SAVED_REQUEST_KEY, WebUtils.getPathWithinApplication(request));
+		String requestUri = request.getRequestURI();
+		if (request.getQueryString() != null) requestUri += "?" + request.getQueryString();
+  	Cookie cookie = new Cookie(WebUtils.SAVED_REQUEST_KEY, requestUri);
   	String contextPath = request.getContextPath();
   	if ("".equals(contextPath)) contextPath = "/";
   	cookie.setPath(contextPath);

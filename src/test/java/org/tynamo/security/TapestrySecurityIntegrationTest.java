@@ -205,7 +205,6 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		assertLoginPage();
 		page.getElementById("tynamoEnter").asText().contains("Kirjaudu sisään");
 	}
-	
 
 	@Test(groups = {"notLoggedIn"})
 	public void testAuthcFilterDeny() throws Exception
@@ -734,6 +733,20 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		assertTrue(getLocation().startsWith(BASEURI + "about"), "Request wasn't redirected to the remebered url");
 	}
 
+// the following test *does not* work because of deficiency in htmlunit itself. The request parameters however are saved 
+// see	http://old.nabble.com/Problem-with-WebRequestSettings.getRequestParameters%28%29-td20167941.html
+// htmlunit's current implementation only returns what's added with setRequestParameters()
+//	@Test(dependsOnMethods = {"testLogout"})
+//	public void testSaveRequestWithParameters() throws Exception
+//	{
+//		openPage("about?test=now");
+//		assertLoginPage();
+//		loginAction();
+//		assertTrue(getLocation().startsWith(BASEURI + "about"), "Request wasn't redirected to the remebered url");
+//		List<NameValuePair> valuePairs = page.getWebResponse().getRequestSettings().getRequestParameters();
+//		assertTrue(valuePairs.contains(new NameValuePair("test", "now")), "Request parameters weren't remebered");
+//	}
+	
 	@Test(dependsOnMethods = {"testSaveRequestAnnotationHandler"})
 	public void testSaveRequestFilter() throws Exception
 	{
