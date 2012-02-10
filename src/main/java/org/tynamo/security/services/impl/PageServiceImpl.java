@@ -96,15 +96,15 @@ public class PageServiceImpl implements PageService {
   public void redirectToSavedRequest(String fallbackUrl) throws IOException {
 		Cookie[] cookies = request.getCookies();
 		String requestUri = null;
-		for (Cookie cookie : cookies) if (WebUtils.SAVED_REQUEST_KEY.equals(cookie.getName())) {
+		if (cookies != null) for (Cookie cookie : cookies) if (WebUtils.SAVED_REQUEST_KEY.equals(cookie.getName())) {
 			requestUri = cookie.getValue();
 			Cookie deleteCookie = createSavedRequestCookie();
 			deleteCookie.setMaxAge(0);
 			response.addCookie(deleteCookie);
-			WebUtils.issueRedirect(request, response, requestUri);
 			break;
 		}
-  	
+		if (requestUri == null) requestUri = fallbackUrl;
+		WebUtils.issueRedirect(request, response, requestUri);
   }
 	
 }
