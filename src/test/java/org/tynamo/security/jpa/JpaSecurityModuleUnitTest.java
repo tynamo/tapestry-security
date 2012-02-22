@@ -1,5 +1,8 @@
 package org.tynamo.security.jpa;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -7,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Persistence;
 
+import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.Subject;
 import org.apache.tapestry5.ioc.Registry;
 import org.apache.tapestry5.ioc.RegistryBuilder;
 import org.apache.tapestry5.ioc.services.AspectDecorator;
@@ -22,16 +27,19 @@ import org.testng.annotations.Test;
 import org.tynamo.exceptionpage.services.ExceptionPageModule;
 import org.tynamo.security.jpa.annotations.RequiresAssociation;
 import org.tynamo.security.services.SecurityModule;
+import org.tynamo.security.services.SecurityService;
 
 public class JpaSecurityModuleUnitTest extends IOCTestCase {
 	private Registry registry;
 	private AspectDecorator aspectDecorator;
 	private EntityManager delegate;
+	private SecurityService securityService;
 
 	@BeforeClass
 	public void setup() {
 		EntityManagerFactory emFactory = Persistence.createEntityManagerFactory("testpersistence");
 		delegate = emFactory.createEntityManager();
+		securityService = mock(SecurityService.class);
 
 		RegistryBuilder builder = new RegistryBuilder();
 		builder.add(TapestryModule.class);
@@ -69,7 +77,14 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 
 		final AspectInterceptorBuilder<EntityManager> builder = aspectDecorator.createBuilder(EntityManager.class,
 			delegate, "secureEntityManager");
-		JpaSecurityModule.secureFindOperations(builder);
+
+		Subject subject = mock(Subject.class);
+		PrincipalCollection principalCollection = mock(PrincipalCollection.class);
+		when(principalCollection.getPrimaryPrincipal()).thenReturn(new Long(0L));
+		when(subject.getPrincipals()).thenReturn(principalCollection);
+		when(securityService.getSubject()).thenReturn(subject);
+
+		JpaSecurityModule.secureFindOperations(builder, securityService);
 		final EntityManager interceptor = builder.build();
 
 		entity = interceptor.find(TestEntity.class, 0);
