@@ -57,6 +57,11 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 
 	@AfterClass
 	public void shutdown() {
+		delegate.getTransaction().begin();
+		delegate.createQuery("DELETE FROM TestEntity m").executeUpdate();
+		delegate.createQuery("DELETE FROM TestOwnerEntity t").executeUpdate();
+		delegate.getTransaction().commit();
+
 		registry.shutdown();
 
 		aspectDecorator = null;
@@ -67,11 +72,11 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 	public void adviseEntityManagerFind() {
 		delegate.getTransaction().begin();
 		TestOwnerEntity owner = new TestOwnerEntity();
-		owner.setId(0L);
+		owner.setId(1L);
 		delegate.persist(owner);
 		TestEntity entity = new TestEntity();
 		entity.setOwner(owner);
-		entity.setId(0L);
+		entity.setId(1L);
 		delegate.persist(entity);
 		delegate.getTransaction().commit();
 
@@ -80,26 +85,26 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 
 		Subject subject = mock(Subject.class);
 		PrincipalCollection principalCollection = mock(PrincipalCollection.class);
-		when(principalCollection.getPrimaryPrincipal()).thenReturn(new Long(0L));
+		when(principalCollection.getPrimaryPrincipal()).thenReturn(new Long(1L));
 		when(subject.getPrincipals()).thenReturn(principalCollection);
 		when(securityService.getSubject()).thenReturn(subject);
 
 		JpaSecurityModule.secureFindOperations(builder, securityService);
 		final EntityManager interceptor = builder.build();
 
-		entity = interceptor.find(TestEntity.class, 0);
+		entity = interceptor.find(TestEntity.class, 1L);
 		assertNotNull(entity);
 
 	}
 
-	@Entity
+	@Entity(name = "TestEntity")
 	@RequiresAssociation("owner")
 	public static class TestEntity {
 
 		@Id
 		private Long id;
 
-		@ManyToOne
+		@ManyToOne(optional = true)
 		private TestOwnerEntity owner;
 
 		public TestOwnerEntity getOwner() {
@@ -120,7 +125,7 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 
 	}
 
-	@Entity
+	@Entity(name = "TestOwnerEntity")
 	public static class TestOwnerEntity {
 
 		@Id
