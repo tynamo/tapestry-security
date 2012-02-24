@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.Persistence;
 
 import org.apache.shiro.subject.PrincipalCollection;
@@ -22,6 +23,7 @@ import org.apache.tapestry5.jpa.JpaModule;
 import org.apache.tapestry5.json.services.JSONModule;
 import org.apache.tapestry5.services.TapestryModule;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.tynamo.exceptionpage.services.ExceptionPageModule;
@@ -33,6 +35,7 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 	private Registry registry;
 	private AspectDecorator aspectDecorator;
 	private EntityManager delegate;
+	private EntityManager interceptor;
 	private SecurityService securityService;
 
 	@BeforeClass
@@ -53,23 +56,38 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 		// registry = IOCUtilities.buildDefaultRegistry();
 
 		aspectDecorator = registry.getService(AspectDecorator.class);
+		final AspectInterceptorBuilder<EntityManager> aspectBuilder = aspectDecorator.createBuilder(EntityManager.class,
+			delegate, "secureEntityManager");
+		JpaSecurityModule.secureFindOperations(aspectBuilder, securityService);
+		interceptor = aspectBuilder.build();
 	}
 
-	@AfterClass
-	public void shutdown() {
+	@AfterMethod
+	public void clearDb() {
 		delegate.getTransaction().begin();
 		delegate.createQuery("DELETE FROM TestEntity m").executeUpdate();
 		delegate.createQuery("DELETE FROM TestOwnerEntity t").executeUpdate();
 		delegate.getTransaction().commit();
+	}
 
+	@AfterClass
+	public void shutdown() {
 		registry.shutdown();
 
 		aspectDecorator = null;
 		registry = null;
 	}
 
+	private void mockSubject(Long principalId) {
+		Subject subject = mock(Subject.class);
+		PrincipalCollection principalCollection = mock(PrincipalCollection.class);
+		when(principalCollection.getPrimaryPrincipal()).thenReturn(principalId);
+		when(subject.getPrincipals()).thenReturn(principalCollection);
+		when(securityService.getSubject()).thenReturn(subject);
+	}
+
 	@Test
-	public void adviseEntityManagerFind() {
+	public void securedFind() {
 		delegate.getTransaction().begin();
 		TestOwnerEntity owner = new TestOwnerEntity();
 		owner.setId(1L);
@@ -79,22 +97,49 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 		entity.setId(1L);
 		delegate.persist(entity);
 		delegate.getTransaction().commit();
-
-		final AspectInterceptorBuilder<EntityManager> builder = aspectDecorator.createBuilder(EntityManager.class,
-			delegate, "secureEntityManager");
-
-		Subject subject = mock(Subject.class);
-		PrincipalCollection principalCollection = mock(PrincipalCollection.class);
-		when(principalCollection.getPrimaryPrincipal()).thenReturn(new Long(1L));
-		when(subject.getPrincipals()).thenReturn(principalCollection);
-		when(securityService.getSubject()).thenReturn(subject);
-
-		JpaSecurityModule.secureFindOperations(builder, securityService);
-		final EntityManager interceptor = builder.build();
+		mockSubject(1L);
 
 		entity = interceptor.find(TestEntity.class, 1L);
 		assertNotNull(entity);
+	}
 
+	@Test
+	public void findByAssociation() {
+		delegate.getTransaction().begin();
+		TestOwnerEntity owner = new TestOwnerEntity();
+		owner.setId(1L);
+		delegate.persist(owner);
+		TestEntity entity = new TestEntity();
+		entity.setOwner(owner);
+		entity.setId(1L);
+		delegate.persist(entity);
+		delegate.persist(entity);
+		delegate.getTransaction().commit();
+
+		mockSubject(1L);
+		entity = interceptor.find(TestEntity.class, null);
+		assertNotNull(entity);
+
+	}
+
+	@Test(expectedExceptions = { NonUniqueResultException.class })
+	public void findMultipleByAssociation() {
+		delegate.getTransaction().begin();
+		TestOwnerEntity owner = new TestOwnerEntity();
+		owner.setId(1L);
+		delegate.persist(owner);
+		TestEntity entity = new TestEntity();
+		entity.setOwner(owner);
+		entity.setId(1L);
+		delegate.persist(entity);
+		entity = new TestEntity();
+		entity.setOwner(owner);
+		entity.setId(2L);
+		delegate.persist(entity);
+		delegate.getTransaction().commit();
+
+		mockSubject(1L);
+		entity = interceptor.find(TestEntity.class, null);
 	}
 
 	@Entity(name = "TestEntity")
@@ -104,7 +149,7 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 		@Id
 		private Long id;
 
-		@ManyToOne(optional = true)
+		@ManyToOne
 		private TestOwnerEntity owner;
 
 		public TestOwnerEntity getOwner() {

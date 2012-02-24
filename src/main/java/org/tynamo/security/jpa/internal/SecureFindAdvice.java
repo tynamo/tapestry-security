@@ -1,7 +1,5 @@
 package org.tynamo.security.jpa.internal;
 
-import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -36,18 +34,25 @@ public class SecureFindAdvice implements MethodAdvice {
 			return;
 		}
 		EntityManager entityManager = (EntityManager) invocation.getInstance();
+		// FIXME handle empty value, i.e. association to "self"
 		String restrictionValue = requiresAssociation.value();
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Object> criteriaQuery = builder.createQuery();
 		Root<?> from = criteriaQuery.from(aClass);
 		CriteriaQuery<Object> select = criteriaQuery.select(from);
 		Metamodel metamodel = entityManager.getMetamodel();
+
 		EntityType entityType = metamodel.entity(aClass);
-		Type idType = entityType.getIdType();
-		SingularAttribute idAttr = entityType.getId(idType.getJavaType());
+		Type idType;
+		SingularAttribute idAttr;
 
-		Predicate predicate1 = builder.equal(from.get(idAttr.getName()), invocation.getParameter(1));
-
+		Object entityId = invocation.getParameter(1);
+		Predicate predicate1 = null;
+		if (entityId != null) {
+			idType = entityType.getIdType();
+			idAttr = entityType.getId(idType.getJavaType());
+			predicate1 = builder.equal(from.get(idAttr.getName()), invocation.getParameter(1));
+		}
 		Attribute association = entityType.getAttribute(restrictionValue);
 		// TODO handle if !association.isAssociation()
 		entityType = metamodel.entity(association.getJavaType());
@@ -59,9 +64,7 @@ public class SecureFindAdvice implements MethodAdvice {
 		// TODO allow configuring the principal for it rather than using primary
 		Predicate predicate2 = builder.equal(join.get(idAttr.getName()), securityService.getSubject().getPrincipals()
 			.getPrimaryPrincipal());
-		criteriaQuery.where(builder.and(predicate1, predicate2));
-		List list = entityManager.createQuery(criteriaQuery).getResultList();
-		invocation.setReturnValue(list.size() == 0 ? null : list.get(0));
-
+		criteriaQuery.where(predicate1 == null ? predicate2 : builder.and(predicate1, predicate2));
+		invocation.setReturnValue(entityManager.createQuery(criteriaQuery).getSingleResult());
 	}
 }
