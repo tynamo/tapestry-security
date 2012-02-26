@@ -27,9 +27,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.ShiroException;
+import org.apache.shiro.mgt.RememberMeManager;
+import org.apache.shiro.mgt.SubjectFactory;
 import org.apache.shiro.util.ClassUtils;
 import org.apache.shiro.util.StringUtils;
 import org.apache.shiro.util.ThreadContext;
+import org.apache.shiro.web.mgt.CookieRememberMeManager;
+import org.apache.shiro.web.mgt.DefaultWebSubjectFactory;
 import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.apache.shiro.web.util.WebUtils;
 import org.apache.tapestry5.internal.services.PageResponseRenderer;
@@ -88,6 +92,8 @@ public class SecurityModule
 	{
 
 		binder.bind(WebSecurityManager.class, TapestryRealmSecurityManager.class);
+		binder.bind(SubjectFactory.class, DefaultWebSubjectFactory.class);
+		binder.bind(RememberMeManager.class, CookieRememberMeManager.class);
 		binder.bind(HttpServletRequestFilter.class, SecurityConfiguration.class).withId("SecurityConfiguration");
 		binder.bind(ClassInterceptorsCache.class, ClassInterceptorsCacheImpl.class);
 		binder.bind(SecurityService.class, SecurityServiceImpl.class);
