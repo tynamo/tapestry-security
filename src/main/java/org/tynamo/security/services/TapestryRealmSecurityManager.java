@@ -9,6 +9,7 @@ import org.apache.shiro.realm.Realm;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.mgt.DefaultWebSessionStorageEvaluator;
 import org.apache.shiro.web.session.mgt.ServletContainerSessionManager;
+import org.tynamo.security.Authenticator;
 
 /**
  * This class is needed to point out the right constructor to use (from the three available in
@@ -17,13 +18,14 @@ import org.apache.shiro.web.session.mgt.ServletContainerSessionManager;
 public class TapestryRealmSecurityManager extends DefaultWebSecurityManager {
 
 	// Could easily make sessionStorageevaluator and sessionManager provided services as well, add as needed
-	public TapestryRealmSecurityManager(SubjectFactory subjectFactory, RememberMeManager rememberMeManager, final Collection<Realm> realms) {
+	public TapestryRealmSecurityManager(Authenticator authenticator, SubjectFactory subjectFactory, RememberMeManager rememberMeManager, final Collection<Realm> realms) {
     super();
+    authenticator.setRealms(realms);
+    setAuthenticator(authenticator);
     ((DefaultSubjectDAO) this.subjectDAO).setSessionStorageEvaluator(new DefaultWebSessionStorageEvaluator());
     setSubjectFactory(subjectFactory);
     setRememberMeManager(rememberMeManager);
     setSessionManager(new ServletContainerSessionManager());
     setRealms(realms);
-	}
-
+	}	
 }

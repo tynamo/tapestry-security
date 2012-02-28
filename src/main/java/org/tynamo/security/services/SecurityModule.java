@@ -64,9 +64,11 @@ import org.apache.tapestry5.services.Response;
 import org.tynamo.common.ModuleProperties;
 import org.tynamo.exceptionpage.ExceptionHandlerAssistant;
 import org.tynamo.exceptionpage.services.ExceptionPageModule;
+import org.tynamo.security.Authenticator;
 import org.tynamo.security.SecurityComponentRequestFilter;
 import org.tynamo.security.SecuritySymbols;
 import org.tynamo.security.ShiroAnnotationWorker;
+import org.tynamo.security.internal.ModularRealmAuthenticator;
 import org.tynamo.security.services.impl.ClassInterceptorsCacheImpl;
 import org.tynamo.security.services.impl.PageServiceImpl;
 import org.tynamo.security.services.impl.SecurityConfiguration;
@@ -92,6 +94,7 @@ public class SecurityModule
 	{
 
 		binder.bind(WebSecurityManager.class, TapestryRealmSecurityManager.class);
+		binder.bind(Authenticator.class, ModularRealmAuthenticator.class);
 		binder.bind(SubjectFactory.class, DefaultWebSubjectFactory.class);
 		binder.bind(RememberMeManager.class, CookieRememberMeManager.class);
 		binder.bind(HttpServletRequestFilter.class, SecurityConfiguration.class).withId("SecurityConfiguration");

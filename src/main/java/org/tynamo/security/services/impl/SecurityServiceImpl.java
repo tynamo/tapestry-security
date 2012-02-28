@@ -26,9 +26,6 @@ import org.tynamo.security.services.SecurityService;
  */
 public class SecurityServiceImpl implements SecurityService
 {
-
-	//~ Static fields/initializers -----------------------------------------------------------------
-
 	/**
 	 * Delimeter that separates role names in tag attribute
 	 */
@@ -45,8 +42,11 @@ public class SecurityServiceImpl implements SecurityService
 	 */
 	private static final String PERMISSIONS_OR_ROLES_DELIMETER = "(,|\\|)";
 
-	//~ Methods ------------------------------------------------------------------------------------
-
+//	public SecurityServiceImpl(@Autobuild TapestryRealmSecurityManager securityManager) {
+//		this.securityManager = securityManager;
+//	}
+	
+	
 	@Override
 	public Subject getSubject()
 	{
@@ -209,5 +209,4 @@ public class SecurityServiceImpl implements SecurityService
 	{
 		return !hasRole(role);
 	}
-
-} // end class SecurityServiceImpl
+}
