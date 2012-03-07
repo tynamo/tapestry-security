@@ -16,6 +16,7 @@ public class JpaSecurityModule {
 	@Advise(serviceInterface = EntityManager.class)
 	public static void secureFindOperations(MethodAdviceReceiver receiver, SecurityService securityService) {
 		SecureFindAdvice secureFindAdvice = new SecureFindAdvice(securityService);
+		// FIXME should also advice getReference
 		for (final Method m : receiver.getInterface().getMethods()) {
 			if (m.getName().startsWith("find")) receiver.adviseMethod(m, secureFindAdvice);
 		}
