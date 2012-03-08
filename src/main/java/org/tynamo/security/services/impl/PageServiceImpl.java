@@ -104,7 +104,7 @@ public class PageServiceImpl implements PageService {
 			break;
 		}
 		if (requestUri == null) requestUri = fallbackUrl;
-		WebUtils.issueRedirect(request, response, requestUri);
+		WebUtils.issueRedirect(request, response, requestUri, null, false, true);
   }
 	
 }
