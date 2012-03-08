@@ -103,7 +103,7 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 
 		return subject.execute(new Callable<Boolean>() {
 			public Boolean call() throws Exception {
-				if (chain == null) return handler.service(originalRequest, response);
+				if (chain == null) return handler.service(request, response);
 				else {
 					boolean handled = chain.getHandler().service(request, response);
 					return handled || handler.service(request, response);
