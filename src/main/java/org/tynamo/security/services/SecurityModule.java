@@ -18,27 +18,18 @@
  */
 package org.tynamo.security.services;
 
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.mgt.RememberMeManager;
 import org.apache.shiro.mgt.SubjectFactory;
 import org.apache.shiro.util.ClassUtils;
-import org.apache.shiro.util.StringUtils;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSubjectFactory;
 import org.apache.shiro.web.mgt.WebSecurityManager;
-import org.apache.shiro.web.util.WebUtils;
-import org.apache.tapestry5.internal.services.PageResponseRenderer;
-import org.apache.tapestry5.internal.services.RequestPageCache;
-import org.apache.tapestry5.internal.structure.Page;
 import org.apache.tapestry5.ioc.Configuration;
 import org.apache.tapestry5.ioc.Invocation;
 import org.apache.tapestry5.ioc.MappedConfiguration;
@@ -46,6 +37,7 @@ import org.apache.tapestry5.ioc.MethodAdvice;
 import org.apache.tapestry5.ioc.MethodAdviceReceiver;
 import org.apache.tapestry5.ioc.OrderedConfiguration;
 import org.apache.tapestry5.ioc.ServiceBinder;
+import org.apache.tapestry5.ioc.annotations.Autobuild;
 import org.apache.tapestry5.ioc.annotations.InjectService;
 import org.apache.tapestry5.ioc.annotations.Local;
 import org.apache.tapestry5.ioc.annotations.Match;
@@ -57,18 +49,16 @@ import org.apache.tapestry5.services.ComponentClassResolver;
 import org.apache.tapestry5.services.ComponentClassTransformWorker;
 import org.apache.tapestry5.services.ComponentRequestFilter;
 import org.apache.tapestry5.services.Context;
-import org.apache.tapestry5.services.Cookies;
 import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.LibraryMapping;
-import org.apache.tapestry5.services.Response;
 import org.tynamo.common.ModuleProperties;
-import org.tynamo.exceptionpage.ExceptionHandlerAssistant;
 import org.tynamo.exceptionpage.services.ExceptionPageModule;
 import org.tynamo.security.Authenticator;
 import org.tynamo.security.SecurityComponentRequestFilter;
 import org.tynamo.security.SecuritySymbols;
 import org.tynamo.security.ShiroAnnotationWorker;
 import org.tynamo.security.internal.ModularRealmAuthenticator;
+import org.tynamo.security.internal.SecurityExceptionHandlerAssistant;
 import org.tynamo.security.services.impl.ClassInterceptorsCacheImpl;
 import org.tynamo.security.services.impl.PageServiceImpl;
 import org.tynamo.security.services.impl.SecurityConfiguration;
@@ -217,33 +207,7 @@ public class SecurityModule
 		}
 	}
 	
-	public void contributeExceptionHandler(MappedConfiguration<Class, Object> configuration,
-		final PageResponseRenderer renderer, final RequestPageCache pageCache, final SecurityService securityService,
-		final PageService pageService, final HttpServletRequest servletRequest, final Response response,
-		final Cookies cookies) {
-		final ExceptionHandlerAssistant assistant = new ExceptionHandlerAssistant() {
-			@Override
-			public Object handleRequestException(Throwable exception, List<Object> exceptionContext) throws IOException {
-				if (securityService.isAuthenticated()) {
-					String unauthorizedPage = pageService.getUnauthorizedPage();
-					response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-					if (!StringUtils.hasText(unauthorizedPage)) return null;
-
-					Page page = pageCache.get(unauthorizedPage);
-					renderer.renderPageResponse(page);
-					return null;
-				}
-//				Subject subject = securityService.getSubject();
-//				if (subject != null) {
-//					Session session = subject.getSession();
-//					if (session != null) WebUtils.saveRequest(requestGlobals.getHTTPServletRequest());
-//				}
-	    	String contextPath = servletRequest.getContextPath();
-	    	if ("".equals(contextPath)) contextPath = "/";
-	    	cookies.writeCookieValue(WebUtils.SAVED_REQUEST_KEY, WebUtils.getPathWithinApplication(servletRequest), contextPath);
-				return pageService.getLoginPage();
-			}
-		};
+	public void contributeExceptionHandler(MappedConfiguration<Class, Object> configuration, @Autobuild SecurityExceptionHandlerAssistant assistant) {
 		configuration.add(ShiroException.class, assistant);
 	}
 
