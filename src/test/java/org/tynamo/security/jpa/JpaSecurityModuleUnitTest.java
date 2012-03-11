@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.Persistence;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
@@ -37,12 +38,14 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 	private EntityManager delegate;
 	private EntityManager interceptor;
 	private SecurityService securityService;
+	private HttpServletRequest request;
 
 	@BeforeClass
 	public void setup() {
 		EntityManagerFactory emFactory = Persistence.createEntityManagerFactory("testpersistence");
 		delegate = emFactory.createEntityManager();
 		securityService = mock(SecurityService.class);
+		request = mock(HttpServletRequest.class);
 
 		RegistryBuilder builder = new RegistryBuilder();
 		builder.add(TapestryModule.class);
@@ -58,7 +61,7 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 		aspectDecorator = registry.getService(AspectDecorator.class);
 		final AspectInterceptorBuilder<EntityManager> aspectBuilder = aspectDecorator.createBuilder(EntityManager.class,
 			delegate, "secureEntityManager");
-		JpaSecurityModule.secureFindOperations(aspectBuilder, securityService);
+		JpaSecurityModule.secureFindOperations(aspectBuilder, securityService, request);
 		interceptor = aspectBuilder.build();
 	}
 

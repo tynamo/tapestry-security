@@ -11,26 +11,50 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.Type;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.tapestry5.plastic.MethodAdvice;
 import org.apache.tapestry5.plastic.MethodInvocation;
+import org.tynamo.security.jpa.annotations.Operation;
 import org.tynamo.security.jpa.annotations.RequiresAssociation;
+import org.tynamo.security.jpa.annotations.RequiresRole;
 import org.tynamo.security.services.SecurityService;
 
 public class SecureFindAdvice implements MethodAdvice {
 	private SecurityService securityService;
+	private HttpServletRequest request;
 
-	public SecureFindAdvice(final SecurityService securityService) {
+	public SecureFindAdvice(final SecurityService securityService, HttpServletRequest request) {
 		this.securityService = securityService;
+		this.request = request;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void advise(MethodInvocation invocation) {
 		Class aClass = (Class) invocation.getParameter(0);
-		RequiresAssociation requiresAssociation = (RequiresAssociation) aClass.getAnnotation(RequiresAssociation.class);
-		if (requiresAssociation == null) {
+		RequiresRole requiresRole = (RequiresRole) aClass.getAnnotation(RequiresRole.class);
+		boolean securedRoleAction = false;
+		if (requiresRole != null) for (Operation action : requiresRole.operations()) {
+			if (Operation.ANY.equals(action) || Operation.VIEW.equals(action)) securedRoleAction = true;
+			break;
+		}
+		if (securedRoleAction && request.isUserInRole(requiresRole.value())) {
 			invocation.proceed();
+			return;
+		}
+
+		RequiresAssociation requiresAssociation = (RequiresAssociation) aClass.getAnnotation(RequiresAssociation.class);
+		boolean securedAssociationAction = false;
+		if (requiresAssociation != null) for (Operation action : requiresAssociation.operations()) {
+			if (Operation.ANY.equals(action) || Operation.VIEW.equals(action)) securedAssociationAction = true;
+			break;
+		}
+
+		if (!securedAssociationAction) {
+			// proceed as normal if there's neither RequiresRole nor RequiresAssociation, directly return null if role didn't match
+			if (!securedRoleAction) invocation.proceed();
+			else invocation.setReturnValue(null);
 			return;
 		}
 		EntityManager entityManager = (EntityManager) invocation.getInstance();

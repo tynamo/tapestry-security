@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 
 import javax.persistence.EntityManager;
 import javax.persistence.metamodel.SingularAttribute;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.tapestry5.ioc.MethodAdviceReceiver;
 import org.apache.tapestry5.ioc.annotations.Advise;
@@ -14,8 +15,9 @@ import org.tynamo.security.services.SecurityService;
 
 public class JpaSecurityModule {
 	@Advise(serviceInterface = EntityManager.class)
-	public static void secureFindOperations(MethodAdviceReceiver receiver, SecurityService securityService) {
-		SecureFindAdvice secureFindAdvice = new SecureFindAdvice(securityService);
+	public static void secureFindOperations(MethodAdviceReceiver receiver, SecurityService securityService,
+		HttpServletRequest request) {
+		SecureFindAdvice secureFindAdvice = new SecureFindAdvice(securityService, request);
 		// FIXME should also advice getReference
 		for (final Method m : receiver.getInterface().getMethods()) {
 			if (m.getName().startsWith("find")) receiver.adviseMethod(m, secureFindAdvice);

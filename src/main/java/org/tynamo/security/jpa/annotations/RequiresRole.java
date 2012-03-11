@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
-public @interface RequiresAssociation {
+public @interface RequiresRole {
 	String value() default "";
 
 	Operation[] operations() default Operation.ANY;
