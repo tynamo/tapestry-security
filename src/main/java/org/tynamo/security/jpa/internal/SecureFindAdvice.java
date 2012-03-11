@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.tapestry5.plastic.MethodAdvice;
 import org.apache.tapestry5.plastic.MethodInvocation;
 import org.tynamo.security.jpa.annotations.Operation;
-import org.tynamo.security.jpa.annotations.RequiresAssociation;
 import org.tynamo.security.jpa.annotations.RequiresRole;
 import org.tynamo.security.services.SecurityService;
 
@@ -34,32 +33,23 @@ public class SecureFindAdvice implements MethodAdvice {
 	public void advise(MethodInvocation invocation) {
 		Class aClass = (Class) invocation.getParameter(0);
 		RequiresRole requiresRole = (RequiresRole) aClass.getAnnotation(RequiresRole.class);
-		boolean securedRoleAction = false;
-		if (requiresRole != null) for (Operation action : requiresRole.operations()) {
-			if (Operation.ANY.equals(action) || Operation.READ.equals(action)) securedRoleAction = true;
-			break;
-		}
-		if (securedRoleAction && request.isUserInRole(requiresRole.value())) {
+		String requiredRoleValue = RequiresAnnotationUtil.getRequiredRole(aClass, Operation.READ);
+
+		if (requiredRoleValue != null && request.isUserInRole(requiredRoleValue)) {
 			invocation.proceed();
 			return;
 		}
 
-		RequiresAssociation requiresAssociation = (RequiresAssociation) aClass.getAnnotation(RequiresAssociation.class);
-		boolean securedAssociationAction = false;
-		if (requiresAssociation != null) for (Operation action : requiresAssociation.operations()) {
-			if (Operation.ANY.equals(action) || Operation.READ.equals(action)) securedAssociationAction = true;
-			break;
-		}
+		String requiredAssociationValue = RequiresAnnotationUtil.getRequiredAssociation(aClass, Operation.READ);
 
-		if (!securedAssociationAction) {
+		if (requiredAssociationValue == null) {
 			// proceed as normal if there's neither RequiresRole nor RequiresAssociation, directly return null if role didn't match
-			if (!securedRoleAction) invocation.proceed();
+			if (requiredRoleValue != null) invocation.proceed();
 			else invocation.setReturnValue(null);
 			return;
 		}
 		EntityManager entityManager = (EntityManager) invocation.getInstance();
 		// FIXME handle empty value, i.e. association to "self"
-		String restrictionValue = requiresAssociation.value();
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Object> criteriaQuery = builder.createQuery();
 		Root<?> from = criteriaQuery.from(aClass);
@@ -77,13 +67,13 @@ public class SecureFindAdvice implements MethodAdvice {
 			idAttr = entityType.getId(idType.getJavaType());
 			predicate1 = builder.equal(from.get(idAttr.getName()), invocation.getParameter(1));
 		}
-		Attribute association = entityType.getAttribute(restrictionValue);
+		Attribute association = entityType.getAttribute(requiredAssociationValue);
 		// TODO handle if !association.isAssociation()
 		entityType = metamodel.entity(association.getJavaType());
 		idType = entityType.getIdType();
 		idAttr = entityType.getId(idType.getJavaType());
 
-		Join<Object, Object> join = from.join(restrictionValue);
+		Join<Object, Object> join = from.join(requiredAssociationValue);
 		// TODO handle subject == null
 		// TODO allow configuring the principal for it rather than using primary
 		Predicate predicate2 = builder.equal(join.get(idAttr.getName()), securityService.getSubject().getPrincipals()
