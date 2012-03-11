@@ -36,7 +36,7 @@ public class SecureFindAdvice implements MethodAdvice {
 		RequiresRole requiresRole = (RequiresRole) aClass.getAnnotation(RequiresRole.class);
 		boolean securedRoleAction = false;
 		if (requiresRole != null) for (Operation action : requiresRole.operations()) {
-			if (Operation.ANY.equals(action) || Operation.VIEW.equals(action)) securedRoleAction = true;
+			if (Operation.ANY.equals(action) || Operation.READ.equals(action)) securedRoleAction = true;
 			break;
 		}
 		if (securedRoleAction && request.isUserInRole(requiresRole.value())) {
@@ -47,7 +47,7 @@ public class SecureFindAdvice implements MethodAdvice {
 		RequiresAssociation requiresAssociation = (RequiresAssociation) aClass.getAnnotation(RequiresAssociation.class);
 		boolean securedAssociationAction = false;
 		if (requiresAssociation != null) for (Operation action : requiresAssociation.operations()) {
-			if (Operation.ANY.equals(action) || Operation.VIEW.equals(action)) securedAssociationAction = true;
+			if (Operation.ANY.equals(action) || Operation.READ.equals(action)) securedAssociationAction = true;
 			break;
 		}
 
