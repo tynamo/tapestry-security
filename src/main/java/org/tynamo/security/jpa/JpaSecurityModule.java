@@ -10,17 +10,21 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.tapestry5.ioc.MethodAdviceReceiver;
 import org.apache.tapestry5.ioc.annotations.Advise;
+import org.apache.tapestry5.ioc.services.PropertyAccess;
 import org.tynamo.security.jpa.internal.SecureFindAdvice;
+import org.tynamo.security.jpa.internal.SecurePersistAdvice;
 import org.tynamo.security.services.SecurityService;
 
 public class JpaSecurityModule {
 	@Advise(serviceInterface = EntityManager.class)
-	public static void secureFindOperations(MethodAdviceReceiver receiver, SecurityService securityService,
-		HttpServletRequest request) {
+	public static void secureEntityOperations(MethodAdviceReceiver receiver, SecurityService securityService,
+		HttpServletRequest request, PropertyAccess propertyAccess) {
 		SecureFindAdvice secureFindAdvice = new SecureFindAdvice(securityService, request);
+		SecurePersistAdvice securePersistAdvice = new SecurePersistAdvice(securityService, request, propertyAccess);
 		// FIXME should also advice getReference
 		for (final Method m : receiver.getInterface().getMethods()) {
 			if (m.getName().startsWith("find")) receiver.adviseMethod(m, secureFindAdvice);
+			else if (m.getName().startsWith("persist")) receiver.adviseMethod(m, securePersistAdvice);
 		}
 
 	}

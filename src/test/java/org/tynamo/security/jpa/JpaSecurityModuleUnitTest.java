@@ -6,6 +6,8 @@ import static org.mockito.Mockito.when;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NonUniqueResultException;
@@ -18,6 +20,7 @@ import org.apache.tapestry5.ioc.Registry;
 import org.apache.tapestry5.ioc.RegistryBuilder;
 import org.apache.tapestry5.ioc.services.AspectDecorator;
 import org.apache.tapestry5.ioc.services.AspectInterceptorBuilder;
+import org.apache.tapestry5.ioc.services.PropertyAccess;
 import org.apache.tapestry5.ioc.services.TapestryIOCModule;
 import org.apache.tapestry5.ioc.test.IOCTestCase;
 import org.apache.tapestry5.jpa.JpaModule;
@@ -28,7 +31,9 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.tynamo.exceptionpage.services.ExceptionPageModule;
+import org.tynamo.security.jpa.annotations.Operation;
 import org.tynamo.security.jpa.annotations.RequiresAssociation;
+import org.tynamo.security.jpa.annotations.RequiresRole;
 import org.tynamo.security.services.SecurityModule;
 import org.tynamo.security.services.SecurityService;
 
@@ -39,6 +44,7 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 	private EntityManager interceptor;
 	private SecurityService securityService;
 	private HttpServletRequest request;
+	private PropertyAccess propertyAccess;
 
 	@BeforeClass
 	public void setup() {
@@ -55,18 +61,21 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 		builder.add(JpaModule.class);
 		builder.add(SecurityModule.class);
 		builder.add(ExceptionPageModule.class);
+		// builder.add(JpaSecurityModule.class);
 		registry = builder.build();
 		// registry = IOCUtilities.buildDefaultRegistry();
 
 		aspectDecorator = registry.getService(AspectDecorator.class);
+		propertyAccess = registry.getService(PropertyAccess.class);
 		final AspectInterceptorBuilder<EntityManager> aspectBuilder = aspectDecorator.createBuilder(EntityManager.class,
 			delegate, "secureEntityManager");
-		JpaSecurityModule.secureFindOperations(aspectBuilder, securityService, request);
+		JpaSecurityModule.secureEntityOperations(aspectBuilder, securityService, request, propertyAccess);
 		interceptor = aspectBuilder.build();
 	}
 
 	@AfterMethod
 	public void clearDb() {
+		if (delegate.getTransaction().isActive()) delegate.getTransaction().rollback();
 		delegate.getTransaction().begin();
 		delegate.createQuery("DELETE FROM TestEntity m").executeUpdate();
 		delegate.createQuery("DELETE FROM TestOwnerEntity t").executeUpdate();
@@ -143,6 +152,22 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 
 		mockSubject(1L);
 		entity = interceptor.find(TestEntity.class, null);
+	}
+
+	@Test(expectedExceptions = { EntitySecurityException.class })
+	public void persistProtectedByRole() {
+		interceptor.getTransaction().begin();
+		RolePersistProtectedEntity rolePersistProtectedEntity = new RolePersistProtectedEntity();
+		interceptor.persist(rolePersistProtectedEntity);
+		interceptor.getTransaction().commit();
+	}
+
+	@Entity(name = "RolePersistProtectedEntity")
+	@RequiresRole(value = "owner", operations = Operation.WRITE)
+	public static class RolePersistProtectedEntity {
+		@Id
+		@GeneratedValue(strategy = GenerationType.AUTO)
+		private Long id;
 	}
 
 	@Entity(name = "TestEntity")
