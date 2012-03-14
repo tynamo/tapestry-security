@@ -15,13 +15,19 @@ import org.tynamo.security.jpa.EntitySecurityException;
 import org.tynamo.security.jpa.annotations.Operation;
 import org.tynamo.security.services.SecurityService;
 
-public class SecurePersistAdvice implements MethodAdvice {
+public class SecureWriteAdvice implements MethodAdvice {
 	private final SecurityService securityService;
 	private final HttpServletRequest request;
 	private final PropertyAccess propertyAccess;
+	private final Operation writeOperation;
 
-	public SecurePersistAdvice(final SecurityService securityService, final HttpServletRequest request,
-		final PropertyAccess propertyAccess) {
+	public SecureWriteAdvice(final Operation writeOperation, final SecurityService securityService,
+		final HttpServletRequest request, final PropertyAccess propertyAccess) {
+		if (!Operation.INSERT.equals(writeOperation) && !Operation.UPDATE.equals(writeOperation)
+			&& Operation.DELETE.equals(writeOperation))
+			throw new IllegalArgumentException("The targeted writeOperation must be one of INSERT, UPDATE, DELETE but was "
+				+ writeOperation);
+		this.writeOperation = writeOperation;
 		this.securityService = securityService;
 		this.request = request;
 		this.propertyAccess = propertyAccess;
@@ -31,21 +37,20 @@ public class SecurePersistAdvice implements MethodAdvice {
 	@Override
 	public void advise(MethodInvocation invocation) {
 		Object entity = invocation.getParameter(0);
-		String requiredRoleValue = RequiresAnnotationUtil.getRequiredRole(entity.getClass(), Operation.INSERT);
+		String requiredRoleValue = RequiresAnnotationUtil.getRequiredRole(entity.getClass(), writeOperation);
 
 		if (requiredRoleValue != null && request.isUserInRole(requiredRoleValue)) {
 			invocation.proceed();
 			return;
 		}
 
-		String requiredAssociationValue = RequiresAnnotationUtil
-			.getRequiredAssociation(entity.getClass(), Operation.INSERT);
+		String requiredAssociationValue = RequiresAnnotationUtil.getRequiredAssociation(entity.getClass(), writeOperation);
 
 		if (requiredAssociationValue == null) {
 			// proceed as normal if there's neither RequiresRole nor RequiresAssociation, throw an exception if role didn't match
 			if (requiredRoleValue == null) invocation.proceed();
-			else throw new EntitySecurityException(
-				"Currently executing subject is not permitted to persist entities of type " + entity.getClass().getSimpleName());
+			else throw new EntitySecurityException("Currently executing subject is not permitted to " + writeOperation
+				+ " entities of type " + entity.getClass().getSimpleName());
 		}
 		EntityManager entityManager = (EntityManager) invocation.getInstance();
 
@@ -60,8 +65,8 @@ public class SecurePersistAdvice implements MethodAdvice {
 		SingularAttribute idAttr = entityType.getId(idType.getJavaType());
 		if (!propertyAccess.get(associatedObject, idAttr.getName()).equals(
 			securityService.getSubject().getPrincipals().getPrimaryPrincipal())) { throw new EntitySecurityException(
-			"Currently executing subject is not permitted to persist entities of type " + entity.getClass().getSimpleName()
-				+ " because the required association didn't exist"); }
+			"Currently executing subject is not permitted to " + writeOperation + " entities of type "
+				+ entity.getClass().getSimpleName() + " because the required association didn't exist"); }
 		invocation.proceed();
 	}
 }
