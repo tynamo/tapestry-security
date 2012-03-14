@@ -99,7 +99,7 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 	}
 
 	@Test
-	public void securedFind() {
+	public void secureFind() {
 		delegate.getTransaction().begin();
 		TestOwnerEntity owner = new TestOwnerEntity();
 		owner.setId(1L);
@@ -157,14 +157,30 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 	@Test(expectedExceptions = { EntitySecurityException.class })
 	public void persistProtectedByRole() {
 		interceptor.getTransaction().begin();
-		RolePersistProtectedEntity rolePersistProtectedEntity = new RolePersistProtectedEntity();
+		RoleWriteProtectedEntity rolePersistProtectedEntity = new RoleWriteProtectedEntity();
 		interceptor.persist(rolePersistProtectedEntity);
 		interceptor.getTransaction().commit();
 	}
 
-	@Entity(name = "RolePersistProtectedEntity")
+	@Test(expectedExceptions = { EntitySecurityException.class })
+	public void mergeProtectedByRole() {
+		interceptor.getTransaction().begin();
+		RoleWriteProtectedEntity rolePersistProtectedEntity = new RoleWriteProtectedEntity();
+		interceptor.merge(rolePersistProtectedEntity);
+		interceptor.getTransaction().commit();
+	}
+
+	@Test(expectedExceptions = { EntitySecurityException.class })
+	public void removeProtectedByRole() {
+		interceptor.getTransaction().begin();
+		RoleWriteProtectedEntity rolePersistProtectedEntity = new RoleWriteProtectedEntity();
+		interceptor.remove(rolePersistProtectedEntity);
+		interceptor.getTransaction().commit();
+	}
+
+	@Entity(name = "RoleWriteProtectedEntity")
 	@RequiresRole(value = "owner", operations = Operation.WRITE)
-	public static class RolePersistProtectedEntity {
+	public static class RoleWriteProtectedEntity {
 		@Id
 		@GeneratedValue(strategy = GenerationType.AUTO)
 		private Long id;
