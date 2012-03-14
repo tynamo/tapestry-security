@@ -24,7 +24,7 @@ public class SecureWriteAdvice implements MethodAdvice {
 	public SecureWriteAdvice(final Operation writeOperation, final SecurityService securityService,
 		final HttpServletRequest request, final PropertyAccess propertyAccess) {
 		if (!Operation.INSERT.equals(writeOperation) && !Operation.UPDATE.equals(writeOperation)
-			&& Operation.DELETE.equals(writeOperation))
+			&& !Operation.DELETE.equals(writeOperation))
 			throw new IllegalArgumentException("The targeted writeOperation must be one of INSERT, UPDATE, DELETE but was "
 				+ writeOperation);
 		this.writeOperation = writeOperation;
