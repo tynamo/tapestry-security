@@ -9,7 +9,7 @@ import org.tynamo.security.jpa.annotations.RequiresRole;
 
 @RequiresRole("admin")
 @Entity
-public class SimpleEntity {
+public class AdminOnly {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

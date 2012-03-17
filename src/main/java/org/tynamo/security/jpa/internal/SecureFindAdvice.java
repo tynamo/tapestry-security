@@ -44,7 +44,7 @@ public class SecureFindAdvice implements MethodAdvice {
 
 		if (requiredAssociationValue == null) {
 			// proceed as normal if there's neither RequiresRole nor RequiresAssociation, directly return null if role didn't match
-			if (requiredRoleValue != null) invocation.proceed();
+			if (requiredRoleValue == null) invocation.proceed();
 			else invocation.setReturnValue(null);
 			return;
 		}

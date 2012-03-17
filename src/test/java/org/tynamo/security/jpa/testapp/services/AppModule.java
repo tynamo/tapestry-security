@@ -30,6 +30,9 @@ import org.apache.tapestry5.ioc.annotations.SubModule;
 import org.apache.tapestry5.ioc.services.MasterObjectProvider;
 import org.tynamo.security.jpa.JpaSecurityModule;
 import org.tynamo.security.jpa.internal.SecureEntityManagerObjectProvider;
+import org.tynamo.security.jpa.testapp.entities.AdminOnly;
+import org.tynamo.security.jpa.testapp.entities.MyData;
+import org.tynamo.security.jpa.testapp.entities.User;
 import org.tynamo.shiro.extension.realm.text.ExtendedPropertiesRealm;
 
 /**
@@ -56,5 +59,19 @@ public class AppModule {
 	public static void provideObjectProviders(final OrderedConfiguration<ObjectProvider> configuration) {
 		configuration.overrideInstance("EntityManager", SecureEntityManagerObjectProvider.class,
 			"before:AnnotationBasedContributions");
+	}
+
+	public static void contributeSeedEntity(OrderedConfiguration<Object> configuration) {
+		User user = new User();
+		user.setId("user");
+		configuration.add("user", user);
+
+		AdminOnly adminOnly = new AdminOnly();
+		configuration.add("adminOnly", adminOnly);
+
+		MyData myData = new MyData();
+		myData.setOwner(user);
+		configuration.add("myData", myData);
+
 	}
 }

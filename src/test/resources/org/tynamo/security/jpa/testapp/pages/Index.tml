@@ -1,6 +1,20 @@
 <html title="editablecontent Index" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
 	<head></head>
 	<body>
-	hello world
+		<t:security.notauthenticated>
+			<t:actionlink t:id="signInAsUser">Click to sign in as user:user</t:actionlink>
+		</t:security.notauthenticated>
+		<t:security.authenticated>
+			<t:security.loginlink/>
+		</t:security.authenticated>
+		
+		<t:if test="mydata">
+			<t:zone t:id="mydatazone">
+			Current value of my data: ${mydata.value}
+			</t:zone>
+			<t:actionlink t:zone="mydatazone" t:id="updatemydata">Generate new random value for my data</t:actionlink>
+			<p:else>
+			</p:else> 
+		</t:if>
 	</body>
 </html>

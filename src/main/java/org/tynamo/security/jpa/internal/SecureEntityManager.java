@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.tapestry5.ioc.services.PropertyAccess;
 import org.tynamo.security.jpa.EntitySecurityException;
 import org.tynamo.security.jpa.annotations.Operation;
+import org.tynamo.security.jpa.annotations.RequiresAssociation;
 import org.tynamo.security.services.SecurityService;
 
 public class SecureEntityManager implements EntityManager {
@@ -205,6 +206,8 @@ public class SecureEntityManager implements EntityManager {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private <T> T secureFind(Class<T> entityClass, Object entityId, LockModeType lockMode, Map<String, Object> properties) {
+		if (!securityService.getSubject().isAuthenticated()) return null;
+
 		String requiredRoleValue = RequiresAnnotationUtil.getRequiredRole(entityClass, Operation.READ);
 
 		if (requiredRoleValue != null && request.isUserInRole(requiredRoleValue))
@@ -214,9 +217,15 @@ public class SecureEntityManager implements EntityManager {
 
 		if (requiredAssociationValue == null) {
 			// proceed as normal if there's neither RequiresRole nor RequiresAssociation, directly return null if role didn't match
-			if (requiredRoleValue != null) return delegate.find(entityClass, entityId, lockMode, properties);
-			else return null;
+			if (requiredRoleValue != null) return null;
+			// even if assocation is not required for read, we can still use it to find the entity
+			RequiresAssociation annotation = entityClass.getAnnotation(RequiresAssociation.class);
+			if (annotation == null) return null;
+			requiredAssociationValue = annotation.value();
+			if (requiredAssociationValue == null)
+				return entityId == null ? null : delegate.find(entityClass, entityId, lockMode, properties);
 		}
+
 		// FIXME handle empty value, i.e. association to "self"
 		CriteriaBuilder builder = delegate.getCriteriaBuilder();
 		CriteriaQuery<Object> criteriaQuery = builder.createQuery();

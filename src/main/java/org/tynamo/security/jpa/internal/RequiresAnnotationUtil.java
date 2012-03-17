@@ -7,7 +7,7 @@ import org.tynamo.security.jpa.annotations.RequiresRole;
 // We need to duplicate the code because annotations cannot be extended
 public abstract class RequiresAnnotationUtil {
 	public static String getRequiredRole(Class<?> aClass, Operation operation) {
-		RequiresRole annotation = (RequiresRole) aClass.getAnnotation(RequiresRole.class);
+		RequiresRole annotation = aClass.getAnnotation(RequiresRole.class);
 		if (annotation == null) return null;
 
 		for (Operation requiredOperation : annotation.operations()) {
@@ -20,7 +20,7 @@ public abstract class RequiresAnnotationUtil {
 	}
 
 	public static String getRequiredAssociation(Class<?> aClass, Operation operation) {
-		RequiresAssociation annotation = (RequiresAssociation) aClass.getAnnotation(RequiresAssociation.class);
+		RequiresAssociation annotation = aClass.getAnnotation(RequiresAssociation.class);
 		if (annotation == null) return null;
 
 		for (Operation requiredOperation : annotation.operations()) {
