@@ -91,6 +91,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.tynamo</groupId>
+			<artifactId>tapestry-exceptionpage</artifactId>
+			<version>0.1.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.tynamo</groupId>
 			<artifactId>tapestry-security</artifactId>
 			<version>0.4.2</version>
 		</dependency>

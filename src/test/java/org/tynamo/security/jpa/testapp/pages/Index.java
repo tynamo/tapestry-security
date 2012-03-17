@@ -8,6 +8,7 @@ import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.corelib.components.Zone;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.jpa.annotations.CommitAfter;
+import org.tynamo.security.jpa.testapp.entities.AdminOnly;
 import org.tynamo.security.jpa.testapp.entities.MyData;
 import org.tynamo.security.services.SecurityService;
 
@@ -37,5 +38,11 @@ public class Index {
 
 	void onActionFromSignInAsUser() {
 		securityService.getSubject().login(new UsernamePasswordToken("user", "user"));
+	}
+
+	@CommitAfter
+	void onActionFromInsertAdminOnly() {
+		AdminOnly adminOnly = new AdminOnly();
+		entityManager.persist(adminOnly);
 	}
 }

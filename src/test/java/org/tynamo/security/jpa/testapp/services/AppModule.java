@@ -28,11 +28,13 @@ import org.apache.tapestry5.ioc.ServiceBinder;
 import org.apache.tapestry5.ioc.annotations.Contribute;
 import org.apache.tapestry5.ioc.annotations.SubModule;
 import org.apache.tapestry5.ioc.services.MasterObjectProvider;
+import org.tynamo.security.jpa.EntitySecurityException;
 import org.tynamo.security.jpa.JpaSecurityModule;
 import org.tynamo.security.jpa.internal.SecureEntityManagerObjectProvider;
 import org.tynamo.security.jpa.testapp.entities.AdminOnly;
 import org.tynamo.security.jpa.testapp.entities.MyData;
 import org.tynamo.security.jpa.testapp.entities.User;
+import org.tynamo.security.jpa.testapp.pages.NoPermissions;
 import org.tynamo.shiro.extension.realm.text.ExtendedPropertiesRealm;
 
 /**
@@ -72,6 +74,10 @@ public class AppModule {
 		MyData myData = new MyData();
 		myData.setOwner(user);
 		configuration.add("myData", myData);
-
 	}
+
+	public void contributeExceptionHandler(MappedConfiguration<Class, Object> configuration) {
+		configuration.add(EntitySecurityException.class, NoPermissions.class);
+	}
+
 }
