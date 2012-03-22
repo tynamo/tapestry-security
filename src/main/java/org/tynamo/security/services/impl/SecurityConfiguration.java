@@ -83,7 +83,7 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 		// or, more generically, if the same thread/container-level filter mapping handles the request twice 
 		if (originalRequest instanceof ShiroHttpServletRequest) return handler.service(originalRequest, response);
 
-		final HttpServletRequest request = new ShiroHttpServletRequest(originalRequest, servletContext, false);
+		final HttpServletRequest request = new ShiroHttpServletRequest(originalRequest, servletContext, true);
 
 		String requestURI = pageService.getLocalelessPathWithinApplication();
 
