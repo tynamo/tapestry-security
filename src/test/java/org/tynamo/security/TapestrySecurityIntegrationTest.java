@@ -42,6 +42,9 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	private static final String STATUS_NOT_AUTH = "STATUS[Not Authenticated]";
 	private static final String STATUS_AUTH = "STATUS[Authenticated]";
 	private HtmlPage page;
+	
+	// masks the inherited field because that one is final (in model-test 0.1.0)
+	protected static String BASEURI = "http://localhost:" + port + "/test/";
 
 	@Override
 	@BeforeClass
@@ -53,7 +56,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	@Override
 	public WebAppContext buildContext()
 	{
-		WebAppContext context = new WebAppContext("src/test/webapp", "/");
+		WebAppContext context = new WebAppContext("src/test/webapp", "/test");
 		/*
 		 * Sets the classloading model for the context to avoid an strange "ClassNotFoundException: org.slf4j.Logger"
 		 */
@@ -730,7 +733,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		clickOnBasePage("about");
 		assertLoginPage();
 		loginAction();
-		assertTrue(getLocation().startsWith(BASEURI + "about"), "Request wasn't redirected to the remebered url");
+		assertTrue(getLocation().startsWith(BASEURI + "about"), "Request wasn't redirected to the remembered url");
 	}
 
 // the following test *does not* work because of deficiency in htmlunit itself. The request parameters however are saved 

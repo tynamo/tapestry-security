@@ -78,7 +78,7 @@ public class PageServiceImpl implements PageService {
 	}
 	
 	private Cookie createSavedRequestCookie() {
-		String requestUri = request.getRequestURI();
+		String requestUri = WebUtils.getPathWithinApplication(request);
 		if (request.getQueryString() != null) requestUri += "?" + request.getQueryString();
   	Cookie cookie = new Cookie(WebUtils.SAVED_REQUEST_KEY, requestUri);
   	String contextPath = request.getContextPath();
@@ -104,7 +104,7 @@ public class PageServiceImpl implements PageService {
 			break;
 		}
 		if (requestUri == null) requestUri = fallbackUrl;
-		WebUtils.issueRedirect(request, response, requestUri, null, false, true);
+		WebUtils.issueRedirect(request, response, requestUri);
   }
 	
 }
