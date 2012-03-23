@@ -737,9 +737,9 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		assertTrue(getLocation().startsWith(BASEURI + "about"), "Request wasn't redirected to the remembered url");
 	}
 	
-	@Test(dependsOnMethods = {"testSaveRequestAnnotationHandler"})
 	public void testSaveRequestWithFallbackUri() throws Exception
 	{
+		clickOnBasePage("tynamoLogoutLink");
 		CookieManager cookieManager = webClient.getCookieManager();
 		cookieManager.clearCookies();
 		boolean original = cookieManager.isCookiesEnabled();
@@ -766,10 +766,9 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 //		assertTrue(valuePairs.contains(new NameValuePair("test", "now")), "Request parameters weren't remebered");
 //	}
 	
-	@Test(dependsOnMethods = {"testSaveRequestAnnotationHandler"})
 	public void testSaveRequestFilter() throws Exception
 	{
-		testLogout();
+		clickOnBasePage("tynamoLogoutLink");
 		clickOnBasePage("authcCabinet");
 		assertLoginPage();
 		loginAction();
