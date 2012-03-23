@@ -62,9 +62,8 @@ public abstract class AuthenticationFilter extends AccessControlFilter {
      * @throws Exception if there is a problem redirecting.
      */
 	protected void issueSuccessRedirect(ServletRequest request, ServletResponse response) throws Exception {
-		String contextPath = WebUtils.toHttp(request).getContextPath();
-  	if ("/".equals(contextPath)) contextPath = "";
-		String requestUri = contextPath + getSuccessUrl();
+		String requestUri = getSuccessUrl();
+		if (!requestUri.startsWith("/")) requestUri = "/" + requestUri;
 		if (isRedirectToSavedUrl()) {
 			getPageService().redirectToSavedRequest(requestUri);
 			return;

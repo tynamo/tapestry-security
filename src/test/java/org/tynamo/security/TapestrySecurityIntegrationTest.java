@@ -33,6 +33,7 @@ import org.testng.annotations.Test;
 import org.tynamo.security.testapp.services.impl.Invoker;
 import org.tynamo.test.AbstractContainerTest;
 
+import com.gargoylesoftware.htmlunit.CookieManager;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
@@ -735,6 +736,21 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		loginAction();
 		assertTrue(getLocation().startsWith(BASEURI + "about"), "Request wasn't redirected to the remembered url");
 	}
+	
+	@Test(dependsOnMethods = {"testSaveRequestAnnotationHandler"})
+	public void testSaveRequestWithFallbackUri() throws Exception
+	{
+		CookieManager cookieManager = webClient.getCookieManager();
+		cookieManager.clearCookies();
+		boolean original = cookieManager.isCookiesEnabled();
+		cookieManager.setCookiesEnabled(false);
+		clickOnBasePage("about");
+		assertLoginPage();
+		loginAction();
+		assertTrue(getLocation().startsWith(BASEURI + "index"), "Request wasn't redirected to the default success url");
+		cookieManager.setCookiesEnabled(original);
+	}
+	
 
 // the following test *does not* work because of deficiency in htmlunit itself. The request parameters however are saved 
 // see	http://old.nabble.com/Problem-with-WebRequestSettings.getRequestParameters%28%29-td20167941.html

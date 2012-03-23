@@ -135,9 +135,9 @@ public class LoginForm
 //			return pageService.getSuccessPage();
 //		}
 		if (redirectToSavedUrl) {
-			String contextPath = requestGlobals.getHTTPServletRequest().getContextPath();
-	  	if ("/".equals(contextPath)) contextPath = "";
-			pageService.redirectToSavedRequest(contextPath + "/" + pageService.getSuccessPage());
+			String requestUri = pageService.getSuccessPage();
+			if (!requestUri.startsWith("/")) requestUri = "/" + requestUri;
+			pageService.redirectToSavedRequest(requestUri);
 			return null;
 		}
 //		Cookie[] cookies = requestGlobals.getHTTPServletRequest().getCookies();
