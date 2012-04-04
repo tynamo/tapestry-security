@@ -192,6 +192,26 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 		interceptor.getTransaction().commit();
 	}
 
+	@Test(expectedExceptions = { EntitySecurityException.class })
+	public void removeProtectedByAssociation() {
+		TestOwnerEntity owner = new TestOwnerEntity();
+		owner.setId(1L);
+		mockSubject(2L);
+		interceptor.getTransaction().begin();
+		interceptor.remove(owner);
+		interceptor.getTransaction().commit();
+	}
+
+	@Test
+	public void persistSelfProtectedByAssociation() {
+		TestGenerated generated = new TestGenerated();
+		// as an exception to the rules, adding (any) self *should* succeed
+		mockSubject(1L);
+		interceptor.getTransaction().begin();
+		interceptor.persist(generated);
+		interceptor.getTransaction().commit();
+	}
+
 	@Entity(name = "RoleWriteProtectedEntity")
 	@RequiresRole(value = "owner", operations = Operation.WRITE)
 	public static class RoleWriteProtectedEntity {
@@ -245,4 +265,16 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 
 	}
 
+	@Entity(name = "TestGenerated")
+	@RequiresAssociation
+	public static class TestGenerated {
+
+		@Id
+		@GeneratedValue(strategy = GenerationType.AUTO)
+		private Long id;
+
+		public Long getId() {
+			return id;
+		}
+	}
 }

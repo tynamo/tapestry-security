@@ -1,11 +1,16 @@
 package org.tynamo.security.jpa.internal;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.FlushModeType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.LockModeType;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -264,6 +269,11 @@ public class SecureEntityManager implements EntityManager {
 		return (T) delegate.createQuery(criteriaQuery).getSingleResult();
 	}
 
+	private Annotation getAnnotation(Member member, Class annotationType) {
+		return member instanceof Field ? ((Field) member).getAnnotation(annotationType)
+			: member instanceof Method ? ((Method) member).getAnnotation(annotationType) : null;
+	}
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void checkWritePermissions(final Object entity, final Operation writeOperation) {
 		String requiredRoleValue = RequiresAnnotationUtil.getRequiredRole(entity.getClass(), writeOperation);
@@ -278,19 +288,27 @@ public class SecureEntityManager implements EntityManager {
 			else throw new EntitySecurityException("Currently executing subject is not permitted to " + writeOperation
 				+ " entities of type " + entity.getClass().getSimpleName());
 		}
-		// FIXME handle empty value, i.e. association to "self"
-		Object associatedObject = propertyAccess.get(entity, requiredAssociationValue);
 
 		Metamodel metamodel = delegate.getMetamodel();
 		EntityType entityType = metamodel.entity(entity.getClass());
-		Attribute association = entityType.getAttribute(requiredAssociationValue);
-		entityType = metamodel.entity(association.getJavaType());
+		// empty association value indicates association to "self"
+		Object associatedObject;
+		if (requiredAssociationValue.isEmpty()) associatedObject = entity;
+		else {
+			Attribute association = entityType.getAttribute(requiredAssociationValue);
+			entityType = metamodel.entity(association.getJavaType());
+			associatedObject = propertyAccess.get(entity, requiredAssociationValue);
+		}
+
 		Type idType = entityType.getIdType();
 		SingularAttribute idAttr = entityType.getId(idType.getJavaType());
-		if (!propertyAccess.get(associatedObject, idAttr.getName()).equals(
+
+		// handle INSERT operation to "self" with a generated id as a special allowed case
+		if (associatedObject == entity && getAnnotation(idAttr.getJavaMember(), GeneratedValue.class) != null
+			&& Operation.INSERT.equals(writeOperation)) return;
+		else if (!propertyAccess.get(associatedObject, idAttr.getName()).equals(
 			securityService.getSubject().getPrincipals().getPrimaryPrincipal())) { throw new EntitySecurityException(
 			"Currently executing subject is not permitted to " + writeOperation + " entities of type "
 				+ entity.getClass().getSimpleName() + " because the required association didn't exist"); }
 	}
-
 }
