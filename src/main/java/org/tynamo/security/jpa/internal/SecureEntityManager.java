@@ -225,7 +225,6 @@ public class SecureEntityManager implements EntityManager {
 			requiredAssociationValue = annotation.value();
 		}
 
-		// FIXME handle empty value, i.e. association to "self"
 		CriteriaBuilder builder = delegate.getCriteriaBuilder();
 		CriteriaQuery<Object> criteriaQuery = builder.createQuery();
 		Root<?> from = criteriaQuery.from(entityClass);
@@ -235,6 +234,24 @@ public class SecureEntityManager implements EntityManager {
 		EntityType entityType = metamodel.entity(entityClass);
 		Type idType;
 		SingularAttribute idAttr;
+		Predicate predicate2 = null;
+
+		// empty string indicates association to "self"
+		if (requiredAssociationValue.isEmpty()) entityId = securityService.getSubject().getPrincipals()
+			.getPrimaryPrincipal();
+		else {
+			Attribute association = entityType.getAttribute(requiredAssociationValue);
+			// TODO handle if !association.isAssociation()
+			entityType = metamodel.entity(association.getJavaType());
+			idType = entityType.getIdType();
+			idAttr = entityType.getId(idType.getJavaType());
+
+			Join<Object, Object> join = from.join(requiredAssociationValue);
+			// TODO handle subject == null
+			// TODO allow configuring the principal for it rather than using primary
+			predicate2 = builder.equal(join.get(idAttr.getName()), securityService.getSubject().getPrincipals()
+				.getPrimaryPrincipal());
+		}
 
 		Predicate predicate1 = null;
 		if (entityId != null) {
@@ -242,18 +259,8 @@ public class SecureEntityManager implements EntityManager {
 			idAttr = entityType.getId(idType.getJavaType());
 			predicate1 = builder.equal(from.get(idAttr.getName()), entityId);
 		}
-		Attribute association = entityType.getAttribute(requiredAssociationValue);
-		// TODO handle if !association.isAssociation()
-		entityType = metamodel.entity(association.getJavaType());
-		idType = entityType.getIdType();
-		idAttr = entityType.getId(idType.getJavaType());
-
-		Join<Object, Object> join = from.join(requiredAssociationValue);
-		// TODO handle subject == null
-		// TODO allow configuring the principal for it rather than using primary
-		Predicate predicate2 = builder.equal(join.get(idAttr.getName()), securityService.getSubject().getPrincipals()
-			.getPrimaryPrincipal());
-		criteriaQuery.where(predicate1 == null ? predicate2 : builder.and(predicate1, predicate2));
+		criteriaQuery.where(predicate1 == null ? predicate2 : predicate2 == null ? predicate1 : builder.and(predicate1,
+			predicate2));
 		return (T) delegate.createQuery(criteriaQuery).getSingleResult();
 	}
 

@@ -127,12 +127,24 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 		entity.setOwner(owner);
 		entity.setId(1L);
 		delegate.persist(entity);
-		delegate.persist(entity);
 		delegate.getTransaction().commit();
 
 		mockSubject(1L);
 		entity = interceptor.find(TestEntity.class, null);
 		assertNotNull(entity);
+	}
+
+	@Test
+	public void findSelfByAssociation() {
+		delegate.getTransaction().begin();
+		TestOwnerEntity owner = new TestOwnerEntity();
+		owner.setId(1L);
+		delegate.persist(owner);
+		delegate.getTransaction().commit();
+
+		mockSubject(1L);
+		owner = interceptor.find(TestOwnerEntity.class, null);
+		assertNotNull(owner);
 
 	}
 
@@ -217,6 +229,7 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 	}
 
 	@Entity(name = "TestOwnerEntity")
+	@RequiresAssociation
 	public static class TestOwnerEntity {
 
 		@Id
