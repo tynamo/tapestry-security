@@ -15,6 +15,7 @@ import org.tynamo.security.jpa.EntitySecurityException;
 import org.tynamo.security.jpa.annotations.Operation;
 import org.tynamo.security.services.SecurityService;
 
+@Deprecated
 public class SecureWriteAdvice implements MethodAdvice {
 	private final SecurityService securityService;
 	private final HttpServletRequest request;

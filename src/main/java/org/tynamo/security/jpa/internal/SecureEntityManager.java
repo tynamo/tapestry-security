@@ -218,12 +218,11 @@ public class SecureEntityManager implements EntityManager {
 		if (requiredAssociationValue == null) {
 			// proceed as normal if there's neither RequiresRole nor RequiresAssociation, directly return null if role didn't match
 			if (requiredRoleValue != null) return null;
+			if (entityId != null) return delegate.find(entityClass, entityId, lockMode, properties);
 			// even if assocation is not required for read, we can still use it to find the entity
 			RequiresAssociation annotation = entityClass.getAnnotation(RequiresAssociation.class);
 			if (annotation == null) return null;
 			requiredAssociationValue = annotation.value();
-			if (requiredAssociationValue == null)
-				return entityId == null ? null : delegate.find(entityClass, entityId, lockMode, properties);
 		}
 
 		// FIXME handle empty value, i.e. association to "self"

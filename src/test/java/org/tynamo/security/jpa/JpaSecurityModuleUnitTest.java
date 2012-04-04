@@ -19,7 +19,6 @@ import org.apache.shiro.subject.Subject;
 import org.apache.tapestry5.ioc.Registry;
 import org.apache.tapestry5.ioc.RegistryBuilder;
 import org.apache.tapestry5.ioc.services.AspectDecorator;
-import org.apache.tapestry5.ioc.services.AspectInterceptorBuilder;
 import org.apache.tapestry5.ioc.services.PropertyAccess;
 import org.apache.tapestry5.ioc.services.TapestryIOCModule;
 import org.apache.tapestry5.ioc.test.IOCTestCase;
@@ -34,6 +33,7 @@ import org.tynamo.exceptionpage.services.ExceptionPageModule;
 import org.tynamo.security.jpa.annotations.Operation;
 import org.tynamo.security.jpa.annotations.RequiresAssociation;
 import org.tynamo.security.jpa.annotations.RequiresRole;
+import org.tynamo.security.jpa.internal.SecureEntityManager;
 import org.tynamo.security.services.SecurityModule;
 import org.tynamo.security.services.SecurityService;
 
@@ -67,10 +67,11 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 
 		aspectDecorator = registry.getService(AspectDecorator.class);
 		propertyAccess = registry.getService(PropertyAccess.class);
-		final AspectInterceptorBuilder<EntityManager> aspectBuilder = aspectDecorator.createBuilder(EntityManager.class,
-			delegate, "secureEntityManager");
-		JpaSecurityModule.secureEntityOperations(aspectBuilder, securityService, request, propertyAccess);
-		interceptor = aspectBuilder.build();
+		// // final AspectInterceptorBuilder<EntityManager> aspectBuilder = aspectDecorator.createBuilder(EntityManager.class,
+		// // delegate, "secureEntityManager");
+		// // JpaSecurityModule.secureEntityOperations(aspectBuilder, securityService, request, propertyAccess);
+		// interceptor = aspectBuilder.build();
+		interceptor = new SecureEntityManager(securityService, propertyAccess, request, delegate);
 	}
 
 	@AfterMethod
@@ -92,6 +93,7 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 
 	private void mockSubject(Long principalId) {
 		Subject subject = mock(Subject.class);
+		when(subject.isAuthenticated()).thenReturn(true);
 		PrincipalCollection principalCollection = mock(PrincipalCollection.class);
 		when(principalCollection.getPrimaryPrincipal()).thenReturn(principalId);
 		when(subject.getPrincipals()).thenReturn(principalCollection);

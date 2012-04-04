@@ -19,6 +19,7 @@ import org.tynamo.security.jpa.annotations.Operation;
 import org.tynamo.security.jpa.annotations.RequiresRole;
 import org.tynamo.security.services.SecurityService;
 
+@Deprecated
 public class SecureFindAdvice implements MethodAdvice {
 	private SecurityService securityService;
 	private HttpServletRequest request;
