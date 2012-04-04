@@ -22,15 +22,11 @@ import org.apache.shiro.realm.Realm;
 import org.apache.tapestry5.SymbolConstants;
 import org.apache.tapestry5.ioc.Configuration;
 import org.apache.tapestry5.ioc.MappedConfiguration;
-import org.apache.tapestry5.ioc.ObjectProvider;
 import org.apache.tapestry5.ioc.OrderedConfiguration;
 import org.apache.tapestry5.ioc.ServiceBinder;
-import org.apache.tapestry5.ioc.annotations.Contribute;
 import org.apache.tapestry5.ioc.annotations.SubModule;
-import org.apache.tapestry5.ioc.services.MasterObjectProvider;
 import org.tynamo.security.jpa.EntitySecurityException;
 import org.tynamo.security.jpa.JpaSecurityModule;
-import org.tynamo.security.jpa.internal.SecureEntityManagerObjectProvider;
 import org.tynamo.security.jpa.testapp.entities.AdminOnly;
 import org.tynamo.security.jpa.testapp.entities.MyData;
 import org.tynamo.security.jpa.testapp.entities.User;
@@ -55,12 +51,6 @@ public class AppModule {
 	public static void contributeWebSecurityManager(Configuration<Realm> configuration) {
 		ExtendedPropertiesRealm realm = new ExtendedPropertiesRealm("classpath:users.properties");
 		configuration.add(realm);
-	}
-
-	@Contribute(MasterObjectProvider.class)
-	public static void provideObjectProviders(final OrderedConfiguration<ObjectProvider> configuration) {
-		configuration.overrideInstance("EntityManager", SecureEntityManagerObjectProvider.class,
-			"before:AnnotationBasedContributions");
 	}
 
 	public static void contributeSeedEntity(OrderedConfiguration<Object> configuration) {
