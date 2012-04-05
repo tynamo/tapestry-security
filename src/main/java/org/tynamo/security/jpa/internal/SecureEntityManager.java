@@ -265,7 +265,9 @@ public class SecureEntityManager implements EntityManager {
 		// empty string indicates association to "self"
 		if (requiredAssociationValue.isEmpty()) {
 			idType = entityType.getIdType();
-			entityId = principal;
+			// entityId may be null when finding entity by association
+			if (entityId == null) entityId = principal;
+			else if (!entityId.equals(principal)) return null;
 		} else {
 			Attribute association = entityType.getAttribute(requiredAssociationValue);
 			// TODO handle if !association.isAssociation()
