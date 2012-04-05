@@ -100,19 +100,23 @@ public class SecureEntityManager implements EntityManager {
 	}
 
 	public <T> T find(Class<T> entityClass, Object primaryKey, LockModeType lockMode, Map<String, Object> properties) {
-		return secureFind(entityClass, primaryKey, lockMode, properties);
+		return securityService.getSubject() == null ? delegate.find(entityClass, primaryKey, lockMode, properties)
+			: secureFind(entityClass, primaryKey, lockMode, properties);
 	}
 
 	public <T> T find(Class<T> entityClass, Object primaryKey, LockModeType lockMode) {
-		return secureFind(entityClass, primaryKey, lockMode, null);
+		return securityService.getSubject() == null ? delegate.find(entityClass, primaryKey, lockMode) : secureFind(
+			entityClass, primaryKey, lockMode, null);
 	}
 
 	public <T> T find(Class<T> entityClass, Object primaryKey, Map<String, Object> properties) {
-		return secureFind(entityClass, primaryKey, null, properties);
+		return securityService.getSubject() == null ? delegate.find(entityClass, primaryKey, properties) : secureFind(
+			entityClass, primaryKey, null, properties);
 	}
 
 	public <T> T find(Class<T> entityClass, Object primaryKey) {
-		return secureFind(entityClass, primaryKey, null, null);
+		return securityService.getSubject() == null ? delegate.find(entityClass, primaryKey) : secureFind(entityClass,
+			primaryKey, null, null);
 	}
 
 	public void flush() {
@@ -299,6 +303,7 @@ public class SecureEntityManager implements EntityManager {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void checkWritePermissions(final Object entity, final Operation writeOperation) {
+		if (securityService.getSubject() == null) return;
 		String requiredRoleValue = RequiresAnnotationUtil.getRequiredRole(entity.getClass(), writeOperation);
 
 		if (requiredRoleValue != null && request.isUserInRole(requiredRoleValue)) return;
