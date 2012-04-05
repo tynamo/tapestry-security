@@ -27,6 +27,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.Type;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.shiro.util.ThreadContext;
 import org.apache.tapestry5.ioc.services.PropertyAccess;
 import org.tynamo.security.jpa.EntitySecurityException;
 import org.tynamo.security.jpa.annotations.Operation;
@@ -100,23 +101,23 @@ public class SecureEntityManager implements EntityManager {
 	}
 
 	public <T> T find(Class<T> entityClass, Object primaryKey, LockModeType lockMode, Map<String, Object> properties) {
-		return securityService.getSubject() == null ? delegate.find(entityClass, primaryKey, lockMode, properties)
+		return ThreadContext.getSecurityManager() == null ? delegate.find(entityClass, primaryKey, lockMode, properties)
 			: secureFind(entityClass, primaryKey, lockMode, properties);
 	}
 
 	public <T> T find(Class<T> entityClass, Object primaryKey, LockModeType lockMode) {
-		return securityService.getSubject() == null ? delegate.find(entityClass, primaryKey, lockMode) : secureFind(
+		return ThreadContext.getSecurityManager() == null ? delegate.find(entityClass, primaryKey, lockMode) : secureFind(
 			entityClass, primaryKey, lockMode, null);
 	}
 
 	public <T> T find(Class<T> entityClass, Object primaryKey, Map<String, Object> properties) {
-		return securityService.getSubject() == null ? delegate.find(entityClass, primaryKey, properties) : secureFind(
-			entityClass, primaryKey, null, properties);
+		return ThreadContext.getSecurityManager() == null ? delegate.find(entityClass, primaryKey, properties)
+			: secureFind(entityClass, primaryKey, null, properties);
 	}
 
 	public <T> T find(Class<T> entityClass, Object primaryKey) {
-		return securityService.getSubject() == null ? delegate.find(entityClass, primaryKey) : secureFind(entityClass,
-			primaryKey, null, null);
+		return ThreadContext.getSecurityManager() == null ? delegate.find(entityClass, primaryKey) : secureFind(
+			entityClass, primaryKey, null, null);
 	}
 
 	public void flush() {
@@ -303,7 +304,7 @@ public class SecureEntityManager implements EntityManager {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void checkWritePermissions(final Object entity, final Operation writeOperation) {
-		if (securityService.getSubject() == null) return;
+		if (ThreadContext.getSecurityManager() == null) return;
 		String requiredRoleValue = RequiresAnnotationUtil.getRequiredRole(entity.getClass(), writeOperation);
 
 		if (requiredRoleValue != null && request.isUserInRole(requiredRoleValue)) return;
