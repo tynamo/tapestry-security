@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
@@ -37,13 +38,17 @@ public class SecureEntityManager implements EntityManager {
 	private final SecurityService securityService;
 	private final HttpServletRequest request;
 	private final PropertyAccess propertyAccess;
+	private String realmName;
+	private Class principalType;
 
 	public SecureEntityManager(final SecurityService securityService, final PropertyAccess propertyAccess,
-		final HttpServletRequest request, final EntityManager delegate) {
+		final HttpServletRequest request, final EntityManager delegate, String realmName, Class principalType) {
 		this.securityService = securityService;
 		this.propertyAccess = propertyAccess;
 		this.request = request;
 		this.delegate = delegate;
+		this.realmName = realmName;
+		this.principalType = principalType;
 	}
 
 	public void clear() {
@@ -241,10 +246,27 @@ public class SecureEntityManager implements EntityManager {
 		SingularAttribute idAttr;
 		Predicate predicate2 = null;
 
-		// empty string indicates association to "self"
-		if (requiredAssociationValue.isEmpty()) entityId = securityService.getSubject().getPrincipals()
-			.getPrimaryPrincipal();
+		Object principal = null;
+		if (realmName.isEmpty()) principal = principalType == null ? securityService.getSubject().getPrincipals()
+			.getPrimaryPrincipal() : securityService.getSubject().getPrincipals().oneByType(principalType);
 		else {
+			Collection principals = securityService.getSubject().getPrincipals().fromRealm(realmName);
+			if (principalType == null) principals.iterator().next();
+			else {
+				for (Object availablePrincipal : principals)
+					if (availablePrincipal.getClass().isAssignableFrom(principalType)) {
+						principal = availablePrincipal;
+						break;
+					}
+			}
+		}
+		// throw IllegalArgumentException below if idType doesn't match with principal's type
+
+		// empty string indicates association to "self"
+		if (requiredAssociationValue.isEmpty()) {
+			idType = entityType.getIdType();
+			entityId = principal;
+		} else {
 			Attribute association = entityType.getAttribute(requiredAssociationValue);
 			// TODO handle if !association.isAssociation()
 			entityType = metamodel.entity(association.getJavaType());
@@ -254,8 +276,7 @@ public class SecureEntityManager implements EntityManager {
 			Join<Object, Object> join = from.join(requiredAssociationValue);
 			// TODO handle subject == null
 			// TODO allow configuring the principal for it rather than using primary
-			predicate2 = builder.equal(join.get(idAttr.getName()), securityService.getSubject().getPrincipals()
-				.getPrimaryPrincipal());
+			predicate2 = builder.equal(join.get(idAttr.getName()), principal);
 		}
 
 		Predicate predicate1 = null;

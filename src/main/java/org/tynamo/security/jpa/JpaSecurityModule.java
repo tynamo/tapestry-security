@@ -1,10 +1,11 @@
 package org.tynamo.security.jpa;
 
-import org.apache.tapestry5.ioc.ObjectProvider;
-import org.apache.tapestry5.ioc.OrderedConfiguration;
-import org.apache.tapestry5.ioc.annotations.Contribute;
-import org.apache.tapestry5.ioc.services.MasterObjectProvider;
-import org.tynamo.security.jpa.internal.SecureEntityManagerObjectProvider;
+import org.apache.tapestry5.ioc.MappedConfiguration;
+import org.apache.tapestry5.ioc.MethodAdviceReceiver;
+import org.apache.tapestry5.ioc.annotations.Advise;
+import org.apache.tapestry5.ioc.annotations.Autobuild;
+import org.apache.tapestry5.jpa.EntityManagerSource;
+import org.tynamo.security.jpa.internal.SecureEntityManagerSourceAdvice;
 
 public class JpaSecurityModule {
 	// @Advise(serviceInterface = EntityManager.class)
@@ -27,9 +28,27 @@ public class JpaSecurityModule {
 	//
 	// }
 
-	@Contribute(MasterObjectProvider.class)
-	public static void provideObjectProviders(final OrderedConfiguration<ObjectProvider> configuration) {
-		configuration.overrideInstance("EntityManager", SecureEntityManagerObjectProvider.class,
-			"before:AnnotationBasedContributions");
+	// @Contribute(MasterObjectProvider.class)
+	// public static void provideObjectProviders(final OrderedConfiguration<ObjectProvider> configuration) {
+	// configuration.overrideInstance("EntityManager", SecureEntityManagerObjectProvider.class,
+	// "before:AnnotationBasedContributions");
+	// }
+
+	// The following causes a circular reference with ServiceOverride depending on itself
+	// @Contribute(ServiceOverride.class)
+	// public static void overrideEntityManagerSource(MappedConfiguration<Class, Object> configuration) {
+	// configuration.addInstance(EntityManagerSource.class, SecureEntityManagerSource.class);
+	// }
+
+	@SuppressWarnings("unchecked")
+	@Advise(serviceInterface = EntityManagerSource.class)
+	public static void secureEntityManager(final MethodAdviceReceiver receiver,
+		@Autobuild SecureEntityManagerSourceAdvice advice) throws SecurityException, NoSuchMethodException {
+		receiver.adviseMethod(receiver.getInterface().getMethod("create", new Class[] { String.class }), advice);
+	}
+
+	public static void contributeFactoryDefaults(MappedConfiguration<String, String> configuration) {
+		configuration.add(JpaSecuritySymbols.ASSOCIATED_REALM, "");
+		configuration.add(JpaSecuritySymbols.ASSOCIATED_PRINCIPALTYPE, "");
 	}
 }

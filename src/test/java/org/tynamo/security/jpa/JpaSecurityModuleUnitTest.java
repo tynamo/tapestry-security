@@ -71,7 +71,7 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 		// // delegate, "secureEntityManager");
 		// // JpaSecurityModule.secureEntityOperations(aspectBuilder, securityService, request, propertyAccess);
 		// interceptor = aspectBuilder.build();
-		interceptor = new SecureEntityManager(securityService, propertyAccess, request, delegate);
+		interceptor = new SecureEntityManager(securityService, propertyAccess, request, delegate, "", null);
 	}
 
 	@AfterMethod

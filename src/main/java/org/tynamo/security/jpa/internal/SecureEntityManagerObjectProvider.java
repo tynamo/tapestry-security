@@ -14,6 +14,7 @@ import org.apache.tapestry5.ioc.services.PropertyAccess;
 import org.apache.tapestry5.jpa.EntityManagerManager;
 import org.tynamo.security.services.SecurityService;
 
+@Deprecated
 public class SecureEntityManagerObjectProvider implements ObjectProvider {
 
 	private EntityManager proxy;
@@ -54,7 +55,7 @@ public class SecureEntityManagerObjectProvider implements ObjectProvider {
 					final EntityManagerManager entityManagerManager = objectLocator.getService(EntityManagerManager.class);
 
 					return new SecureEntityManager(securityService, propertyAccess, request, JpaInternalUtils.getEntityManager(
-						entityManagerManager, annotation));
+						entityManagerManager, annotation), "", null);
 				}
 			}, "<EntityManagerProxy>");
 		}
