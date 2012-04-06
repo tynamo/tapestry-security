@@ -219,6 +219,19 @@ public class SecureEntityManager implements EntityManager {
 		return delegate.unwrap(arg0);
 	}
 
+	private Object getConfiguredPrincipal() {
+		if (!realmName.isEmpty()) {
+			Collection principals = securityService.getSubject().getPrincipals().fromRealm(realmName);
+			if (principalType == null) principals.iterator().next();
+			else {
+				for (Object availablePrincipal : principals)
+					if (availablePrincipal.getClass().isAssignableFrom(principalType)) { return availablePrincipal; }
+			}
+		}
+		if (principalType != null) return securityService.getSubject().getPrincipals().oneByType(principalType);
+		return securityService.getSubject().getPrincipals().getPrimaryPrincipal();
+	}
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private <T> T secureFind(Class<T> entityClass, Object entityId, LockModeType lockMode, Map<String, Object> properties) {
 		if (!securityService.getSubject().isAuthenticated()) return null;
@@ -251,20 +264,7 @@ public class SecureEntityManager implements EntityManager {
 		SingularAttribute idAttr;
 		Predicate predicate2 = null;
 
-		Object principal = null;
-		if (realmName.isEmpty()) principal = principalType == null ? securityService.getSubject().getPrincipals()
-			.getPrimaryPrincipal() : securityService.getSubject().getPrincipals().oneByType(principalType);
-		else {
-			Collection principals = securityService.getSubject().getPrincipals().fromRealm(realmName);
-			if (principalType == null) principals.iterator().next();
-			else {
-				for (Object availablePrincipal : principals)
-					if (availablePrincipal.getClass().isAssignableFrom(principalType)) {
-						principal = availablePrincipal;
-						break;
-					}
-			}
-		}
+		Object principal = getConfiguredPrincipal();
 		// throw IllegalArgumentException below if idType doesn't match with principal's type
 
 		// empty string indicates association to "self"
@@ -335,14 +335,18 @@ public class SecureEntityManager implements EntityManager {
 		// handle INSERT operation to "self" with a generated id as a special allowed case
 		if (associatedObject == entity && getAnnotation(idAttr.getJavaMember(), GeneratedValue.class) != null
 			&& Operation.INSERT.equals(writeOperation) && propertyAccess.get(entity, idAttr.getName()) == null) return;
-		else if (!propertyAccess.get(associatedObject, idAttr.getName()).equals(
-			securityService.getSubject().getPrincipals().getPrimaryPrincipal())) {
-			// note that JPA persist() with auto-generated id set equals update
-			// TODO should we change the operation type earlier when resolving the current operation?
-			if (Operation.INSERT.equals(writeOperation) && propertyAccess.get(entity, idAttr.getName()) == null)
-				writeOperation = Operation.UPDATE;
-			throw new EntitySecurityException("Currently executing subject is not permitted to " + writeOperation
-				+ " entities of type " + entity.getClass().getSimpleName() + " because the required association didn't exist");
+		else {
+			Object principal = getConfiguredPrincipal();
+			// TODO throw IllegalArgumentException below if idType doesn't match with principal's type
+
+			if (!propertyAccess.get(associatedObject, idAttr.getName()).equals(principal)) {
+				// note that JPA persist() with auto-generated id set equals update
+				// TODO should we change the operation type earlier when resolving the current operation?
+				if (Operation.INSERT.equals(writeOperation) && propertyAccess.get(entity, idAttr.getName()) == null)
+					writeOperation = Operation.UPDATE;
+				throw new EntitySecurityException("Currently executing subject is not permitted to " + writeOperation
+					+ " entities of type " + entity.getClass().getSimpleName() + " because the required association didn't exist");
+			}
 		}
 	}
 }
