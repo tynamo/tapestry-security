@@ -303,7 +303,7 @@ public class SecureEntityManager implements EntityManager {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void checkWritePermissions(final Object entity, final Operation writeOperation) {
+	public void checkWritePermissions(final Object entity, Operation writeOperation) {
 		if (ThreadContext.getSecurityManager() == null) return;
 		String requiredRoleValue = RequiresAnnotationUtil.getRequiredRole(entity.getClass(), writeOperation);
 
@@ -334,10 +334,15 @@ public class SecureEntityManager implements EntityManager {
 
 		// handle INSERT operation to "self" with a generated id as a special allowed case
 		if (associatedObject == entity && getAnnotation(idAttr.getJavaMember(), GeneratedValue.class) != null
-			&& Operation.INSERT.equals(writeOperation)) return;
+			&& Operation.INSERT.equals(writeOperation) && propertyAccess.get(entity, idAttr.getName()) == null) return;
 		else if (!propertyAccess.get(associatedObject, idAttr.getName()).equals(
-			securityService.getSubject().getPrincipals().getPrimaryPrincipal())) { throw new EntitySecurityException(
-			"Currently executing subject is not permitted to " + writeOperation + " entities of type "
-				+ entity.getClass().getSimpleName() + " because the required association didn't exist"); }
+			securityService.getSubject().getPrincipals().getPrimaryPrincipal())) {
+			// note that JPA persist() with auto-generated id set equals update
+			// TODO should we change the operation type earlier when resolving the current operation?
+			if (Operation.INSERT.equals(writeOperation) && propertyAccess.get(entity, idAttr.getName()) == null)
+				writeOperation = Operation.UPDATE;
+			throw new EntitySecurityException("Currently executing subject is not permitted to " + writeOperation
+				+ " entities of type " + entity.getClass().getSimpleName() + " because the required association didn't exist");
+		}
 	}
 }

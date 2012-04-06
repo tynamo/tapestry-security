@@ -14,8 +14,10 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.Persistence;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.tapestry5.ioc.Registry;
 import org.apache.tapestry5.ioc.RegistryBuilder;
 import org.apache.tapestry5.ioc.services.AspectDecorator;
@@ -28,6 +30,7 @@ import org.apache.tapestry5.services.TapestryModule;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.tynamo.exceptionpage.services.ExceptionPageModule;
 import org.tynamo.security.jpa.annotations.Operation;
@@ -45,6 +48,7 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 	private SecurityService securityService;
 	private HttpServletRequest request;
 	private PropertyAccess propertyAccess;
+	private SecurityManager securityManager;
 
 	@BeforeClass
 	public void setup() {
@@ -52,6 +56,7 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 		delegate = emFactory.createEntityManager();
 		securityService = mock(SecurityService.class);
 		request = mock(HttpServletRequest.class);
+		securityManager = mock(SecurityManager.class);
 
 		RegistryBuilder builder = new RegistryBuilder();
 		builder.add(TapestryModule.class);
@@ -72,6 +77,11 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 		// // JpaSecurityModule.secureEntityOperations(aspectBuilder, securityService, request, propertyAccess);
 		// interceptor = aspectBuilder.build();
 		interceptor = new SecureEntityManager(securityService, propertyAccess, request, delegate, "", null);
+	}
+
+	@BeforeMethod
+	public void bindMockSecurityManager() {
+		ThreadContext.bind(securityManager);
 	}
 
 	@AfterMethod
