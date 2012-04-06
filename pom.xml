@@ -98,12 +98,12 @@
 		<dependency>
 			<groupId>org.tynamo</groupId>
 			<artifactId>tapestry-security</artifactId>
-			<version>0.4.2</version>
+			<version>0.4.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.tynamo</groupId>
 			<artifactId>tapestry-jpa-seedentity</artifactId>
-			<version>0.1.0-SNAPSHOT</version>
+			<version>0.1.1-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
