@@ -228,6 +228,10 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 		@Id
 		@GeneratedValue(strategy = GenerationType.AUTO)
 		private Long id;
+
+		public Long getId() {
+			return id;
+		}
 	}
 
 	@Entity(name = "TestEntity")

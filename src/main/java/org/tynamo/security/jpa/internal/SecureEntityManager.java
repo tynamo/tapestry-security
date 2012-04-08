@@ -305,6 +305,16 @@ public class SecureEntityManager implements EntityManager {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void checkWritePermissions(final Object entity, Operation writeOperation) {
 		if (ThreadContext.getSecurityManager() == null) return;
+		Metamodel metamodel = delegate.getMetamodel();
+		EntityType entityType = metamodel.entity(entity.getClass());
+		Type idType = entityType.getIdType();
+		SingularAttribute idAttr = entityType.getId(idType.getJavaType());
+		GeneratedValue generatedAnnotation = (GeneratedValue) getAnnotation(idAttr.getJavaMember(), GeneratedValue.class);
+
+		// note that JPA persist() with auto-generated id set equals update
+		if (Operation.INSERT.equals(writeOperation) && generatedAnnotation != null
+			&& propertyAccess.get(entity, idAttr.getName()) != null) writeOperation = Operation.UPDATE;
+
 		String requiredRoleValue = RequiresAnnotationUtil.getRequiredRole(entity.getClass(), writeOperation);
 
 		if (requiredRoleValue != null && request.isUserInRole(requiredRoleValue)) return;
@@ -318,8 +328,6 @@ public class SecureEntityManager implements EntityManager {
 				+ " entities of type " + entity.getClass().getSimpleName());
 		}
 
-		Metamodel metamodel = delegate.getMetamodel();
-		EntityType entityType = metamodel.entity(entity.getClass());
 		// empty association value indicates association to "self"
 		Object associatedObject;
 		if (requiredAssociationValue.isEmpty()) associatedObject = entity;
@@ -327,26 +335,19 @@ public class SecureEntityManager implements EntityManager {
 			Attribute association = entityType.getAttribute(requiredAssociationValue);
 			entityType = metamodel.entity(association.getJavaType());
 			associatedObject = propertyAccess.get(entity, requiredAssociationValue);
+			idType = entityType.getIdType();
+			idAttr = entityType.getId(idType.getJavaType());
 		}
 
-		Type idType = entityType.getIdType();
-		SingularAttribute idAttr = entityType.getId(idType.getJavaType());
-
 		// handle INSERT operation to "self" with a generated id as a special allowed case
-		if (associatedObject == entity && getAnnotation(idAttr.getJavaMember(), GeneratedValue.class) != null
-			&& Operation.INSERT.equals(writeOperation) && propertyAccess.get(entity, idAttr.getName()) == null) return;
+		if (associatedObject == entity && generatedAnnotation != null && Operation.INSERT.equals(writeOperation)) return;
 		else {
 			Object principal = getConfiguredPrincipal();
 			// TODO throw IllegalArgumentException below if idType doesn't match with principal's type
 
-			if (!propertyAccess.get(associatedObject, idAttr.getName()).equals(principal)) {
-				// note that JPA persist() with auto-generated id set equals update
-				// TODO should we change the operation type earlier when resolving the current operation?
-				if (Operation.INSERT.equals(writeOperation) && propertyAccess.get(entity, idAttr.getName()) == null)
-					writeOperation = Operation.UPDATE;
-				throw new EntitySecurityException("Currently executing subject is not permitted to " + writeOperation
-					+ " entities of type " + entity.getClass().getSimpleName() + " because the required association didn't exist");
-			}
+			if (!propertyAccess.get(associatedObject, idAttr.getName()).equals(principal)) { throw new EntitySecurityException(
+				"Currently executing subject is not permitted to " + writeOperation + " entities of type "
+					+ entity.getClass().getSimpleName() + " because the required association didn't exist"); }
 		}
 	}
 }
