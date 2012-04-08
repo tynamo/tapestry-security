@@ -203,6 +203,28 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 	}
 
 	@Test(expectedExceptions = { EntitySecurityException.class })
+	public void insertProtectedByAssociationOwnerIsNull() {
+		mockSubject(2L);
+		interceptor.getTransaction().begin();
+		InsertAssociationProtectedEntity insertAssociationProtectedEntity = new InsertAssociationProtectedEntity();
+		interceptor.persist(insertAssociationProtectedEntity);
+		interceptor.getTransaction().commit();
+	}
+
+	@Test(expectedExceptions = { EntitySecurityException.class })
+	public void insertProtectedByAssociation() {
+		mockSubject(2L);
+		interceptor.getTransaction().begin();
+		TestOwnerEntity owner = new TestOwnerEntity();
+		owner.setId(1L);
+		interceptor.persist(owner);
+		InsertAssociationProtectedEntity insertAssociationProtectedEntity = new InsertAssociationProtectedEntity();
+		insertAssociationProtectedEntity.setOwner(owner);
+		interceptor.persist(insertAssociationProtectedEntity);
+		interceptor.getTransaction().commit();
+	}
+
+	@Test(expectedExceptions = { EntitySecurityException.class })
 	public void removeProtectedByAssociation() {
 		TestOwnerEntity owner = new TestOwnerEntity();
 		owner.setId(1L);
@@ -231,6 +253,29 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 
 		public Long getId() {
 			return id;
+		}
+	}
+
+	@Entity(name = "InsertAssociationProtectedEntity")
+	@RequiresAssociation(value = "owner", operations = Operation.INSERT)
+	public static class InsertAssociationProtectedEntity {
+		@Id
+		@GeneratedValue(strategy = GenerationType.AUTO)
+		private Long id;
+
+		@ManyToOne
+		private TestOwnerEntity owner;
+
+		public Long getId() {
+			return id;
+		}
+
+		public TestOwnerEntity getOwner() {
+			return owner;
+		}
+
+		public void setOwner(TestOwnerEntity owner) {
+			this.owner = owner;
 		}
 	}
 
