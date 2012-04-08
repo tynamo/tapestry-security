@@ -337,6 +337,9 @@ public class SecureEntityManager implements EntityManager {
 			associatedObject = propertyAccess.get(entity, requiredAssociationValue);
 			idType = entityType.getIdType();
 			idAttr = entityType.getId(idType.getJavaType());
+			if (associatedObject == null)
+				throw new EntitySecurityException("Subject for the required association is not set when executing "
+					+ writeOperation + " on instance '" + entity + "' of type " + entity.getClass().getSimpleName());
 		}
 
 		// handle INSERT operation to "self" with a generated id as a special allowed case
