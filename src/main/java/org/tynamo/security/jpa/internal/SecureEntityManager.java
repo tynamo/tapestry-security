@@ -14,6 +14,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.FlushModeType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.LockModeType;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -297,6 +298,9 @@ public class SecureEntityManager implements EntityManager {
 			predicate2));
 		// getSingleResult throws an exception if no results are found, so get the list instead
 		List results = delegate.createQuery(criteriaQuery).getResultList();
+		if (results.size() > 1)
+			throw new NonUniqueResultException("More than a single result of type " + entityClass.getName() + " found for "
+				+ (entityId == null ? "association " + requiredAssociationValue : "id " + entityId));
 		return (T) (results.size() <= 0 ? null : results.get(0));
 	}
 
