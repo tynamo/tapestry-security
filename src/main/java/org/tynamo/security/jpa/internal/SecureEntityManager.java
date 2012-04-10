@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
@@ -294,7 +295,9 @@ public class SecureEntityManager implements EntityManager {
 		}
 		criteriaQuery.where(predicate1 == null ? predicate2 : predicate2 == null ? predicate1 : builder.and(predicate1,
 			predicate2));
-		return (T) delegate.createQuery(criteriaQuery).getSingleResult();
+		// getSingleResult throws an exception if no results are found, so get the list instead
+		List results = delegate.createQuery(criteriaQuery).getResultList();
+		return (T) (results.size() <= 0 ? null : results.get(0));
 	}
 
 	private Annotation getAnnotation(Member member, Class annotationType) {
