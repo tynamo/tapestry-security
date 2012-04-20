@@ -230,7 +230,13 @@ public class SecureEntityManager implements EntityManager {
 					if (availablePrincipal.getClass().isAssignableFrom(principalType)) { return availablePrincipal; }
 			}
 		}
-		if (principalType != null) return securityService.getSubject().getPrincipals().oneByType(principalType);
+		if (principalType != null) {
+			Object principal = securityService.getSubject().getPrincipals().oneByType(principalType);
+			if (principal == null)
+				throw new NullPointerException("Subject is required to have a configured principal of type '" + principalType
+					+ "' for secure entity relation checks");
+			return principal;
+		}
 		return securityService.getSubject().getPrincipals().getPrimaryPrincipal();
 	}
 
