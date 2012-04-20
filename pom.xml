@@ -6,7 +6,7 @@
 	<name>JPA Subject-Instance Tapestry Security</name>
 	<description>Secure JPA subject-instances with Shiro-based Tapestry Security</description>
 	<packaging>jar</packaging>
-	<version>0.0.2</version>
+	<version>0.0.3-SNAPSHOT</version>
 
 	<parent>
 		<groupId>org.tynamo</groupId>
@@ -19,9 +19,9 @@
 	</properties>
 
 	<scm>
-		<connection>scm:svn:http://svn.codehaus.org/tynamo/tags/tapestry-security-jpa-0.0.2</connection>
-		<developerConnection>scm:svn:https://svn.codehaus.org/tynamo/tags/tapestry-security-jpa-0.0.2</developerConnection>
-		<url>http://svn.tynamo.codehaus.org/tynamo/tags/tapestry-security-jpa-0.0.2</url>
+		<connection>scm:svn:http://svn.codehaus.org/tynamo/trunk/tapestry-security-jpa</connection>
+		<developerConnection>scm:svn:https://svn.codehaus.org/tynamo/trunk/tapestry-security-jpa</developerConnection>
+		<url>http://svn.tynamo.codehaus.org/tynamo/trunk/tapestry-security-jpa</url>
 	</scm>
 
 	<distributionManagement>
