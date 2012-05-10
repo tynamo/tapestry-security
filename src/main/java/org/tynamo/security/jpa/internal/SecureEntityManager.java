@@ -242,7 +242,7 @@ public class SecureEntityManager implements EntityManager {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private <T> T secureFind(Class<T> entityClass, Object entityId, LockModeType lockMode, Map<String, Object> properties) {
-		if (!securityService.getSubject().isAuthenticated()) return null;
+		// if (!securityService.getSubject().isAuthenticated()) return null;
 
 		String requiredRoleValue = RequiresAnnotationUtil.getRequiredRole(entityClass, Operation.READ);
 

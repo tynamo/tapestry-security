@@ -37,6 +37,8 @@ import org.tynamo.security.jpa.annotations.Operation;
 import org.tynamo.security.jpa.annotations.RequiresAssociation;
 import org.tynamo.security.jpa.annotations.RequiresRole;
 import org.tynamo.security.jpa.internal.SecureEntityManager;
+import org.tynamo.security.jpa.testapp.entities.AdminOnly;
+import org.tynamo.security.jpa.testapp.entities.Unsecured;
 import org.tynamo.security.services.SecurityModule;
 import org.tynamo.security.services.SecurityService;
 
@@ -125,6 +127,23 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 
 		entity = interceptor.find(TestEntity.class, 1L);
 		assertNotNull(entity);
+	}
+
+	@Test
+	public void unsecurePersistAndFind() {
+		delegate.getTransaction().begin();
+		Unsecured unsecured = new Unsecured();
+		interceptor.persist(unsecured);
+		interceptor.getTransaction().commit();
+
+		assertNotNull(interceptor.find(Unsecured.class, unsecured.getId()));
+
+		// test that we can try finding but not find an existing, but secured entity
+		AdminOnly adminOnly = new AdminOnly();
+		delegate.getTransaction().begin();
+		delegate.persist(adminOnly);
+		delegate.getTransaction().commit();
+		assertNull(interceptor.find(AdminOnly.class, adminOnly.getId()));
 	}
 
 	@Test
