@@ -53,7 +53,6 @@ import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.LibraryMapping;
 import org.tynamo.common.ModuleProperties;
 import org.tynamo.exceptionpage.services.ExceptionPageModule;
-import org.tynamo.security.Authenticator;
 import org.tynamo.security.SecurityComponentRequestFilter;
 import org.tynamo.security.SecuritySymbols;
 import org.tynamo.security.ShiroAnnotationWorker;
@@ -84,7 +83,9 @@ public class SecurityModule
 	{
 
 		binder.bind(WebSecurityManager.class, TapestryRealmSecurityManager.class);
-		binder.bind(Authenticator.class, ModularRealmAuthenticator.class);
+		// TYNAMO-155 It's not enough to identify ModularRealmAuthenticator by it's Authenticator interface only
+		// because Shiro tests if the object is an instanceof LogoutAware to call logout handlers
+		binder.bind(ModularRealmAuthenticator.class);		
 		binder.bind(SubjectFactory.class, DefaultWebSubjectFactory.class);
 		binder.bind(RememberMeManager.class, CookieRememberMeManager.class);
 		binder.bind(HttpServletRequestFilter.class, SecurityConfiguration.class).withId("SecurityConfiguration");
