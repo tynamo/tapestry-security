@@ -13,6 +13,7 @@ import org.tynamo.security.shiro.authc.AnonymousFilter;
 import org.tynamo.security.shiro.authc.BasicHttpAuthenticationFilter;
 import org.tynamo.security.shiro.authc.FormAuthenticationFilter;
 import org.tynamo.security.shiro.authc.UserFilter;
+import org.tynamo.security.shiro.authz.NotFoundFilter;
 import org.tynamo.security.shiro.authz.PermissionsAuthorizationFilter;
 import org.tynamo.security.shiro.authz.PortFilter;
 import org.tynamo.security.shiro.authz.RolesAuthorizationFilter;
@@ -50,6 +51,11 @@ public class SecurityFilterChainFactoryImpl implements SecurityFilterChainFactor
 		filter.setName(name);
 		return filter;
 	}
+	
+	public NotFoundFilter notfound() {
+		return new NotFoundFilter();
+	}
+	
 
 	public UserFilter user() {
 		String name = "user";

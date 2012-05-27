@@ -209,6 +209,16 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		assertLoginPage();
 		page.getElementById("tynamoEnter").asText().contains("Kirjaudu sisään");
 	}
+	
+	@Test(groups = {"notLoggedIn"})
+	public void testNotFoundRule() throws Exception
+	{
+		// this test can fail either if acl rules don't correctly handle path matching with the requested locale,
+		// or that resulting login page is not correctly localized anymore (requested locale is lost)
+		openPage("hidden/something");
+		assertEquals(404, page.getWebResponse().getStatusCode()); 
+	}
+	
 
 	@Test(groups = {"notLoggedIn"})
 	public void testAuthcFilterDeny() throws Exception

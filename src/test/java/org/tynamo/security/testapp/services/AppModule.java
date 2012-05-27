@@ -182,6 +182,7 @@ public class AppModule
 		configuration.add(factory.createChain("/ports/port8180").add(factory.port(), "8180").build());
 		configuration.add(factory.createChain("/ports/port9090").add(factory.port(), "9090").build());
 
+		configuration.add(factory.createChain("/hidden/**").add(factory.notfound()).build());
 	}
 
 	@Startup
