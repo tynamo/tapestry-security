@@ -12,12 +12,11 @@ import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.HttpServletRequestHandler;
 import org.tynamo.security.services.PageService;
 
-import javax.servlet.*;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 public class SecurityConfiguration implements HttpServletRequestFilter {
@@ -34,27 +33,6 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 		this.pageService = pageService;
 		this.servletContext = applicationGlobals.getServletContext();
 		this.chains = chains;
-
-	}
-
-	private static final class HandlerFilterChain implements FilterChain {
-		private HttpServletRequestHandler handler;
-
-		private List<Filter> filters;
-
-		private int index = 0;
-
-		HandlerFilterChain(final HttpServletRequestHandler handler, final List<Filter> filters) {
-			this.handler = handler;
-			this.filters = filters;
-			this.index = 0;
-		}
-
-		public void doFilter(final ServletRequest request, final ServletResponse response) throws IOException, ServletException {
-			if (this.filters == null || this.filters.size() == this.index) handler.service((HttpServletRequest) request,
-					(HttpServletResponse) response);
-			else this.filters.get(this.index++).doFilter(request, response, this);
-		}
 
 	}
 
