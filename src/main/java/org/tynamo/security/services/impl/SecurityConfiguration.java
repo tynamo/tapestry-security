@@ -1,59 +1,40 @@
 package org.tynamo.security.services.impl;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.util.AntPathMatcher;
-import org.apache.shiro.util.PatternMatcher;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.apache.shiro.web.servlet.ShiroHttpServletRequest;
 import org.apache.shiro.web.subject.WebSubject;
+import org.apache.tapestry5.func.F;
+import org.apache.tapestry5.func.Predicate;
 import org.apache.tapestry5.services.ApplicationGlobals;
 import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.HttpServletRequestHandler;
 import org.tynamo.security.services.PageService;
 
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.Callable;
+
 public class SecurityConfiguration implements HttpServletRequestFilter {
-	private SecurityManager securityManager;
+
+	private final SecurityManager securityManager;
 	private final ServletContext servletContext;
 	private final PageService pageService;
-	
 
-	private Map<String, SecurityFilterChain> chainMap = new LinkedHashMap<String, SecurityFilterChain>();
-
-	// FIXME make configurable
-	// private PatternMatcher pathMatcher = new AntPathMatcher();
-	private PatternMatcher pathMatcher = new AntPathMatcher() {
-    @Override
-		public boolean matches(String pattern, String source) {
-    	return super.matches(pattern, source.toLowerCase());
-    }
-	};
+	private final Collection<SecurityFilterChain> chains;
 
 	public SecurityConfiguration(ApplicationGlobals applicationGlobals, final WebSecurityManager securityManager, PageService pageService, final Collection<SecurityFilterChain> chains) {
+
 		this.securityManager = securityManager;
 		this.pageService = pageService;
-		servletContext = applicationGlobals.getServletContext();
-		// The order of securityFilterChains is meaningful, so we need to construct the map ourselves rather
-		// than simply use MappedConfiguration
-		for (SecurityFilterChain chain : chains) {
-			chainMap.put(chain.getPath(), chain);
-		}
+		this.servletContext = applicationGlobals.getServletContext();
+		this.chains = chains;
+
 	}
 
 	private static final class HandlerFilterChain implements FilterChain {
@@ -85,18 +66,14 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 
 		final HttpServletRequest request = new ShiroHttpServletRequest(originalRequest, servletContext, true);
 
-		String requestURI = pageService.getLocalelessPathWithinApplication();
+		final String requestURI = pageService.getLocalelessPathWithinApplication();
 
-		SecurityFilterChain configureChain = null;
-		for (String path : chainMap.keySet()) {
-			// If the path does match, then pass on to the subclass implementation for specific checks:
-			if (pathMatcher.matches(path, requestURI)) {
-				configureChain = chainMap.get(path);
-				break;
+		final SecurityFilterChain chain = F.flow(chains).filter(new Predicate<SecurityFilterChain>() {
+			@Override
+			public boolean accept(SecurityFilterChain securityFilterChain) {
+				return securityFilterChain.matches(requestURI);
 			}
-		}
-
-		final SecurityFilterChain chain = configureChain;
+		}).first();
 
 		ThreadContext.bind(securityManager);
 		WebSubject subject = new WebSubject.Builder(securityManager, originalRequest, response).buildWebSubject();
