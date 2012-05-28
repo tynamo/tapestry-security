@@ -5,8 +5,6 @@ import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.apache.shiro.web.servlet.ShiroHttpServletRequest;
 import org.apache.shiro.web.subject.WebSubject;
-import org.apache.tapestry5.func.F;
-import org.apache.tapestry5.func.Predicate;
 import org.apache.tapestry5.services.ApplicationGlobals;
 import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.HttpServletRequestHandler;
@@ -46,12 +44,7 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 
 		final String requestURI = pageService.getLocalelessPathWithinApplication();
 
-		final SecurityFilterChain chain = F.flow(chains).filter(new Predicate<SecurityFilterChain>() {
-			@Override
-			public boolean accept(SecurityFilterChain securityFilterChain) {
-				return securityFilterChain.matches(requestURI);
-			}
-		}).first();
+		final SecurityFilterChain chain = getMatchingChain(requestURI);
 
 		ThreadContext.bind(securityManager);
 		WebSubject subject = new WebSubject.Builder(securityManager, originalRequest, response).buildWebSubject();
@@ -65,5 +58,15 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 				}
 			}
 		});
+	}
+
+	private SecurityFilterChain getMatchingChain(final String requestURI) {
+		for (SecurityFilterChain chain : chains) {
+			// If the path does match, then pass on to the subclass implementation for specific checks:
+			if (chain.matches(requestURI)) {
+				return chain;
+			}
+		}
+		return null;
 	}
 }
