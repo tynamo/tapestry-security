@@ -213,11 +213,24 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	@Test(groups = {"notLoggedIn"})
 	public void testNotFoundRule() throws Exception
 	{
-		// this test can fail either if acl rules don't correctly handle path matching with the requested locale,
-		// or that resulting login page is not correctly localized anymore (requested locale is lost)
 		openPage("hidden/something");
 		assertEquals(404, page.getWebResponse().getStatusCode()); 
 	}
+	
+	@Test(groups = {"notLoggedIn"})
+	public void testNoContextPathHandling() throws Exception
+	{
+		// without security, should actually give you the index page since there's no 'user' page 
+		openPage("user");
+		assertLoginPage();
+		openPage("user#test");
+		assertLoginPage();
+		openPage("user?test");
+		assertLoginPage();
+		openPage("user/");
+		assertLoginPage();
+	}
+	
 	
 
 	@Test(groups = {"notLoggedIn"})
