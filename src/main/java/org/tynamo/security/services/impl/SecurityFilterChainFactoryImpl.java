@@ -1,5 +1,8 @@
 package org.tynamo.security.services.impl;
 
+import org.apache.shiro.util.AntPathMatcher;
+import org.apache.shiro.util.PatternMatcher;
+import org.apache.shiro.util.RegExPatternMatcher;
 import org.apache.tapestry5.ioc.annotations.EagerLoad;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.annotations.Symbol;
@@ -22,12 +25,16 @@ import org.tynamo.security.shiro.authz.SslFilter;
 // Eager load since this service initializes the global filter defaults
 @EagerLoad
 public class SecurityFilterChainFactoryImpl implements SecurityFilterChainFactory {
-	private final PipelineBuilder builder;
 
 	private final Logger logger;
-	
+
+	private final PipelineBuilder builder;
+
 	private final PageService pageService;
-	
+
+	private final AntPathMatcher antPathMatcher = new AntPathMatcher();
+	private final RegExPatternMatcher regExPatternMatcher= new RegExPatternMatcher();
+
 	public SecurityFilterChainFactoryImpl(Logger logger, PipelineBuilder builder, PageService pageService,
       @Inject @Symbol(SecuritySymbols.SUCCESS_URL) String successUrl,
       @Inject @Symbol(SecuritySymbols.LOGIN_URL) String loginUrl,
@@ -42,7 +49,19 @@ public class SecurityFilterChainFactoryImpl implements SecurityFilterChainFactor
 	}
 
 	public SecurityFilterChain.Builder createChain(String path) {
-		return new SecurityFilterChain.Builder(logger, builder, path);
+		return new SecurityFilterChain.Builder(logger, builder, path, antPathMatcher);
+	}
+
+	public SecurityFilterChain.Builder createChain(String pattern, PatternMatcher patternMatcher) {
+		return new SecurityFilterChain.Builder(logger, builder, pattern, patternMatcher);
+	}
+
+	public SecurityFilterChain.Builder createChainWithAntPath(String path) {
+		return new SecurityFilterChain.Builder(logger, builder, path, antPathMatcher);
+	}
+
+	public SecurityFilterChain.Builder createChainWithRegEx(String pattern) {
+		return new SecurityFilterChain.Builder(logger, builder, pattern, regExPatternMatcher);
 	}
 
 	public AnonymousFilter anon() {

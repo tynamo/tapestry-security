@@ -15,7 +15,7 @@ public class SecurityFilterChainUnitTest {
 
 	@BeforeTest
 	public void setUp() {
-		builder = new SecurityFilterChain.Builder(null, null, "");
+		builder = new SecurityFilterChain.Builder(null, null, "", null);
 		factory = new SecurityFilterChainFactoryImpl(null, null, null, "", "", "", true);
 	}
 	

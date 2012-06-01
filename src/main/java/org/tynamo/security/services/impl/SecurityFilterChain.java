@@ -17,6 +17,7 @@ public class SecurityFilterChain {
 	/**
 	 * Default PatternMatcher for backward compatibility
 	 */
+	@Deprecated
 	private static final PatternMatcher defaultPatternMatcher = new AntPathMatcher();
 
 	private String path;
@@ -29,6 +30,9 @@ public class SecurityFilterChain {
 		this.patternMatcher = patternMatcher;
 	}
 
+	/**
+	 * @deprecated in 0.4.5 Use {@link #SecurityFilterChain(String, org.apache.tapestry5.services.HttpServletRequestHandler, org.apache.shiro.util.PatternMatcher)} instead
+	 */
 	@Deprecated
 	public SecurityFilterChain(String path, HttpServletRequestHandler handler) {
 		this(path, handler, defaultPatternMatcher);
@@ -43,15 +47,18 @@ public class SecurityFilterChain {
 	}
 
 	public static class Builder {
-		PipelineBuilder pipelineBuilder;
-		String path;
+
+		private PipelineBuilder pipelineBuilder;
+		private String path;
 		private List<HttpServletRequestFilter> filters = new ArrayList<HttpServletRequestFilter>();
 		private Logger logger;
+		private  PatternMatcher patternMatcher;
 
-		public Builder(Logger logger, PipelineBuilder pipelineBuilder, String path) {
+		public Builder(Logger logger, PipelineBuilder pipelineBuilder, String path, PatternMatcher patternMatcher) {
 			this.logger = logger;
 			this.pipelineBuilder = pipelineBuilder;
 			this.path = path;
+			this.patternMatcher = patternMatcher;
 		}
 
 		public Builder add(Class<HttpServletRequestFilter> filterType) {
@@ -77,10 +84,8 @@ public class SecurityFilterChain {
 			return this;
 		}
 
-
 		public SecurityFilterChain build() {
-			return new SecurityFilterChain(path, pipelineBuilder.build(logger, HttpServletRequestHandler.class, HttpServletRequestFilter.class, filters));
+			return new SecurityFilterChain(path, pipelineBuilder.build(logger, HttpServletRequestHandler.class, HttpServletRequestFilter.class, filters), patternMatcher);
 		}
-
 	}
 }
