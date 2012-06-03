@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.shiro.config.ConfigurationException;
 import org.apache.shiro.util.StringUtils;
 import org.apache.shiro.web.util.WebUtils;
-import org.tynamo.security.services.PageService;
+import org.tynamo.security.internal.services.LoginContextService;
 
 /**
  * A copy of Shiro's 1.2.0 PortFilter that works with tapestry-security 0.4.x
@@ -37,8 +37,8 @@ import org.tynamo.security.services.PageService;
  * @since 0.4.1
  */
 public class PortFilter extends AuthorizationFilter {
-	public PortFilter(PageService pageService) {
-		super(pageService);
+	public PortFilter(LoginContextService loginContextService) {
+		super(loginContextService);
 	}
 
 	public static final int DEFAULT_HTTP_PORT = 80;

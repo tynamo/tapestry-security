@@ -22,7 +22,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.apache.shiro.subject.Subject;
-import org.tynamo.security.services.PageService;
+import org.tynamo.security.internal.services.LoginContextService;
 import org.tynamo.security.shiro.AccessControlFilter;
 
 /**
@@ -35,8 +35,8 @@ import org.tynamo.security.shiro.AccessControlFilter;
  * @since 0.4.0
  */
 public class UserFilter extends AccessControlFilter {
-	public UserFilter(PageService pageService) {
-		super(pageService);
+	public UserFilter(LoginContextService loginContextService) {
+		super(loginContextService);
 	}
 
     /**

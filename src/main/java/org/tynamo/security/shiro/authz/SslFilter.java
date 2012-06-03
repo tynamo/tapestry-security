@@ -21,7 +21,7 @@ package org.tynamo.security.shiro.authz;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.tynamo.security.services.PageService;
+import org.tynamo.security.internal.services.LoginContextService;
 
 /**
  * A copy of Shiro's 1.2.0 SslFilter that works with tapestry-security 0.4.x
@@ -41,8 +41,8 @@ public class SslFilter extends PortFilter {
 	public static final int DEFAULT_HTTPS_PORT = 443;
 	public static final String HTTPS_SCHEME = "https";
 
-	public SslFilter(PageService pageService) {
-		super(pageService);
+	public SslFilter(LoginContextService loginContextService) {
+		super(loginContextService);
 		setPort(DEFAULT_HTTPS_PORT);
 	}
 

@@ -12,19 +12,19 @@ import org.apache.tapestry5.internal.services.RequestPageCache;
 import org.apache.tapestry5.internal.structure.Page;
 import org.apache.tapestry5.services.Response;
 import org.tynamo.exceptionpage.ExceptionHandlerAssistant;
-import org.tynamo.security.services.PageService;
+import org.tynamo.security.internal.services.LoginContextService;
 import org.tynamo.security.services.SecurityService;
 
 public class SecurityExceptionHandlerAssistant implements ExceptionHandlerAssistant {
 	private final SecurityService securityService;
-	private final PageService pageService;
+	private final LoginContextService loginContextService;
 	private final HttpServletRequest servletRequest;
 	private final Response response;
 	private final PageResponseRenderer renderer;
 	private final RequestPageCache pageCache;
-	public SecurityExceptionHandlerAssistant(final SecurityService securityService, final PageService pageService, final RequestPageCache pageCache, final HttpServletRequest servletRequest, final Response response, final PageResponseRenderer renderer) {
+	public SecurityExceptionHandlerAssistant(final SecurityService securityService, final LoginContextService pageService, final RequestPageCache pageCache, final HttpServletRequest servletRequest, final Response response, final PageResponseRenderer renderer) {
 		this.securityService =securityService;
-		this.pageService = pageService;
+		this.loginContextService = pageService;
 		this.pageCache = pageCache;
 		this.servletRequest = servletRequest;
 		this.response = response;
@@ -33,7 +33,7 @@ public class SecurityExceptionHandlerAssistant implements ExceptionHandlerAssist
 	@Override
 	public Object handleRequestException(Throwable exception, List<Object> exceptionContext) throws IOException {
 		if (securityService.isAuthenticated()) {
-			String unauthorizedPage = pageService.getUnauthorizedPage();
+			String unauthorizedPage = loginContextService.getUnauthorizedPage();
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			if (!StringUtils.hasText(unauthorizedPage)) return null;
 
@@ -44,7 +44,7 @@ public class SecurityExceptionHandlerAssistant implements ExceptionHandlerAssist
 
 		String contextPath = servletRequest.getContextPath();
   	if ("".equals(contextPath)) contextPath = "/";
-  	pageService.saveRequest();
-		return pageService.getLoginPage();
+  	loginContextService.saveRequest();
+		return loginContextService.getLoginPage();
 	}
 }

@@ -22,7 +22,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.apache.shiro.authc.AuthenticationToken;
-import org.tynamo.security.services.PageService;
+import org.tynamo.security.internal.services.LoginContextService;
 
 /**
  * Filter that allows access to a path immeidately without performing security checks of any kind.
@@ -51,8 +51,8 @@ import org.tynamo.security.services.PageService;
  * @since 0.4.0
  */
 public class AnonymousFilter extends AuthenticatingFilter {
-	public AnonymousFilter(PageService pageService) {
-		super(pageService);
+	public AnonymousFilter(LoginContextService loginContextService) {
+		super(loginContextService);
 	}
 
     /**

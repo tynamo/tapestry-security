@@ -18,12 +18,11 @@
  */
 package org.tynamo.security.components;
 
-import org.apache.tapestry5.annotations.Property;
-import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.util.WebUtils;
-
-import org.tynamo.security.services.PageService;
+import org.apache.tapestry5.annotations.Property;
+import org.apache.tapestry5.ioc.annotations.Inject;
+import org.tynamo.security.internal.services.LoginContextService;
 import org.tynamo.security.services.SecurityService;
 
 /**
@@ -39,12 +38,12 @@ public class LoginLink
 	private SecurityService securityService;
 
 	@Inject
-	private PageService pageService;
+	private LoginContextService loginContextService;
 
 	public String onActionFromTynamoLoginLink()
 	{
 		removeSavedRequest();
-		return pageService.getLoginPage();
+		return loginContextService.getLoginPage();
 	}
 
 	public void onActionFromTynamoLogoutLink()

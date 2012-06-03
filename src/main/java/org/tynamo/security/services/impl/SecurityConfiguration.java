@@ -1,5 +1,13 @@
 package org.tynamo.security.services.impl;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.concurrent.Callable;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.mgt.WebSecurityManager;
@@ -8,27 +16,20 @@ import org.apache.shiro.web.subject.WebSubject;
 import org.apache.tapestry5.services.ApplicationGlobals;
 import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.HttpServletRequestHandler;
-import org.tynamo.security.services.PageService;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.concurrent.Callable;
+import org.tynamo.security.internal.services.LoginContextService;
 
 public class SecurityConfiguration implements HttpServletRequestFilter {
 
 	private final SecurityManager securityManager;
 	private final ServletContext servletContext;
-	private final PageService pageService;
+	private final LoginContextService loginContextService;
 
 	private final Collection<SecurityFilterChain> chains;
 
-	public SecurityConfiguration(ApplicationGlobals applicationGlobals, final WebSecurityManager securityManager, PageService pageService, final Collection<SecurityFilterChain> chains) {
+	public SecurityConfiguration(ApplicationGlobals applicationGlobals, final WebSecurityManager securityManager, LoginContextService loginContextService, final Collection<SecurityFilterChain> chains) {
 
 		this.securityManager = securityManager;
-		this.pageService = pageService;
+		this.loginContextService = loginContextService;
 		this.servletContext = applicationGlobals.getServletContext();
 		this.chains = chains;
 
@@ -42,7 +43,7 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 
 		final HttpServletRequest request = new ShiroHttpServletRequest(originalRequest, servletContext, true);
 
-		final String requestURI = pageService.getLocalelessPathWithinApplication();
+		final String requestURI = loginContextService.getLocalelessPathWithinApplication();
 
 		final SecurityFilterChain chain = getMatchingChain(requestURI);
 

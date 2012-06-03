@@ -9,7 +9,7 @@ import org.apache.tapestry5.ioc.annotations.Symbol;
 import org.apache.tapestry5.ioc.services.PipelineBuilder;
 import org.slf4j.Logger;
 import org.tynamo.security.SecuritySymbols;
-import org.tynamo.security.services.PageService;
+import org.tynamo.security.internal.services.LoginContextService;
 import org.tynamo.security.services.SecurityFilterChainFactory;
 import org.tynamo.security.shiro.AccessControlFilter;
 import org.tynamo.security.shiro.authc.AnonymousFilter;
@@ -30,19 +30,19 @@ public class SecurityFilterChainFactoryImpl implements SecurityFilterChainFactor
 
 	private final PipelineBuilder builder;
 
-	private final PageService pageService;
+	private final LoginContextService loginContextService;
 
 	private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 	private final RegExPatternMatcher regExPatternMatcher= new RegExPatternMatcher();
 
-	public SecurityFilterChainFactoryImpl(Logger logger, PipelineBuilder builder, PageService pageService,
+	public SecurityFilterChainFactoryImpl(Logger logger, PipelineBuilder builder, LoginContextService loginContextService,
       @Inject @Symbol(SecuritySymbols.SUCCESS_URL) String successUrl,
       @Inject @Symbol(SecuritySymbols.LOGIN_URL) String loginUrl,
       @Inject @Symbol(SecuritySymbols.UNAUTHORIZED_URL) String unauthorizedUrl, @Inject @Symbol(SecuritySymbols.REDIRECT_TO_SAVED_URL) boolean redirectToSavedUrl
 	) {
 		this.builder = builder;
 		this.logger = logger;
-		this.pageService = pageService;
+		this.loginContextService = loginContextService;
 		AccessControlFilter.LOGIN_URL = loginUrl;
 		AccessControlFilter.SUCCESS_URL = successUrl;
 		AccessControlFilter.UNAUTHORIZED_URL = unauthorizedUrl;
@@ -66,7 +66,7 @@ public class SecurityFilterChainFactoryImpl implements SecurityFilterChainFactor
 
 	public AnonymousFilter anon() {
 		String name = "anon";
-		AnonymousFilter filter = new AnonymousFilter(pageService);
+		AnonymousFilter filter = new AnonymousFilter(loginContextService);
 		filter.setName(name);
 		return filter;
 	}
@@ -78,28 +78,28 @@ public class SecurityFilterChainFactoryImpl implements SecurityFilterChainFactor
 
 	public UserFilter user() {
 		String name = "user";
-		UserFilter filter = new UserFilter(pageService);
+		UserFilter filter = new UserFilter(loginContextService);
 		filter.setName(name);
 		return filter;
 	}
 
 	public FormAuthenticationFilter authc() {
 		String name = "authc";
-		FormAuthenticationFilter filter = new FormAuthenticationFilter(pageService);
+		FormAuthenticationFilter filter = new FormAuthenticationFilter(loginContextService);
 		filter.setName(name);
 		return filter;
 	}
 
 	public BasicHttpAuthenticationFilter basic() {
 		String name = "authcBasic";
-		BasicHttpAuthenticationFilter filter = new BasicHttpAuthenticationFilter(pageService);
+		BasicHttpAuthenticationFilter filter = new BasicHttpAuthenticationFilter(loginContextService);
 		filter.setName(name);
 		return filter;
 	}
 
 	public RolesAuthorizationFilter roles() {
 		String name = "roles";
-		RolesAuthorizationFilter filter = new RolesAuthorizationFilter(pageService);
+		RolesAuthorizationFilter filter = new RolesAuthorizationFilter(loginContextService);
 		filter.setName(name);
 		return filter;
 	}
@@ -107,21 +107,21 @@ public class SecurityFilterChainFactoryImpl implements SecurityFilterChainFactor
 	
 	public PermissionsAuthorizationFilter perms() {
 		String name = "perms";
-		PermissionsAuthorizationFilter filter = new PermissionsAuthorizationFilter(pageService);
+		PermissionsAuthorizationFilter filter = new PermissionsAuthorizationFilter(loginContextService);
 		filter.setName(name);
 		return filter;
 	}
 
 	@Override
 	public SslFilter ssl() {
-		SslFilter filter = new SslFilter(pageService);
+		SslFilter filter = new SslFilter(loginContextService);
 		filter.setName("ssl");
 		return filter;
 	}
 
 	@Override
 	public PortFilter port() {
-		PortFilter filter = new PortFilter(pageService);
+		PortFilter filter = new PortFilter(loginContextService);
 		filter.setName("port");
 		return filter;
 	}

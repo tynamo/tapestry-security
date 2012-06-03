@@ -25,7 +25,7 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
-import org.tynamo.security.services.PageService;
+import org.tynamo.security.internal.services.LoginContextService;
 
 /**
  * An <code>AuthenticationFilter</code> that is capable of automatically performing an authentication attempt
@@ -34,8 +34,8 @@ import org.tynamo.security.services.PageService;
  * @since 0.4.0
  */
 public abstract class AuthenticatingFilter extends AuthenticationFilter {
-	public AuthenticatingFilter(PageService pageService) {
-		super(pageService);
+	public AuthenticatingFilter(LoginContextService loginContextService) {
+		super(loginContextService);
 	}
 
     //TODO - complete JavaDoc

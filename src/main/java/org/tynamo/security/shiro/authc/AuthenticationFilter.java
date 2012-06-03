@@ -23,7 +23,7 @@ import javax.servlet.ServletResponse;
 
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.util.WebUtils;
-import org.tynamo.security.services.PageService;
+import org.tynamo.security.internal.services.LoginContextService;
 import org.tynamo.security.shiro.AccessControlFilter;
 
 /**
@@ -34,8 +34,8 @@ import org.tynamo.security.shiro.AccessControlFilter;
  * @since 0.9
  */
 public abstract class AuthenticationFilter extends AccessControlFilter {
-	public AuthenticationFilter(PageService pageService) {
-		super(pageService);
+	public AuthenticationFilter(LoginContextService loginContextService) {
+		super(loginContextService);
 	}
 
     /**
@@ -65,7 +65,7 @@ public abstract class AuthenticationFilter extends AccessControlFilter {
 		String requestUri = getSuccessUrl();
 		if (!requestUri.startsWith("/")) requestUri = "/" + requestUri;
 		if (isRedirectToSavedUrl()) {
-			getPageService().redirectToSavedRequest(requestUri);
+			getLoginContextService().redirectToSavedRequest(requestUri);
 			return;
 		}
 		WebUtils.issueRedirect(request, response, requestUri);

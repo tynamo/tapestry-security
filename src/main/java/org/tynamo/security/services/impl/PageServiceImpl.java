@@ -2,109 +2,49 @@ package org.tynamo.security.services.impl;
 
 import java.io.IOException;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.shiro.web.util.WebUtils;
-import org.apache.tapestry5.ioc.annotations.Inject;
-import org.apache.tapestry5.ioc.annotations.Symbol;
-import org.apache.tapestry5.services.LocalizationSetter;
-import org.tynamo.security.SecuritySymbols;
+import org.tynamo.security.internal.services.LoginContextService;
 import org.tynamo.security.services.PageService;
 
 public class PageServiceImpl implements PageService {
+	private LoginContextService loginContextService;
 
-	private String loginPage;
-	private String successPage;
-	private String unauthorizedPage;
-	private final HttpServletRequest request;
-	private final HttpServletResponse response;
-	private final LocalizationSetter localizationSetter;
-
-	public PageServiceImpl(@Inject @Symbol(SecuritySymbols.SUCCESS_URL) String successUrl,
-		@Inject @Symbol(SecuritySymbols.LOGIN_URL) String loginUrl,
-		@Inject @Symbol(SecuritySymbols.UNAUTHORIZED_URL) String unauthorizedUrl, HttpServletRequest request,
-		HttpServletResponse response,
-		LocalizationSetter localizationSetter) {
-		this.request = request;
-		this.response = response;
-		this.localizationSetter = localizationSetter;
-		this.loginPage = urlToPage(loginUrl);
-		this.successPage = urlToPage(successUrl);
-		this.unauthorizedPage = urlToPage(unauthorizedUrl);
+	public PageServiceImpl(LoginContextService loginContextService) {
+		this.loginContextService = loginContextService;
 	}
 
 	@Override
 	public String getLoginPage() {
-		return loginPage;
+		return loginContextService.getLoginPage();
 	}
 
 	@Override
 	public String getSuccessPage() {
-		return successPage;
+		return loginContextService.getSuccessPage();
 	}
 
 	@Override
 	public String getUnauthorizedPage() {
-		return unauthorizedPage;
-	}
-
-	private static String urlToPage(String url) {
-		if (url.charAt(0) == '/') {
-			url = url.substring(1);
-		}
-		return url;
+		return loginContextService.getUnauthorizedPage();
 	}
 
 	@Override
 	public String getLocalelessPathWithinApplication() {
-		String path = WebUtils.getPathWithinApplication(request);
-		String locale = getLocaleFromPath(path);
-		return locale == null ? path : path.substring(locale.length() + 1);
+		return loginContextService.getLocalelessPathWithinApplication();
 	}
 
+	@Override
 	public String getLocaleFromPath(String path) {
-		// we have to get the possibly encoded locale from the request, but we are not yet in the Tapestry request processing pipeline.
-		// the following was copied and modified from AppPageRenderLinkTransformer.decodePageRenderRequest(...)
-		String[] split = path.substring(1).split("/");
-		if (split.length > 1 && !"".equals(split[0])) {
-			String possibleLocaleName = split[0];
-			// Might be just the page activation context, or it might be locale then page
-			// activation context
-			return localizationSetter.isSupportedLocaleName(possibleLocaleName) ? possibleLocaleName : null;
-		}
-		return null;
-	}
-	
-	private Cookie createSavedRequestCookie() {
-		String requestUri = WebUtils.getPathWithinApplication(request);
-		if (request.getQueryString() != null) requestUri += "?" + request.getQueryString();
-  	Cookie cookie = new Cookie(WebUtils.SAVED_REQUEST_KEY, requestUri);
-  	String contextPath = request.getContextPath();
-  	if ("".equals(contextPath)) contextPath = "/";
-  	cookie.setPath(contextPath);
-  	return cookie;
+		return loginContextService.getLocaleFromPath(path);
 	}
 	
 	@Override
   public void saveRequest() {
-  	response.addCookie(createSavedRequestCookie());
+		loginContextService.saveRequest();
   }
 	
 	@Override
   public void redirectToSavedRequest(String fallbackUrl) throws IOException {
-		Cookie[] cookies = request.getCookies();
-		String requestUri = null;
-		if (cookies != null) for (Cookie cookie : cookies) if (WebUtils.SAVED_REQUEST_KEY.equals(cookie.getName())) {
-			requestUri = cookie.getValue();
-			Cookie deleteCookie = createSavedRequestCookie();
-			deleteCookie.setMaxAge(0);
-			response.addCookie(deleteCookie);
-			break;
-		}
-		if (requestUri == null) requestUri = fallbackUrl;
-		WebUtils.issueRedirect(request, response, requestUri);
+		loginContextService.redirectToSavedRequest(fallbackUrl);
   }
 	
 }

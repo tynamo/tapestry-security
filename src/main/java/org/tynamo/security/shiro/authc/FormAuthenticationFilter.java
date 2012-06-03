@@ -30,7 +30,7 @@ import org.apache.shiro.web.filter.authc.PassThruAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.tynamo.security.services.PageService;
+import org.tynamo.security.internal.services.LoginContextService;
 
 
 /**
@@ -59,8 +59,8 @@ import org.tynamo.security.services.PageService;
  * @since 0.4.0
  */
 public class FormAuthenticationFilter extends AuthenticatingFilter {
-	public FormAuthenticationFilter(PageService pageService) {
-		super(pageService);
+	public FormAuthenticationFilter(LoginContextService loginContextService) {
+		super(loginContextService);
 	}
 
     //TODO - complete JavaDoc

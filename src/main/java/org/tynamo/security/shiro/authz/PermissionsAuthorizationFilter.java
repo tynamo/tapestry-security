@@ -24,7 +24,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.apache.shiro.subject.Subject;
-import org.tynamo.security.services.PageService;
+import org.tynamo.security.internal.services.LoginContextService;
 
 /**
  * Filter that allows access if the current user has the permissions specified by the mapped value, or denies access
@@ -33,8 +33,8 @@ import org.tynamo.security.services.PageService;
  * @since 0.4.0
  */
 public class PermissionsAuthorizationFilter extends AuthorizationFilter {
-	public PermissionsAuthorizationFilter(PageService pageService) {
-		super(pageService);
+	public PermissionsAuthorizationFilter(LoginContextService loginContextService) {
+		super(loginContextService);
 	}
 
     //TODO - complete JavaDoc

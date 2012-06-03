@@ -32,7 +32,7 @@ import org.apache.shiro.util.AntPathMatcher;
 import org.apache.shiro.util.PatternMatcher;
 import org.apache.shiro.web.servlet.AdviceFilter;
 import org.apache.shiro.web.util.WebUtils;
-import org.tynamo.security.services.PageService;
+import org.tynamo.security.internal.services.LoginContextService;
 
 /**
  * Superclass for any filter that controls access to a resource and may redirect the user to the login page
@@ -62,10 +62,10 @@ public abstract class AccessControlFilter extends AdviceFilter {
 
 		private String config;
 		
-		private final PageService pageService;
+		private final LoginContextService loginContextService;
 		
-		public AccessControlFilter(PageService pageService) {
-			this.pageService = pageService;
+		public AccessControlFilter(LoginContextService loginContextService) {
+			this.loginContextService = loginContextService;
 		}
 		
 		/*
@@ -294,7 +294,7 @@ public abstract class AccessControlFilter extends AdviceFilter {
      * @param request the incoming ServletRequest to save for re-use later (for example, after a redirect).
      */
     protected void saveRequest(ServletRequest request) {
-    	pageService.saveRequest();
+    	loginContextService.saveRequest();
 //    	if (WebUtils.toHttp(request).getSession(false) != null) WebUtils.saveRequest(request);
 //    	pageService.getCookies().writeCookieValue(WebUtils.SAVED_REQUEST_KEY, WebUtils.getPathWithinApplication(WebUtils.toHttp(request)));
     }
@@ -315,8 +315,8 @@ public abstract class AccessControlFilter extends AdviceFilter {
      */
     protected void redirectToLogin(ServletRequest request, ServletResponse response) throws IOException {
 //        String loginUrl = getLoginUrl();
-    	String localeName = pageService.getLocaleFromPath(WebUtils.getPathWithinApplication(WebUtils.toHttp(request)));
-    	String loginUrl = localeName == null ? '/' + pageService.getLoginPage() : '/' + localeName + '/' + pageService.getLoginPage();
+    	String localeName = loginContextService.getLocaleFromPath(WebUtils.getPathWithinApplication(WebUtils.toHttp(request)));
+    	String loginUrl = localeName == null ? '/' + loginContextService.getLoginPage() : '/' + localeName + '/' + loginContextService.getLoginPage();
     	
     	// We are not in the response pipeline yet, and it's possible that Tapestry isn't handling this response, but it's still probably 
     	// better than sending a 302 and the full the page
@@ -337,8 +337,8 @@ public abstract class AccessControlFilter extends AdviceFilter {
 			this.redirectToSavedUrl = redirectToSavedUrl;
 		}
 		
-		protected PageService getPageService() {
-			return pageService;
+		protected LoginContextService getLoginContextService() {
+			return loginContextService;
 		}
 
 }

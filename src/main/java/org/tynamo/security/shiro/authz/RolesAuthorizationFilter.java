@@ -26,7 +26,7 @@ import javax.servlet.ServletResponse;
 
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.CollectionUtils;
-import org.tynamo.security.services.PageService;
+import org.tynamo.security.internal.services.LoginContextService;
 
 
 /**
@@ -36,8 +36,8 @@ import org.tynamo.security.services.PageService;
  * @since 0.4.0
  */
 public class RolesAuthorizationFilter extends AuthorizationFilter {
-	public RolesAuthorizationFilter(PageService pageService) {
-		super(pageService);
+	public RolesAuthorizationFilter(LoginContextService loginContextService) {
+		super(loginContextService);
 	}
 
     //TODO - complete JavaDoc

@@ -31,7 +31,7 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.tynamo.security.services.PageService;
+import org.tynamo.security.internal.services.LoginContextService;
 
 /**
  * This filter validates the CAS service ticket to authenticate the user.  It must be configured on the URL recognized
@@ -59,8 +59,8 @@ public class CasFilter extends AuthenticatingFilter {
     // the url where the application is redirected if the CAS service ticket validation failed (example : /mycontextpatch/cas_error.jsp)
     private String failureUrl;
     
-  	public CasFilter(PageService pageService) {
-  		super(pageService);
+  	public CasFilter(LoginContextService loginContextService) {
+  		super(loginContextService);
   	}
     
     

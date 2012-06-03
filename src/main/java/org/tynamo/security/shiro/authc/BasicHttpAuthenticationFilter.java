@@ -28,7 +28,7 @@ import org.apache.shiro.codec.Base64;
 import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.tynamo.security.services.PageService;
+import org.tynamo.security.internal.services.LoginContextService;
 
 
 /**
@@ -60,8 +60,8 @@ import org.tynamo.security.services.PageService;
  * @since 0.4.0
  */
 public class BasicHttpAuthenticationFilter extends AuthenticatingFilter {
-	public BasicHttpAuthenticationFilter(PageService pageService) {
-		super(pageService);
+	public BasicHttpAuthenticationFilter(LoginContextService loginContextService) {
+		super(loginContextService);
 	}
     /**
      * This class's private logger.

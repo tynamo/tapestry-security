@@ -1,10 +1,8 @@
-package org.tynamo.security.services;
+package org.tynamo.security.internal.services;
 
 import java.io.IOException;
 
-// To be removed in 0.5. Replaced with internal LoginContextService 
-@Deprecated
-public interface PageService
+public interface LoginContextService
 {
 
 	String getLoginPage();

@@ -8,10 +8,9 @@ import org.apache.tapestry5.services.ComponentEventRequestParameters;
 import org.apache.tapestry5.services.ComponentRequestFilter;
 import org.apache.tapestry5.services.ComponentRequestHandler;
 import org.apache.tapestry5.services.PageRenderRequestParameters;
-
-import org.tynamo.shiro.extension.authz.aop.SecurityInterceptor;
+import org.tynamo.security.internal.services.LoginContextService;
 import org.tynamo.security.services.ClassInterceptorsCache;
-import org.tynamo.security.services.PageService;
+import org.tynamo.shiro.extension.authz.aop.SecurityInterceptor;
 
 public class SecurityComponentRequestFilter implements ComponentRequestFilter {
 
@@ -21,15 +20,15 @@ public class SecurityComponentRequestFilter implements ComponentRequestFilter {
 	private final String unauthorizedClassName;
 	
 	
-	public SecurityComponentRequestFilter(PageService pageService,
+	public SecurityComponentRequestFilter(LoginContextService loginContextService,
 			ComponentClassResolver resolver,
 			ClassInterceptorsCache classInterceptorsCache) {
 		
 		this.resolver = resolver;
 		this.classInterceptorsCache = classInterceptorsCache;
 		
-		loginClassName = resolver.resolvePageNameToClassName(pageService.getLoginPage());
-		unauthorizedClassName = resolver.resolvePageNameToClassName(pageService.getUnauthorizedPage());
+		loginClassName = resolver.resolvePageNameToClassName(loginContextService.getLoginPage());
+		unauthorizedClassName = resolver.resolvePageNameToClassName(loginContextService.getUnauthorizedPage());
 		
 	}
 

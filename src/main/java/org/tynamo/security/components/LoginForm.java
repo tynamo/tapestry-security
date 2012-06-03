@@ -38,7 +38,7 @@ import org.apache.tapestry5.services.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tynamo.security.SecuritySymbols;
-import org.tynamo.security.services.PageService;
+import org.tynamo.security.internal.services.LoginContextService;
 import org.tynamo.security.services.SecurityService;
 
 /**
@@ -72,7 +72,7 @@ public class LoginForm
 	private SecurityService securityService;
 
 	@Inject
-	private PageService pageService;
+	private LoginContextService loginContextService;
 	
 	@Inject 
 	private Cookies cookies;
@@ -135,9 +135,9 @@ public class LoginForm
 //			return pageService.getSuccessPage();
 //		}
 		if (redirectToSavedUrl) {
-			String requestUri = pageService.getSuccessPage();
+			String requestUri = loginContextService.getSuccessPage();
 			if (!requestUri.startsWith("/")) requestUri = "/" + requestUri;
-			pageService.redirectToSavedRequest(requestUri);
+			loginContextService.redirectToSavedRequest(requestUri);
 			return null;
 		}
 //		Cookie[] cookies = requestGlobals.getHTTPServletRequest().getCookies();
@@ -146,7 +146,7 @@ public class LoginForm
 //			WebUtils.issueRedirect(requestGlobals.getHTTPServletRequest(), requestGlobals.getHTTPServletResponse(), requestUri);
 //			return null;
 //		}
-		return pageService.getSuccessPage();
+		return loginContextService.getSuccessPage();
 	}
 
 	public void setLoginMessage(String loginMessage)

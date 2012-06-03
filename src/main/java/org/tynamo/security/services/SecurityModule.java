@@ -58,6 +58,8 @@ import org.tynamo.security.SecuritySymbols;
 import org.tynamo.security.ShiroAnnotationWorker;
 import org.tynamo.security.internal.ModularRealmAuthenticator;
 import org.tynamo.security.internal.SecurityExceptionHandlerAssistant;
+import org.tynamo.security.internal.services.LoginContextService;
+import org.tynamo.security.internal.services.impl.LoginContextServiceImpl;
 import org.tynamo.security.services.impl.ClassInterceptorsCacheImpl;
 import org.tynamo.security.services.impl.PageServiceImpl;
 import org.tynamo.security.services.impl.SecurityConfiguration;
@@ -94,6 +96,7 @@ public class SecurityModule
 		binder.bind(SecurityFilterChainFactory.class, SecurityFilterChainFactoryImpl.class);
 		binder.bind(ComponentRequestFilter.class, SecurityComponentRequestFilter.class);
 //		binder.bind(ShiroExceptionHandler.class);
+		binder.bind(LoginContextService.class, LoginContextServiceImpl.class);
 		binder.bind(PageService.class, PageServiceImpl.class);
 	}
 
@@ -208,6 +211,7 @@ public class SecurityModule
 		}
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public void contributeExceptionHandler(MappedConfiguration<Class, Object> configuration, @Autobuild SecurityExceptionHandlerAssistant assistant) {
 		configuration.add(ShiroException.class, assistant);
 	}
