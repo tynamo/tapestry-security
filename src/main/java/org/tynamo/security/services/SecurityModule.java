@@ -40,6 +40,7 @@ import org.apache.tapestry5.ioc.ServiceBinder;
 import org.apache.tapestry5.ioc.annotations.Autobuild;
 import org.apache.tapestry5.ioc.annotations.InjectService;
 import org.apache.tapestry5.ioc.annotations.Local;
+import org.apache.tapestry5.ioc.annotations.Marker;
 import org.apache.tapestry5.ioc.annotations.Match;
 import org.apache.tapestry5.ioc.annotations.Order;
 import org.apache.tapestry5.ioc.annotations.SubModule;
@@ -53,6 +54,7 @@ import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.LibraryMapping;
 import org.tynamo.common.ModuleProperties;
 import org.tynamo.exceptionpage.services.ExceptionPageModule;
+import org.tynamo.security.Security;
 import org.tynamo.security.SecurityComponentRequestFilter;
 import org.tynamo.security.SecuritySymbols;
 import org.tynamo.security.ShiroAnnotationWorker;
@@ -74,6 +76,7 @@ import org.tynamo.shiro.extension.authz.aop.SecurityInterceptor;
  *
  */
 @SubModule(ExceptionPageModule.class)
+@Marker(Security.class)
 public class SecurityModule
 {
 
