@@ -6,18 +6,23 @@ import org.tynamo.security.shiro.authc.AnonymousFilter;
 import org.tynamo.security.shiro.authc.BasicHttpAuthenticationFilter;
 import org.tynamo.security.shiro.authc.FormAuthenticationFilter;
 import org.tynamo.security.shiro.authc.UserFilter;
-import org.tynamo.security.shiro.authz.*;
+import org.tynamo.security.shiro.authz.NotFoundFilter;
+import org.tynamo.security.shiro.authz.PermissionsAuthorizationFilter;
+import org.tynamo.security.shiro.authz.PortFilter;
+import org.tynamo.security.shiro.authz.RolesAuthorizationFilter;
+import org.tynamo.security.shiro.authz.SslFilter;
 
 public interface SecurityFilterChainFactory {
 
-	/**
-	 * @deprecated in 0.4.5 Use {@link #createChainWithAntPath(String)} or one of the other createChain methods instead.
-	 */
-	@Deprecated
 	public SecurityFilterChain.Builder createChain(String path);
 
 	public SecurityFilterChain.Builder createChain(String path, PatternMatcher patternMatcher);
 
+	/**
+	 * @deprecated Introduced in 0.4.5 but never really used, since we decided to keep {@link #createChain(String)} for backwards compatibility.
+	 * To be removed in 0.5.0
+	 */
+	@Deprecated
 	public SecurityFilterChain.Builder createChainWithAntPath(String path);
 
 	public SecurityFilterChain.Builder createChainWithRegEx(String path);
