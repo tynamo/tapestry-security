@@ -42,6 +42,7 @@ import org.tynamo.security.Security;
 import org.tynamo.security.services.SecurityFilterChainFactory;
 import org.tynamo.security.services.SecurityModule;
 import org.tynamo.security.services.impl.SecurityFilterChain;
+import org.tynamo.security.testapp.services.ilac.TestModule;
 import org.tynamo.security.testapp.services.impl.AlphaServiceImpl;
 import org.tynamo.security.testapp.services.impl.BetaServiceImpl;
 import org.tynamo.shiro.extension.realm.text.ExtendedPropertiesRealm;
@@ -50,7 +51,7 @@ import org.tynamo.shiro.extension.realm.text.ExtendedPropertiesRealm;
  * This module is automatically included as part of the Tapestry IoC Registry, it's a good place to
  * configure and extend Tapestry, or to place your own service definitions.
  */
-@SubModule(SecurityModule.class)
+@SubModule({ SecurityModule.class, TestModule.class })
 public class AppModule
 {
 

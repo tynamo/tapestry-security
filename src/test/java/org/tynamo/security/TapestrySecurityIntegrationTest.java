@@ -397,6 +397,42 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		clickOnBasePage("alphaServiceRequiresPermissionsNewsEdit");
 		assertUnauthorizedPage();
 	}
+	
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testRequiresPermissionILACSuccessWithoutArguments() throws Exception
+	{
+		clickOnBasePage("gammaServiceRequiresPermissionsILACSuccessWithoutArguments");
+		assertSuccessInvoke();
+	}
+	
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testRequiresPermissionILACSuccessWithArgument() throws Exception
+	{
+		clickOnBasePage("gammaServiceRequiresPermissionsILACSuccessWithArgument");
+		assertSuccessInvoke();
+	}
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testRequiresPermissionILACUnauthorizedWithArgument() throws Exception
+	{
+		clickOnBasePage("gammaServiceRequiresPermissionsILACUnauthorizedWithArgument");
+		assertUnauthorizedPage();
+	}
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testPermsRequiresPermissionsILACViewOnPageClass() throws Exception
+	{
+		clickOnBasePage("permILACView");
+		assertSuccessInvoke();
+	}
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testPermsRequiresPermissionsILACEditOnPageClass() throws Exception
+	{
+		clickOnBasePage("permILACEdit");
+		assertUnauthorizedPage();
+	}
+
 	//----------------------------------------
 
 

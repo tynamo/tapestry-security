@@ -6,20 +6,20 @@
     </head>
     <body>
     	<div id="result">RESULT[${result}]</div>
-    	
-    	<div id="status">STATUS[${status}]</div> 
-    	
+
+    	<div id="status">STATUS[${status}]</div>
+
     	<div><t:security.loginlink /></div>
-    	
+
     	<h3>Testing interceptors work</h3>
-    	
+
     	<div><t:actionlink t:id="componentMethodInterceptor" id="componentMethodInterceptor">action componentMethodInterceptor (Restricted by annotation on page method)</t:actionlink> </div>
     	<div><t:pagelink id="about" page="about">link to page about (Restricted by @RequiresAuthentication annotation on page class)</t:pagelink></div>
     	<div><t:pagelink id="annotated" page="annotated/index">link to page annotated/index (Restricted by @RequiresRoles("user") annotation on an index page class)</t:pagelink></div>
     	<p />
     	<div><t:actionlink t:id="alphaServiceInvoke" id="alphaServiceInvoke">action alphaServiceInvoke (Restricted by annotation on service method)</t:actionlink></div>
     	<div><t:actionlink t:id="betaServiceInvoke" id="betaServiceInvoke">action betaServiceInvoke (Restricted by annotation on service class)</t:actionlink></div>
-    	
+
 		<h3>Testing all annotation types</h3>
     	<div><t:actionlink t:id="alphaServiceRequiresAuthentication" id="alphaServiceRequiresAuthentication">action alphaServiceRequiresAuthentication</t:actionlink></div>
     	<div><t:actionlink t:id="alphaServiceRequiresUser" id="alphaServiceRequiresUser">action alphaServiceRequiresUser</t:actionlink></div>
@@ -28,9 +28,13 @@
     	<div><t:actionlink t:id="alphaServiceRequiresRolesManager" id="alphaServiceRequiresRolesManager">action alphaServiceRequiresRolesManager</t:actionlink></div>
     	<div><t:actionlink t:id="alphaServiceRequiresPermissionsNewsView" id="alphaServiceRequiresPermissionsNewsView">action alphaServiceRequiresPermissionsNewsView</t:actionlink></div>
     	<div><t:actionlink t:id="alphaServiceRequiresPermissionsNewsEdit" id="alphaServiceRequiresPermissionsNewsEdit">action alphaServiceRequiresPermissionsNewsEdit</t:actionlink></div>
-    	
+
+        <div><t:actionlink t:id="gammaServiceRequiresPermissionsILACSuccessWithoutArguments" id="gammaServiceRequiresPermissionsILACSuccessWithoutArguments">action gammaServiceRequiresPermissionsILACSuccessWithoutArguments</t:actionlink></div>
+        <div><t:actionlink t:id="gammaServiceRequiresPermissionsILACSuccessWithArgument" id="gammaServiceRequiresPermissionsILACSuccessWithArgument">action gammaServiceRequiresPermissionsILACSuccessWithArgument</t:actionlink></div>
+        <div><t:actionlink t:id="gammaServiceRequiresPermissionsILACUnauthorizedWithArgument" id="gammaServiceRequiresPermissionsILACUnauthorizedWithArgument">action gammaServiceRequiresPermissionsILACUnauthorizedWithArgument</t:actionlink></div>
+
     	<h3>Testing filter works</h3>
-    	
+
     	<div><t:pagelink id="authcCabinet" page="authc/cabinet">authc/cabinet (authc filter)</t:pagelink></div>
     	<div><t:pagelink id="authcSignup" page="authc/signup">authc/signup  (anon filter)</t:pagelink></div>
     	<p />
@@ -42,6 +46,8 @@
     	<p />
     	<div><t:pagelink id="permView" page="perms/view">perms/view (perms filter, permission exists)</t:pagelink></div>
     	<div><t:pagelink id="permEdit" page="perms/edit">perms/edit (perms filter, permission does not exists)</t:pagelink></div>
+    	<div><t:pagelink id="permILACView" page="perms/ilacView">perms/ilacView (perms filter, permission exists)</t:pagelink></div>
+    	<div><t:pagelink id="permILACEdit" page="perms/ilacEdit">perms/ilacEdit (perms filter, permission does not exists)</t:pagelink></div>
 
 		<div><t:pagelink id="contributed" page="contributed/index">contributed filterChainDefinition</t:pagelink></div>
 
@@ -65,19 +71,19 @@
 		<t:security.authenticated>
 			<div id="AuthenticatedComponent">AuthenticatedComponent - RENDERED</div>
 		</t:security.authenticated>
-		
+
 		<t:security.notAuthenticated>
 			<div id="NotAuthenticatedComponent">NotAuthenticatedComponent - RENDERED</div>
 		</t:security.notAuthenticated>
-		
+
 		<t:security.user>
 			<div id="UserComponent">UserComponent - RENDERED</div>
 		</t:security.user>
-		
+
 		<t:security.guest>
 			<div id="GuestComponent">GuestComponent - RENDERED</div>
 		</t:security.guest>
-		
+
 		<t:security.hasAnyRoles t:roles="user, driver">
 			<div id="HasAnyRolesComponentSuccess">HasAnyRolesComponentSuccess - RENDERED</div>
 		</t:security.hasAnyRoles>
@@ -85,7 +91,7 @@
 		<t:security.hasAnyRoles t:roles="user|driver">
 			<div id="HasAnyRolesComponentSuccessAlternateDivisor">HasAnyRolesComponentSuccessAlternateDivisor - RENDERED</div>
 		</t:security.hasAnyRoles>
-		
+
 		<t:security.hasAnyRoles t:roles="teacher, manager">
 			<div id="HasAnyRolesComponentFailed">HasAnyRolesComponentFailed - RENDERED</div>
 		</t:security.hasAnyRoles>
@@ -101,7 +107,7 @@
 		<t:security.hasAllRoles t:roles="user|student">
 			<div id="HasAllRolesComponentSuccessAlternateDivisor">HasAllRolesComponentSuccessAlternateDivisor - RENDERED</div>
 		</t:security.hasAllRoles>
-		
+
 		<t:security.hasAllRoles t:roles="user, manager">
 			<div id="HasAllRolesComponentFailed">HasAllRolesComponentFailed - RENDERED</div>
 		</t:security.hasAllRoles>
@@ -109,7 +115,7 @@
 		<t:security.hasAllRoles t:roles="user|manager">
 			<div id="HasAllRolesComponentFailed">HasAllRolesComponentFailedAlternateDivisor - RENDERED</div>
 		</t:security.hasAllRoles>
-		
+
 		<t:security.hasPermission t:permission="book:read">
 			<div id="HasPermissionComponentSuccess">HasPermissionComponentSuccess - RENDERED</div>
 		</t:security.hasPermission>

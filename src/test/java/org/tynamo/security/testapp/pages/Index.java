@@ -27,6 +27,7 @@ import org.apache.tapestry5.ioc.annotations.Inject;
 import org.tynamo.security.services.SecurityService;
 import org.tynamo.security.testapp.services.AlphaService;
 import org.tynamo.security.testapp.services.BetaService;
+import org.tynamo.security.testapp.services.ilac.GammaService;
 import org.tynamo.security.testapp.services.impl.Invoker;
 
 public class Index {
@@ -39,6 +40,9 @@ public class Index {
 	
 	@Inject
 	private BetaService betaService;
+	
+	@Inject
+	private GammaService gammaService;
 
 	@Inject
 	private SecurityService securityService;
@@ -96,6 +100,18 @@ public class Index {
 	
 	public void onActionFromAlphaServiceRequiresPermissionsNewsEdit() {
 		result = alphaService.invokeRequiresPermissionsNewsEdit();
+	}
+	
+	public void onActionFromGammaServiceRequiresPermissionsILACSuccessWithArgument() {
+		result = gammaService.invokeRequiresPermissionsILACSuccessIfArgumentAllows("allow");
+	}
+	
+	public void onActionFromGammaServiceRequiresPermissionsILACUnauthorizedWithArgument() {
+		result = gammaService.invokeRequiresPermissionsILACSuccessIfArgumentAllows("deny");
+	}
+	
+	public void onActionFromGammaServiceRequiresPermissionsILACSuccessWithoutArguments() {
+		result = gammaService.invokeRequiresPermissionsILACSuccessWithoutArguments();
 	}
 	
 	public void setResult(String result) {

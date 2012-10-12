@@ -1,21 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 package org.tynamo.security.services;
 
 import java.lang.annotation.Annotation;
@@ -31,9 +13,7 @@ import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSubjectFactory;
 import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.apache.tapestry5.ioc.Configuration;
-import org.apache.tapestry5.ioc.Invocation;
 import org.apache.tapestry5.ioc.MappedConfiguration;
-import org.apache.tapestry5.ioc.MethodAdvice;
 import org.apache.tapestry5.ioc.MethodAdviceReceiver;
 import org.apache.tapestry5.ioc.OrderedConfiguration;
 import org.apache.tapestry5.ioc.ServiceBinder;
@@ -44,12 +24,16 @@ import org.apache.tapestry5.ioc.annotations.Marker;
 import org.apache.tapestry5.ioc.annotations.Match;
 import org.apache.tapestry5.ioc.annotations.Order;
 import org.apache.tapestry5.ioc.annotations.SubModule;
+import org.apache.tapestry5.plastic.MethodAdvice;
+import org.apache.tapestry5.plastic.MethodInvocation;
 import org.apache.tapestry5.services.ApplicationInitializer;
 import org.apache.tapestry5.services.ApplicationInitializerFilter;
 import org.apache.tapestry5.services.ComponentClassResolver;
 import org.apache.tapestry5.services.ComponentClassTransformWorker;
 import org.apache.tapestry5.services.ComponentRequestFilter;
 import org.apache.tapestry5.services.Context;
+import org.apache.tapestry5.services.Core;
+import org.apache.tapestry5.services.Environment;
 import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.LibraryMapping;
 import org.tynamo.common.ModuleProperties;
@@ -90,7 +74,7 @@ public class SecurityModule
 		binder.bind(WebSecurityManager.class, TapestryRealmSecurityManager.class);
 		// TYNAMO-155 It's not enough to identify ModularRealmAuthenticator by it's Authenticator interface only
 		// because Shiro tests if the object is an instanceof LogoutAware to call logout handlers
-		binder.bind(ModularRealmAuthenticator.class);		
+		binder.bind(ModularRealmAuthenticator.class);
 		binder.bind(SubjectFactory.class, DefaultWebSubjectFactory.class);
 		binder.bind(RememberMeManager.class, CookieRememberMeManager.class);
 		binder.bind(HttpServletRequestFilter.class, SecurityConfiguration.class).withId("SecurityConfiguration");
@@ -182,9 +166,9 @@ public class SecurityModule
 	 */
 	@Match("*")
 	@Order("before:*")
-	public static void adviseSecurityAssert(MethodAdviceReceiver receiver)
+	public static void adviseSecurityAssert(MethodAdviceReceiver receiver,
+			final @Core Environment environment)
 	{
-
 		Class<?> serviceInterface = receiver.getInterface();
 
 		for (Method method : serviceInterface.getMethods())
@@ -198,12 +182,23 @@ public class SecurityModule
 				MethodAdvice advice = new MethodAdvice()
 				{
 					@Override
-					public void advise(Invocation invocation)
+					public void advise(MethodInvocation invocation)
 					{
 						// Only (try to) intercept if subject is bound.
 						// This is useful in case background or initializing operations
 						// call service operations that are secure
-						if (ThreadContext.getSubject() != null) interceptor.intercept();
+						if (ThreadContext.getSubject() != null)
+						{
+							environment.push(MethodInvocation.class, invocation);
+							try
+							{
+								interceptor.intercept();
+							}
+							finally
+							{
+								environment.pop(MethodInvocation.class);
+							}
+						}
 						invocation.proceed();
 
 					}
@@ -213,7 +208,7 @@ public class SecurityModule
 
 		}
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	public void contributeExceptionHandler(MappedConfiguration<Class, Object> configuration, @Autobuild SecurityExceptionHandlerAssistant assistant) {
 		configuration.add(ShiroException.class, assistant);
