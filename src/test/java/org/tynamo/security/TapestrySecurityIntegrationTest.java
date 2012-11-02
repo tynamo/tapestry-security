@@ -34,8 +34,14 @@ import org.tynamo.security.testapp.services.impl.Invoker;
 import org.tynamo.test.AbstractContainerTest;
 
 import com.gargoylesoftware.htmlunit.CookieManager;
+import com.gargoylesoftware.htmlunit.Page;
+
+import com.gargoylesoftware.htmlunit.WebRequestSettings;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import java.net.URL;
+import org.apache.tapestry5.json.JSONObject;
 
 public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 {
@@ -45,7 +51,9 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	private HtmlPage page;
 	
 	// masks the inherited field because that one is final (in model-test 0.1.0)
-	protected static String BASEURI = "http://localhost:" + port + "/test/";
+        private static final String APP_HOST_PORT = "http://localhost:" + port;
+        private static final String APP_CONTEXT = "/test/";
+	protected static String BASEURI = APP_HOST_PORT + APP_CONTEXT;
 
 	@Override
 	@BeforeClass
@@ -193,11 +201,20 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		// now go log out in a different "window"
 		HtmlPage indexPage = webClient.getPage(BASEURI);
 		indexPage.getElementById("tynamoLogoutLink").click();
-		// then try invoking the ajax link on the page protected by a filter
-		page.getElementById("ajaxLink").click();
-		webClient.waitForBackgroundJavaScript(500);
-		page = (HtmlPage) webClient.getCurrentWindow().getEnclosedPage();
-		assertLoginPage();
+		
+                // Clicking on this link should make an ajax request, but HTMLUnit doesn't like it and sends a non-ajax request
+		HtmlElement ajaxLink = page.getElementById("ajaxLink"); 	
+                URL ajaxUrl = new URL(APP_HOST_PORT + ajaxLink.getAttribute("href"));
+                WebRequestSettings ajaxRequest = new WebRequestSettings(ajaxUrl);
+                ajaxRequest.setAdditionalHeader("X-Requested-With", "XMLHttpRequest");
+                
+                Page jsonLoginResponse  = webClient.getPage(ajaxRequest);
+                String ajaxLoginResp = jsonLoginResponse.getWebResponse().getContentAsString();
+                JSONObject jsonResp = new JSONObject(ajaxLoginResp);
+                String ajaxRedirectUrl = jsonResp.getString("redirectURL");
+                assertTrue(ajaxRedirectUrl.contains(APP_CONTEXT), "The ajax redirect response '" + ajaxRedirectUrl + "' did not contain app context '" + APP_CONTEXT+"'");
+                page = webClient.getPage(APP_HOST_PORT+ajaxRedirectUrl);
+                assertLoginPage();                
 	}
 	
 	@Test(groups = {"notLoggedIn"})

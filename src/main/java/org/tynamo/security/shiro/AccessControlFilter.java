@@ -323,7 +323,7 @@ public abstract class AccessControlFilter extends AdviceFilter {
     	if ("XMLHttpRequest".equals(WebUtils.toHttp(request).getHeader("X-Requested-With"))) {
     		WebUtils.toHttp(response).setContentType("application/json;charset=UTF-8");
     		OutputStream os = WebUtils.toHttp(response).getOutputStream();
-				os.write(("{\"redirectURL\":\"" + loginUrl + "\"}").getBytes());
+				os.write(("{\"redirectURL\":\"" + WebUtils.toHttp(request).getContextPath()+loginUrl + "\"}").getBytes());
 				os.close();
     	}
     	else WebUtils.issueRedirect(request, response, loginUrl);
