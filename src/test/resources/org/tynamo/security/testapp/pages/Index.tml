@@ -14,6 +14,8 @@
     	<h3>Testing interceptors work</h3>
 
     	<div><t:actionlink t:id="componentMethodInterceptor" id="componentMethodInterceptor">action componentMethodInterceptor (Restricted by annotation on page method)</t:actionlink> </div>
+    	<div><t:eventlink event="componentMethodInterceptorRequiresPermissionsILAC" context="literal:allow" id="componentMethodInterceptorRequiresPermissionsILACSuccess">action componentMethodInterceptorRequiresPermissionsILACSuccess (Restricted by annotation on page method)</t:eventlink></div>
+    	<div><t:eventlink event="componentMethodInterceptorRequiresPermissionsILAC" context="literal:deny" id="componentMethodInterceptorRequiresPermissionsILACUnauthorized">action componentMethodInterceptorRequiresPermissionsILACUnauthorized (Restricted by annotation on page method)</t:eventlink></div>
     	<div><t:pagelink id="about" page="about">link to page about (Restricted by @RequiresAuthentication annotation on page class)</t:pagelink></div>
     	<div><t:pagelink id="annotated" page="annotated/index">link to page annotated/index (Restricted by @RequiresRoles("user") annotation on an index page class)</t:pagelink></div>
     	<p />

@@ -19,6 +19,7 @@
 package org.tynamo.security.testapp.pages;
 
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.tapestry5.PersistenceConstants;
 import org.apache.tapestry5.annotations.InjectComponent;
 import org.apache.tapestry5.annotations.Persist;
@@ -63,6 +64,12 @@ public class Index {
 	public Object onActionFromComponentMethodInterceptorWithAjax() {
 		result = Invoker.invoke(getClass());
 		return targetZone.getBody();
+	}
+	
+	@RequiresPermissions("ilac:action2")
+	public void onComponentMethodInterceptorRequiresPermissionsILAC(String param)
+	{
+		result = Invoker.invoke(getClass());
 	}
 	
 	public void onActionFromBetaServiceInvoke() {

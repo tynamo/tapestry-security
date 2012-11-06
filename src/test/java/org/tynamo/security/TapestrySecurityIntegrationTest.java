@@ -1,21 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 package org.tynamo.security;
 
 import static org.testng.Assert.assertEquals;
@@ -25,7 +7,9 @@ import static org.testng.Assert.fail;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.URL;
 
+import org.apache.tapestry5.json.JSONObject;
 import org.mortbay.jetty.webapp.WebAppContext;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeGroups;
@@ -35,13 +19,10 @@ import org.tynamo.test.AbstractContainerTest;
 
 import com.gargoylesoftware.htmlunit.CookieManager;
 import com.gargoylesoftware.htmlunit.Page;
-
 import com.gargoylesoftware.htmlunit.WebRequestSettings;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import java.net.URL;
-import org.apache.tapestry5.json.JSONObject;
 
 public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 {
@@ -49,7 +30,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	private static final String STATUS_NOT_AUTH = "STATUS[Not Authenticated]";
 	private static final String STATUS_AUTH = "STATUS[Authenticated]";
 	private HtmlPage page;
-	
+
 	// masks the inherited field because that one is final (in model-test 0.1.0)
         private static final String APP_HOST_PORT = "http://localhost:" + port;
         private static final String APP_CONTEXT = "/test/";
@@ -85,13 +66,13 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		}
 	}
 
-	//------------------------------------------------------	
-	// Not logged in	
+	//------------------------------------------------------
+	// Not logged in
 	//------------------------------------------------------
 
 
-	//----------------------------------------	
-	// Testing interceptors works deny	
+	//----------------------------------------
+	// Testing interceptors works deny
 	//----------------------------------------
 	@Test(groups = {"notLoggedIn"})
 	public void testInterceptServiceMethodDeny() throws Exception
@@ -113,7 +94,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		clickOnBasePage("componentMethodInterceptor");
 		assertLoginPage();
 	}
-	
+
 	@Test(groups = {"notLoggedIn"})
 	public void testInterceptComponentMethodWithAjaxDeny() throws Exception
 	{
@@ -124,17 +105,31 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		assertLoginPage();
 	}
 
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testComponentMethodInterceptorRequiresPermissionsILACSuccess() throws Exception
+	{
+		clickOnBasePage("componentMethodInterceptorRequiresPermissionsILACSuccess");
+		assertSuccessInvoke();
+	}
+
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testComponentMethodInterceptorRequiresPermissionsILACUnauthorized() throws Exception
+	{
+		clickOnBasePage("componentMethodInterceptorRequiresPermissionsILACUnauthorized");
+		assertUnauthorizedPage();
+	}
+
 	@Test(groups = {"notLoggedIn"})
 	public void testInterceptComponentClassDeny() throws Exception
 	{
 		clickOnBasePage("about");
 		assertLoginPage();
 	}
-	//----------------------------------------	
+	//----------------------------------------
 
 
-	//----------------------------------------	
-	// Testing annotation types handlers	
+	//----------------------------------------
+	// Testing annotation types handlers
 	//----------------------------------------
 	@Test(groups = {"notLoggedIn"})
 	public void testRequiresAuthenticationDeny() throws Exception
@@ -156,7 +151,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		clickOnBasePage("alphaServiceRequiresGuest");
 		assertSuccessInvoke();
 	}
-	
+
 	@Test(groups = {"notLoggedIn"})
 	public void testRequiresRole() throws Exception
 	{
@@ -168,12 +163,12 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		assertUnauthorizedPage();
 		clickOnBasePage("tynamoLogoutLink");
 	}
-	
+
 	//----------------------------------------
 
 
-	//----------------------------------------	
-	// Testing filters works	
+	//----------------------------------------
+	// Testing filters works
 	//----------------------------------------
 	@Test(groups = {"notLoggedIn"})
 	public void testAnonFilterAccess() throws Exception
@@ -191,7 +186,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		clickOnBasePage("userCabinet");
 		assertLoginPage();
 	}
-	
+
 	@Test(groups = {"notLoggedIn"})
 	public void testUserFilterWithAjaxDeny() throws Exception
 	{
@@ -201,22 +196,22 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		// now go log out in a different "window"
 		HtmlPage indexPage = webClient.getPage(BASEURI);
 		indexPage.getElementById("tynamoLogoutLink").click();
-		
+
                 // Clicking on this link should make an ajax request, but HTMLUnit doesn't like it and sends a non-ajax request
-		HtmlElement ajaxLink = page.getElementById("ajaxLink"); 	
+		HtmlElement ajaxLink = page.getElementById("ajaxLink");
                 URL ajaxUrl = new URL(APP_HOST_PORT + ajaxLink.getAttribute("href"));
                 WebRequestSettings ajaxRequest = new WebRequestSettings(ajaxUrl);
                 ajaxRequest.setAdditionalHeader("X-Requested-With", "XMLHttpRequest");
-                
+
                 Page jsonLoginResponse  = webClient.getPage(ajaxRequest);
                 String ajaxLoginResp = jsonLoginResponse.getWebResponse().getContentAsString();
                 JSONObject jsonResp = new JSONObject(ajaxLoginResp);
                 String ajaxRedirectUrl = jsonResp.getString("redirectURL");
                 assertTrue(ajaxRedirectUrl.contains(APP_CONTEXT), "The ajax redirect response '" + ajaxRedirectUrl + "' did not contain app context '" + APP_CONTEXT+"'");
                 page = webClient.getPage(APP_HOST_PORT+ajaxRedirectUrl);
-                assertLoginPage();                
+                assertLoginPage();
 	}
-	
+
 	@Test(groups = {"notLoggedIn"})
 	public void testLocalizedUserFilterDeny() throws Exception
 	{
@@ -226,18 +221,18 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		assertLoginPage();
 		page.getElementById("tynamoEnter").asText().contains("Kirjaudu sisään");
 	}
-	
+
 	@Test(groups = {"notLoggedIn"})
 	public void testNotFoundRule() throws Exception
 	{
 		openPage("hidden/something");
-		assertEquals(404, page.getWebResponse().getStatusCode()); 
+		assertEquals(404, page.getWebResponse().getStatusCode());
 	}
-	
+
 	@Test(groups = {"notLoggedIn"})
 	public void testNoContextPathHandling() throws Exception
 	{
-		// without security, should actually give you the index page since there's no 'user' page 
+		// without security, should actually give you the index page since there's no 'user' page
 		openPage("user");
 		assertLoginPage();
 		openPage("user#test");
@@ -247,8 +242,8 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		openPage("user/");
 		assertLoginPage();
 	}
-	
-	
+
+
 
 	@Test(groups = {"notLoggedIn"})
 	public void testAuthcFilterDeny() throws Exception
@@ -270,8 +265,8 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	//----------------------------------------
 
 
-	//----------------------------------------	
-	// Testing components works	
+	//----------------------------------------
+	// Testing components works
 	//----------------------------------------
 	@Test(groups = {"notLoggedIn"})
 	public void testAuthenticatedComponentNotLoggedIn() throws Exception
@@ -325,13 +320,13 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	}
 
 
-	//------------------------------------------------------	
-	// Logged In	
+	//------------------------------------------------------
+	// Logged In
 	//------------------------------------------------------
 
 
-	//----------------------------------------	
-	// Testing interceptors works access	
+	//----------------------------------------
+	// Testing interceptors works access
 	//----------------------------------------
 	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
 	public void testInterceptServiceMethodAccess() throws Exception
@@ -363,8 +358,8 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	//----------------------------------------
 
 
-	//----------------------------------------	
-	// Testing annotation types handlers	
+	//----------------------------------------
+	// Testing annotation types handlers
 	//----------------------------------------
 	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
 	public void testRequiresAuthenticationAccess() throws Exception
@@ -414,14 +409,14 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		clickOnBasePage("alphaServiceRequiresPermissionsNewsEdit");
 		assertUnauthorizedPage();
 	}
-	
+
 	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
 	public void testRequiresPermissionILACSuccessWithoutArguments() throws Exception
 	{
 		clickOnBasePage("gammaServiceRequiresPermissionsILACSuccessWithoutArguments");
 		assertSuccessInvoke();
 	}
-	
+
 	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
 	public void testRequiresPermissionILACSuccessWithArgument() throws Exception
 	{
@@ -453,8 +448,8 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	//----------------------------------------
 
 
-	//----------------------------------------	
-	// Testing filters works	
+	//----------------------------------------
+	// Testing filters works
 	//----------------------------------------
 	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
 	public void testUserFilterAccess() throws Exception
@@ -475,7 +470,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	{
 		clickOnBasePage("rolesManager");
 //		assertUnauthorizedPage();
-		// FIXME What determines which one gets returned? 
+		// FIXME What determines which one gets returned?
 		assertUnauthorizedPage401();
 	}
 
@@ -491,7 +486,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	{
 		clickOnBasePage("permEdit");
 		// assertUnauthorizedPage();
-		// FIXME What determines which one gets returned? 
+		// FIXME What determines which one gets returned?
 		assertUnauthorizedPage401();
 	}
 
@@ -512,8 +507,8 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	//----------------------------------------
 
 
-	//----------------------------------------	
-	// Testing components works	
+	//----------------------------------------
+	// Testing components works
 	//----------------------------------------
 	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
 	public void testAuthenticatedComponentLoggedIn() throws Exception
@@ -812,7 +807,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		loginAction();
 		assertTrue(getLocation().startsWith(BASEURI + "about"), "Request wasn't redirected to the remembered url");
 	}
-	
+
 	public void testSaveRequestWithFallbackUri() throws Exception
 	{
 		clickOnBasePage("tynamoLogoutLink");
@@ -826,9 +821,9 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		assertTrue(getLocation().startsWith(BASEURI + "index"), "Request wasn't redirected to the default success url");
 		cookieManager.setCookiesEnabled(original);
 	}
-	
 
-// the following test *does not* work because of deficiency in htmlunit itself. The request parameters however are saved 
+
+// the following test *does not* work because of deficiency in htmlunit itself. The request parameters however are saved
 // see	http://old.nabble.com/Problem-with-WebRequestSettings.getRequestParameters%28%29-td20167941.html
 // htmlunit's current implementation only returns what's added with setRequestParameters()
 //	@Test(dependsOnMethods = {"testLogout"})
@@ -841,7 +836,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 //		List<NameValuePair> valuePairs = page.getWebResponse().getRequestSettings().getRequestParameters();
 //		assertTrue(valuePairs.contains(new NameValuePair("test", "now")), "Request parameters weren't remebered");
 //	}
-	
+
 	public void testSaveRequestFilter() throws Exception
 	{
 		clickOnBasePage("tynamoLogoutLink");
@@ -909,7 +904,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		assertText("userInRoleUser", "true");
 		assertText("userInRoleManager", "false");
 	}
-	
+
 	private String getAttribute(String id, String attr)
 	{
 		return page.getElementById(id).getAttribute(attr);

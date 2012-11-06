@@ -18,6 +18,7 @@ import org.apache.tapestry5.ioc.MethodAdviceReceiver;
 import org.apache.tapestry5.ioc.OrderedConfiguration;
 import org.apache.tapestry5.ioc.ServiceBinder;
 import org.apache.tapestry5.ioc.annotations.Autobuild;
+import org.apache.tapestry5.ioc.annotations.Contribute;
 import org.apache.tapestry5.ioc.annotations.InjectService;
 import org.apache.tapestry5.ioc.annotations.Local;
 import org.apache.tapestry5.ioc.annotations.Marker;
@@ -29,13 +30,13 @@ import org.apache.tapestry5.plastic.MethodInvocation;
 import org.apache.tapestry5.services.ApplicationInitializer;
 import org.apache.tapestry5.services.ApplicationInitializerFilter;
 import org.apache.tapestry5.services.ComponentClassResolver;
-import org.apache.tapestry5.services.ComponentClassTransformWorker;
 import org.apache.tapestry5.services.ComponentRequestFilter;
 import org.apache.tapestry5.services.Context;
 import org.apache.tapestry5.services.Core;
 import org.apache.tapestry5.services.Environment;
 import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.LibraryMapping;
+import org.apache.tapestry5.services.transform.ComponentClassTransformWorker2;
 import org.tynamo.common.ModuleProperties;
 import org.tynamo.exceptionpage.services.ExceptionPageModule;
 import org.tynamo.security.Security;
@@ -144,7 +145,8 @@ public class SecurityModule
 		 configuration.add("SecurityFilter", filter, "before:*");
 	}
 
-	public static void contributeComponentClassTransformWorker(OrderedConfiguration<ComponentClassTransformWorker> configuration)
+	@Contribute(ComponentClassTransformWorker2.class)
+	public static void addTransformWorkers(OrderedConfiguration<ComponentClassTransformWorker2> configuration)
 	{
 		configuration.addInstance(ShiroAnnotationWorker.class.getSimpleName(), ShiroAnnotationWorker.class);
 	}
