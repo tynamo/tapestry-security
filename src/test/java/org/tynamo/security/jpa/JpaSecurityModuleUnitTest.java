@@ -1,5 +1,6 @@
 package org.tynamo.security.jpa;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -20,7 +21,6 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.tapestry5.ioc.Registry;
 import org.apache.tapestry5.ioc.RegistryBuilder;
-import org.apache.tapestry5.ioc.services.AspectDecorator;
 import org.apache.tapestry5.ioc.services.PropertyAccess;
 import org.apache.tapestry5.ioc.services.TapestryIOCModule;
 import org.apache.tapestry5.ioc.test.IOCTestCase;
@@ -44,7 +44,6 @@ import org.tynamo.security.services.SecurityService;
 
 public class JpaSecurityModuleUnitTest extends IOCTestCase {
 	private Registry registry;
-	private AspectDecorator aspectDecorator;
 	private EntityManager delegate;
 	private EntityManager interceptor;
 	private SecurityService securityService;
@@ -72,7 +71,6 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 		registry = builder.build();
 		// registry = IOCUtilities.buildDefaultRegistry();
 
-		aspectDecorator = registry.getService(AspectDecorator.class);
 		propertyAccess = registry.getService(PropertyAccess.class);
 		// // final AspectInterceptorBuilder<EntityManager> aspectBuilder = aspectDecorator.createBuilder(EntityManager.class,
 		// // delegate, "secureEntityManager");
@@ -99,7 +97,6 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 	public void shutdown() {
 		registry.shutdown();
 
-		aspectDecorator = null;
 		registry = null;
 	}
 
@@ -110,6 +107,17 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 		when(principalCollection.getPrimaryPrincipal()).thenReturn(principalId);
 		when(subject.getPrincipals()).thenReturn(principalCollection);
 		when(securityService.getSubject()).thenReturn(subject);
+		when(request.getRemoteUser()).thenReturn(principalId.toString());
+		when(request.isUserInRole("admin")).thenReturn(true);
+	}
+
+	private void mockGuestSubject() {
+		Subject subject = mock(Subject.class);
+		when(subject.isAuthenticated()).thenReturn(false);
+		when(subject.getPrincipals()).thenReturn(null);
+		when(securityService.getSubject()).thenReturn(subject);
+		when(request.getRemoteUser()).thenReturn(null);
+		when(request.isUserInRole(any(String.class))).thenReturn(false);
 	}
 
 	@Test
@@ -131,6 +139,7 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 
 	@Test
 	public void unsecurePersistAndFind() {
+		mockGuestSubject();
 		delegate.getTransaction().begin();
 		Unsecured unsecured = new Unsecured();
 		interceptor.persist(unsecured);
@@ -161,6 +170,9 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 		mockSubject(1L);
 		entity = interceptor.find(TestEntity.class, null);
 		assertNotNull(entity);
+
+		mockGuestSubject();
+		assertNull(interceptor.find(TestEntity.class, null));
 	}
 
 	@Test
@@ -233,6 +245,19 @@ public class JpaSecurityModuleUnitTest extends IOCTestCase {
 	@Test(expectedExceptions = { EntitySecurityException.class })
 	public void insertProtectedByAssociation() {
 		mockSubject(2L);
+		interceptor.getTransaction().begin();
+		TestOwnerEntity owner = new TestOwnerEntity();
+		owner.setId(1L);
+		interceptor.persist(owner);
+		InsertAssociationProtectedEntity insertAssociationProtectedEntity = new InsertAssociationProtectedEntity();
+		insertAssociationProtectedEntity.setOwner(owner);
+		interceptor.persist(insertAssociationProtectedEntity);
+		interceptor.getTransaction().commit();
+	}
+
+	@Test(expectedExceptions = { EntitySecurityException.class })
+	public void insertProtectionDoesNotThrowNullPointerForGuest() {
+		mockGuestSubject();
 		interceptor.getTransaction().begin();
 		TestOwnerEntity owner = new TestOwnerEntity();
 		owner.setId(1L);

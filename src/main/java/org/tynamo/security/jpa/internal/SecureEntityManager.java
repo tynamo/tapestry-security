@@ -242,8 +242,6 @@ public class SecureEntityManager implements EntityManager {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private <T> T secureFind(Class<T> entityClass, Object entityId, LockModeType lockMode, Map<String, Object> properties) {
-		// if (!securityService.getSubject().isAuthenticated()) return null;
-
 		String requiredRoleValue = RequiresAnnotationUtil.getRequiredRole(entityClass, Operation.READ);
 
 		if (requiredRoleValue != null && request.isUserInRole(requiredRoleValue))
@@ -260,6 +258,9 @@ public class SecureEntityManager implements EntityManager {
 			if (annotation == null) return null;
 			requiredAssociationValue = annotation.value();
 		}
+
+		// return immediately if user is guest
+		if (request.getRemoteUser() == null) return null;
 
 		CriteriaBuilder builder = delegate.getCriteriaBuilder();
 		CriteriaQuery<Object> criteriaQuery = builder.createQuery();
@@ -330,6 +331,10 @@ public class SecureEntityManager implements EntityManager {
 			else throw new EntitySecurityException("Currently executing subject is not permitted to " + writeOperation
 				+ " entities of type " + entity.getClass().getSimpleName());
 		}
+		// throw exception if user is guest
+		if (request.getRemoteUser() == null)
+			throw new EntitySecurityException("Guest users are not permitted to " + writeOperation + " entities of type "
+				+ entity.getClass().getSimpleName());
 
 		Metamodel metamodel = delegate.getMetamodel();
 		EntityType entityType = metamodel.entity(entity.getClass());
