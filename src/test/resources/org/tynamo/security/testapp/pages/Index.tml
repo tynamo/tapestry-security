@@ -21,6 +21,7 @@
     	<p />
     	<div><t:actionlink t:id="alphaServiceInvoke" id="alphaServiceInvoke">action alphaServiceInvoke (Restricted by annotation on service method)</t:actionlink></div>
     	<div><t:actionlink t:id="betaServiceInvoke" id="betaServiceInvoke">action betaServiceInvoke (Restricted by annotation on service class)</t:actionlink></div>
+    	<div><t:actionlink t:id="alphaServiceInvokeWithSecurityDisabled" id="alphaServiceInvokeWithSecurityDisabled">action alphaServiceInvoke (but disable security using SecurityService.invokeWithSecurityDisabled())</t:actionlink></div>
 
 		<h3>Testing all annotation types</h3>
     	<div><t:actionlink t:id="alphaServiceRequiresAuthentication" id="alphaServiceRequiresAuthentication">action alphaServiceRequiresAuthentication</t:actionlink></div>

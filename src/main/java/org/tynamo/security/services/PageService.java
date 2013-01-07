@@ -2,7 +2,7 @@ package org.tynamo.security.services;
 
 import java.io.IOException;
 
-// To be removed in 0.5. Replaced with internal LoginContextService 
+// To be removed in 0.6. Replaced with internal LoginContextService
 @Deprecated
 public interface PageService
 {
@@ -14,10 +14,10 @@ public interface PageService
 	String getUnauthorizedPage();
 
   public String getLocalelessPathWithinApplication();
-  
+
 	public String getLocaleFromPath(String path);
-	
+
   public void saveRequest();
-  
+
   public void redirectToSavedRequest(String fallbackUrl) throws IOException;
 }

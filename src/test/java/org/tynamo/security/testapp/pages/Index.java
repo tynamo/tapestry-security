@@ -18,6 +18,8 @@
  */
 package org.tynamo.security.testapp.pages;
 
+import java.util.concurrent.Callable;
+
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.tapestry5.PersistenceConstants;
@@ -35,92 +37,101 @@ public class Index {
 
 	@Persist(PersistenceConstants.FLASH)
 	private String result;
-	
+
 	@Inject
 	private AlphaService alphaService;
-	
+
 	@Inject
 	private BetaService betaService;
-	
+
 	@Inject
 	private GammaService gammaService;
 
 	@Inject
 	private SecurityService securityService;
-	
+
 	public String getStatus() {
 		return securityService.isAuthenticated() ? "Authenticated" : "Not Authenticated";
 	}
-	
+
 	@RequiresAuthentication
 	public void onActionFromComponentMethodInterceptor() {
 		result = Invoker.invoke(getClass());
 	}
-	
+
 	@InjectComponent
-	private Zone targetZone;	
-	
+	private Zone targetZone;
+
 	@RequiresAuthentication
 	public Object onActionFromComponentMethodInterceptorWithAjax() {
 		result = Invoker.invoke(getClass());
 		return targetZone.getBody();
 	}
-	
+
 	@RequiresPermissions("ilac:action2")
 	public void onComponentMethodInterceptorRequiresPermissionsILAC(String param)
 	{
 		result = Invoker.invoke(getClass());
 	}
-	
+
 	public void onActionFromBetaServiceInvoke() {
         result = betaService.invoke();
 	}
-	
+
 	public void onActionFromAlphaServiceInvoke() {
 		result = alphaService.invoke();
 	}
-	
-	
+
+	public void onActionFromAlphaServiceInvokeWithSecurityDisabled() throws Exception {
+		result = securityService.invokeWithSecurityDisabled(new Callable<String>() {
+			@Override
+			public String call() throws Exception {
+				return alphaService.invoke();
+			}
+		});
+	}
+
+
 	public void onActionFromAlphaServiceRequiresAuthentication() {
 		result = alphaService.invokeRequiresAuthentication();
 	}
-	
+
 	public void onActionFromAlphaServiceRequiresUser() {
 		result = alphaService.invokeRequiresUser();
 	}
-	
+
 	public void onActionFromAlphaServiceRequiresGuest() {
 		result = alphaService.invokeRequiresGuest();
 	}
-	
+
 	public void onActionFromAlphaServiceRequiresRolesUser() {
 		result = alphaService.invokeRequiresRolesUser();
 	}
-	
+
 	public void onActionFromAlphaServiceRequiresRolesManager() {
 		result = alphaService.invokeRequiresRolesManager();
 	}
-	
+
 	public void onActionFromAlphaServiceRequiresPermissionsNewsView() {
 		result = alphaService.invokeRequiresPermissionsNewsView();
 	}
-	
+
 	public void onActionFromAlphaServiceRequiresPermissionsNewsEdit() {
 		result = alphaService.invokeRequiresPermissionsNewsEdit();
 	}
-	
+
 	public void onActionFromGammaServiceRequiresPermissionsILACSuccessWithArgument() {
 		result = gammaService.invokeRequiresPermissionsILACSuccessIfArgumentAllows("allow");
 	}
-	
+
 	public void onActionFromGammaServiceRequiresPermissionsILACUnauthorizedWithArgument() {
 		result = gammaService.invokeRequiresPermissionsILACSuccessIfArgumentAllows("deny");
 	}
-	
+
 	public void onActionFromGammaServiceRequiresPermissionsILACSuccessWithoutArguments() {
 		result = gammaService.invokeRequiresPermissionsILACSuccessWithoutArguments();
 	}
-	
+
 	public void setResult(String result) {
 		this.result = result;
 	}
@@ -128,5 +139,5 @@ public class Index {
 	public String getResult() {
 		return result;
 	}
-	
+
 }

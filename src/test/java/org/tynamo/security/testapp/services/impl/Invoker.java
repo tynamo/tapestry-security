@@ -18,29 +18,29 @@
  */
 package org.tynamo.security.testapp.services.impl;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class Invoker {
-	
+
 	public static final String SUCCESS_SUFFIX = "SUCCESS";
 
 	public static String invoke(Class<?> clazz) {
 		return clazz.getSimpleName()+"."+SUCCESS_SUFFIX;
 	}
-	
+
 	public static String invoke(Class<?> clazz, Object... arguments) {
 		StringBuilder builder = new StringBuilder();
-		
+
 		builder.append(clazz.getSimpleName()).append("(");
-		
+
 		if (arguments != null)
 		{
 			builder.append(StringUtils.join(arguments, ", "));
 		}
-		
+
 		builder.append(").").append(SUCCESS_SUFFIX);
-		
+
 		return builder.toString();
 	}
-	
+
 }

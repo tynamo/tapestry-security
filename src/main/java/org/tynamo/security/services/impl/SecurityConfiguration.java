@@ -38,7 +38,7 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 	public boolean service(final HttpServletRequest originalRequest, final HttpServletResponse response, final HttpServletRequestHandler handler)
 			throws IOException {
 		// TODO consider whether this guard is necessary at all? I think possibly if container forwards the request internally
-		// or, more generically, if the same thread/container-level filter mapping handles the request twice 
+		// or, more generically, if the same thread/container-level filter mapping handles the request twice
 		if (originalRequest instanceof ShiroHttpServletRequest) return handler.service(originalRequest, response);
 
 		final HttpServletRequest request = new ShiroHttpServletRequest(originalRequest, servletContext, true);
@@ -50,6 +50,7 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 		ThreadContext.bind(securityManager);
 		WebSubject subject = new WebSubject.Builder(securityManager, originalRequest, response).buildWebSubject();
 
+		try {
 		return subject.execute(new Callable<Boolean>() {
 			public Boolean call() throws Exception {
 				if (chain == null) return handler.service(request, response);
@@ -59,6 +60,10 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 				}
 			}
 		});
+		}
+		finally {
+			ThreadContext.unbindSecurityManager();
+		}
 	}
 
 	private SecurityFilterChain getMatchingChain(final String requestURI) {

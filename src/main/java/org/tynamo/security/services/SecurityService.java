@@ -18,6 +18,8 @@
  */
 package org.tynamo.security.services;
 
+import java.util.concurrent.Callable;
+
 import org.apache.shiro.subject.Subject;
 
 /**
@@ -92,4 +94,12 @@ public interface SecurityService {
 
 	boolean isLacksRole(String role);
 
+	/**
+	 * Temporarily disable security before invocation of Callable.
+	 *
+	 * @param callable A callable that will be invoked with security disabled
+	 * @return
+	 * @throws Exception
+	 */
+	<T> T invokeWithSecurityDisabled(Callable<T> callable) throws Exception;
 }

@@ -10,7 +10,7 @@ import java.net.ConnectException;
 import java.net.URL;
 
 import org.apache.tapestry5.json.JSONObject;
-import org.mortbay.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.webapp.WebAppContext;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
@@ -19,7 +19,7 @@ import org.tynamo.test.AbstractContainerTest;
 
 import com.gargoylesoftware.htmlunit.CookieManager;
 import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebRequestSettings;
+import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -79,6 +79,12 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	{
 		clickOnBasePage("alphaServiceInvoke");
 		assertLoginPage();
+	}
+
+	public void testInterceptServiceMethodWithSecurityDisabled() throws Exception
+	{
+		clickOnBasePage("alphaServiceInvokeWithSecurityDisabled");
+		assertSuccessInvoke();
 	}
 
 	@Test(groups = {"notLoggedIn"})
@@ -195,12 +201,12 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		clickOnBasePage("contributed");
 		// now go log out in a different "window"
 		HtmlPage indexPage = webClient.getPage(BASEURI);
-		indexPage.getElementById("tynamoLogoutLink").click();
+		indexPage.getHtmlElementById("tynamoLogoutLink").click();
 
                 // Clicking on this link should make an ajax request, but HTMLUnit doesn't like it and sends a non-ajax request
-		HtmlElement ajaxLink = page.getElementById("ajaxLink");
+		HtmlElement ajaxLink = (HtmlElement) page.getElementById("ajaxLink");
                 URL ajaxUrl = new URL(APP_HOST_PORT + ajaxLink.getAttribute("href"));
-                WebRequestSettings ajaxRequest = new WebRequestSettings(ajaxUrl);
+                WebRequest ajaxRequest = new WebRequest(ajaxUrl);
                 ajaxRequest.setAdditionalHeader("X-Requested-With", "XMLHttpRequest");
 
                 Page jsonLoginResponse  = webClient.getPage(ajaxRequest);
@@ -917,7 +923,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 
 	protected void assertUnauthorizedPage401()
 	{
-		assertEquals(getTitle(), "Error 401 UNAUTHORIZED", "Not Unauthorized page");
+		assertEquals(getTitle(), "Error 401 Unauthorized", "Not Unauthorized page");
 	}
 
 	protected void openPage(String url) throws Exception
@@ -933,7 +939,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	protected void clickOnBasePage(String url) throws Exception
 	{
 		openBase();
-		page = page.getElementById(url).click();
+		page = page.getHtmlElementById(url).click();
 	}
 
 	protected void assertSuccessInvoke()
@@ -993,7 +999,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 
 	private String getLocation()
 	{
-		return page.getWebResponse().getRequestSettings().getUrl().toString();
+		return page.getWebResponse().getWebRequest().getUrl().toString();
 	}
 
 }

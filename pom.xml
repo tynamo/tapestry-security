@@ -72,11 +72,17 @@
 			<artifactId>tapestry-exceptionpage</artifactId>
 			<version>0.1.2</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.tynamo</groupId>
 			<artifactId>tapestry-model-test</artifactId>
-			<version>0.1.0</version>
+			<version>0.5.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.htmlunit</groupId>
+			<artifactId>htmlunit</artifactId>
+			<version>2.10</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -96,7 +102,7 @@
 		</site>
 	</distributionManagement>
 
-	<!-- Needed as long as we depend on Tapestry snapshot 
+	<!-- Needed as long as we depend on Tapestry snapshot
 	<repositories>
 		<repository>
 			<id>apache-ci-snapshots</id>

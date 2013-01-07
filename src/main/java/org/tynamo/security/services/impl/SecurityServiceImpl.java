@@ -14,8 +14,11 @@
  */
 package org.tynamo.security.services.impl;
 
+import java.util.concurrent.Callable;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.tynamo.security.services.SecurityService;
 
 
@@ -45,8 +48,8 @@ public class SecurityServiceImpl implements SecurityService
 //	public SecurityServiceImpl(@Autobuild TapestryRealmSecurityManager securityManager) {
 //		this.securityManager = securityManager;
 //	}
-	
-	
+
+
 	@Override
 	public Subject getSubject()
 	{
@@ -208,5 +211,17 @@ public class SecurityServiceImpl implements SecurityService
 	public boolean isLacksRole(String role)
 	{
 		return !hasRole(role);
+	}
+
+	@Override
+	public <T> T invokeWithSecurityDisabled(Callable<T> callable) throws Exception {
+		org.apache.shiro.mgt.SecurityManager securityManager = ThreadContext.getSecurityManager();
+		ThreadContext.unbindSecurityManager();
+		try {
+			return callable.call();
+		}
+		finally {
+			if (securityManager == null) ThreadContext.bind(securityManager);
+		}
 	}
 }
