@@ -30,6 +30,7 @@ import org.apache.shiro.util.StringUtils;
 import org.apache.tapestry5.PersistenceConstants;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
+import org.apache.tapestry5.ioc.Messages;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.annotations.Symbol;
 import org.apache.tapestry5.services.Cookies;
@@ -63,6 +64,9 @@ public class LoginForm
 	private String loginMessage;
 
 	@Inject
+	private Messages messages;
+
+	@Inject
 	private Response response;
 
 	@Inject
@@ -73,12 +77,12 @@ public class LoginForm
 
 	@Inject
 	private LoginContextService loginContextService;
-	
-	@Inject 
+
+	@Inject
 	private Cookies cookies;
-	
-	@Inject 
-	@Symbol(SecuritySymbols.REDIRECT_TO_SAVED_URL) 
+
+	@Inject
+	@Symbol(SecuritySymbols.REDIRECT_TO_SAVED_URL)
 	private boolean redirectToSavedUrl;
 
 	public Object onActionFromTynamoLoginForm() throws IOException
@@ -100,19 +104,19 @@ public class LoginForm
 			currentUser.login(token);
 		} catch (UnknownAccountException e)
 		{
-			loginMessage = "Account not exists";
+			loginMessage = messages.get("AccountDoesNotExists");;
 			return null;
 		} catch (IncorrectCredentialsException e)
 		{
-			loginMessage = "Wrong password";
+			loginMessage = messages.get("WrongPassword");
 			return null;
 		} catch (LockedAccountException e)
 		{
-			loginMessage = "Account locked";
+			loginMessage = messages.get("AccountLocked");
 			return null;
 		} catch (AuthenticationException e)
 		{
-			loginMessage = "Authentication Error";
+			loginMessage = messages.get("AuthenticationError");
 			return null;
 		}
 
@@ -136,7 +140,9 @@ public class LoginForm
 //		}
 		if (redirectToSavedUrl) {
 			String requestUri = loginContextService.getSuccessPage();
-			if (!requestUri.startsWith("/")) requestUri = "/" + requestUri;
+			if (!requestUri.startsWith("/")) {
+			    requestUri = "/" + requestUri;
+			}
 			loginContextService.redirectToSavedRequest(requestUri);
 			return null;
 		}
