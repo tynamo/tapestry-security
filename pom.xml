@@ -55,13 +55,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>org.tynamo</groupId>
 			<artifactId>tynamo-common</artifactId>
 			<version>0.0.3</version>
@@ -76,7 +69,7 @@
 		<dependency>
 			<groupId>org.tynamo</groupId>
 			<artifactId>tapestry-model-test</artifactId>
-			<version>0.5.0</version>
+			<version>0.5.1-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

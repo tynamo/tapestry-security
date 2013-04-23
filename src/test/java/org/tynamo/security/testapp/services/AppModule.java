@@ -39,6 +39,7 @@ import org.apache.tapestry5.services.RequestHandler;
 import org.apache.tapestry5.services.Response;
 import org.slf4j.Logger;
 import org.tynamo.security.Security;
+import org.tynamo.security.TapestrySecurityIntegrationTest;
 import org.tynamo.security.services.SecurityFilterChainFactory;
 import org.tynamo.security.services.SecurityModule;
 import org.tynamo.security.services.impl.SecurityFilterChain;
@@ -74,7 +75,7 @@ public class AppModule
 		// the first locale name is the default when there's no reasonable match).
 
 		configuration.add(SymbolConstants.SUPPORTED_LOCALES, "en, fi_FI");
-		
+
 
 		// The factory default is true but during the early stages of an application
 		// overriding to false is a good idea. In addition, this is often overridden
@@ -164,7 +165,7 @@ public class AppModule
 //			defaultManager.setSessionManager(sessionManager);
 //			defaultManager.setSubjectFactory(subjectFactory);
 //		}
-		
+
 //		/authc/signup = anon
 //		/authc/** = authc
 //
@@ -174,7 +175,7 @@ public class AppModule
 //		/roles/manager/** = roles[manager]
 //		/perms/view/** = perms[news:view]
 //		/perms/edit/** = perms[news:edit]
-		
+
 		configuration.add(factory.createChain("/authc/signup").add(factory.anon()).build());
 		configuration.add(factory.createChain("/authc/**").add(factory.authc()).build());
 		configuration.add(factory.createChain("/contributed/**").add(factory.authc()).build());
@@ -186,7 +187,7 @@ public class AppModule
 		configuration.add(factory.createChain("/perms/edit/**").add(factory.perms(), "news:edit").build());
 
 		configuration.add(factory.createChain("/ports/ssl").add(factory.ssl()).build());
-		configuration.add(factory.createChain("/ports/port8180").add(factory.port(), "8180").build());
+		configuration.add(factory.createChain("/ports/portinuse").add(factory.port(), String.valueOf(TapestrySecurityIntegrationTest.port)).build());
 		configuration.add(factory.createChain("/ports/port9090").add(factory.port(), "9090").build());
 
 		configuration.add(factory.createChain("/hidden/**").add(factory.notfound()).build());
@@ -195,7 +196,7 @@ public class AppModule
 	@Startup
 	public void testCallingSecureOperationInternally(AlphaService alphaService) {
 		// This is a secure operation but you should be able to call it when Subject is not bound
-		// without a security check. If this fails, it'll cause the whole app startup to fail  
+		// without a security check. If this fails, it'll cause the whole app startup to fail
 		alphaService.invoke();
 	}
 

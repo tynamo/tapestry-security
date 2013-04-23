@@ -32,14 +32,17 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	private HtmlPage page;
 
 	// masks the inherited field because that one is final (in model-test 0.1.0)
-        private static final String APP_HOST_PORT = "http://localhost:" + port;
-        private static final String APP_CONTEXT = "/test/";
-	protected static String BASEURI = APP_HOST_PORT + APP_CONTEXT;
+	private static String APP_HOST_PORT;
+	private static String APP_CONTEXT;
+	protected static String BASEURI;
 
 	@Override
 	@BeforeClass
 	public void configureWebClient()
 	{
+		APP_HOST_PORT = "http://localhost:" + port;
+		APP_CONTEXT = "/test/";
+		BASEURI = APP_HOST_PORT + APP_CONTEXT;
 		webClient.setThrowExceptionOnFailingStatusCode(false);
 	}
 
