@@ -30,6 +30,14 @@
 
 
 	<dependencies>
+		<!-- slighly annoyingly, we need to use the jetty originated servlet-api because the jars are signed -->
+		<dependency>
+			<groupId>org.eclipse.jetty.orbit</groupId>
+			<artifactId>javax.servlet</artifactId>
+			<version>3.0.0.v201112011016</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-web</artifactId>
