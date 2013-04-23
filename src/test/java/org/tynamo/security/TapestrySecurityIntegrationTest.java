@@ -531,6 +531,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		{
 			throw new AssertionError("NotAuthenticated component can't be present");
 		}
+		// assertTrue(isElementPresent("NotAuthenticatedComponentElse"));
 	}
 
 	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})

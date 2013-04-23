@@ -16,13 +16,6 @@ public class HasAnyPermissions extends AbstractConditional {
 	@Parameter(required = true, defaultPrefix = "literal")
 	private String permissions;
 
-
-	boolean beforeRenderBody()
-	{
-		return test();
-	}
-
-
 	@Override
 	protected boolean test() {
 		return securityService.hasAnyPermissions(permissions);

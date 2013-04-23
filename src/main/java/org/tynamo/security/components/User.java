@@ -12,10 +12,6 @@ public class User extends AbstractConditional {
 	@Inject
 	private SecurityService securityService;
 
-	boolean beforeRenderBody() {
-		return test();
-	}
-
 	@Override
 	protected boolean test() {
 		return securityService.isUser();

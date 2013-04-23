@@ -16,10 +16,6 @@ public class HasAnyRoles extends AbstractConditional {
 	@Parameter(required = true, defaultPrefix="literal")
 	private String roles;
 
-	boolean beforeRenderBody() {
-		return test();
-	}
-
 	@Override
 	protected boolean test() {
 		return securityService.hasAnyRoles(roles);

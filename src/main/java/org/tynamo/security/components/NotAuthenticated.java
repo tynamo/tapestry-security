@@ -13,10 +13,6 @@ public class NotAuthenticated extends AbstractConditional {
 	@Inject
 	private SecurityService securityService;
 
-	boolean beforeRenderBody() {
-		return test();
-	}
-
 	@Override
 	protected boolean test() {
 		return securityService.isNotAuthenticated();

@@ -14,10 +14,6 @@ public class Authenticated extends AbstractConditional {
 	@Inject
 	private SecurityService securityService;
 
-	boolean beforeRenderBody() {
-		return test();
-	}
-
 	@Override
 	protected boolean test() {
 		return securityService.isAuthenticated();
