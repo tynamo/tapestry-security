@@ -39,7 +39,6 @@ import org.apache.tapestry5.services.RequestHandler;
 import org.apache.tapestry5.services.Response;
 import org.slf4j.Logger;
 import org.tynamo.security.Security;
-import org.tynamo.security.TapestrySecurityIntegrationTest;
 import org.tynamo.security.services.SecurityFilterChainFactory;
 import org.tynamo.security.services.SecurityModule;
 import org.tynamo.security.services.impl.SecurityFilterChain;
@@ -187,7 +186,8 @@ public class AppModule
 		configuration.add(factory.createChain("/perms/edit/**").add(factory.perms(), "news:edit").build());
 
 		configuration.add(factory.createChain("/ports/ssl").add(factory.ssl()).build());
-		configuration.add(factory.createChain("/ports/portinuse").add(factory.port(), String.valueOf(TapestrySecurityIntegrationTest.port)).build());
+		// configuration.add(factory.createChain("/ports/portinuse").add(factory.port(), String.valueOf(TapestrySecurityIntegrationTest.port)).build());
+		configuration.add(factory.createChain("/ports/portinuse").add(factory.port(), "8080").build());
 		configuration.add(factory.createChain("/ports/port9090").add(factory.port(), "9090").build());
 
 		configuration.add(factory.createChain("/hidden/**").add(factory.notfound()).build());
