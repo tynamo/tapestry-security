@@ -10,12 +10,8 @@
 	<parent>
 		<groupId>org.tynamo</groupId>
 		<artifactId>tynamo-parent</artifactId>
-		<version>0.0.11</version>
+		<version>0.0.12</version>
 	</parent>
-
-	<properties>
-		<tapestry-release-version>5.3.4</tapestry-release-version>
-	</properties>
 
 	<!-- Developers section inherited from the parent pom -->
 	<contributors>
@@ -76,10 +72,11 @@
 
 		<dependency>
 			<groupId>org.tynamo</groupId>
-			<artifactId>tapestry-model-test</artifactId>
-			<version>0.5.1-SNAPSHOT</version>
+			<artifactId>tynamo-test</artifactId>
+			<version>0.0.1</version>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>net.sourceforge.htmlunit</groupId>
 			<artifactId>htmlunit</artifactId>
