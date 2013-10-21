@@ -77,19 +77,28 @@ public class LoginContextServiceImpl implements LoginContextService {
 		return null;
 	}
 
-	private Cookie createSavedRequestCookie() {
+	private Cookie createSavedRequestCookie(String contextPath) {
 		String requestUri = WebUtils.getPathWithinApplication(request);
 		if (request.getQueryString() != null) requestUri += "?" + request.getQueryString();
 		Cookie cookie = new Cookie(WebUtils.SAVED_REQUEST_KEY, requestUri);
-		String contextPath = request.getContextPath();
-		if ("".equals(contextPath)) contextPath = "/";
 		cookie.setPath(contextPath);
 		return cookie;
 	}
 
+	private String getContextPath() {
+		String contextPath = request.getContextPath();
+		if ("".equals(contextPath)) contextPath = "/";
+		return contextPath;
+	}
+
 	@Override
 	public void saveRequest() {
-		response.addCookie(createSavedRequestCookie());
+		saveRequest(getContextPath());
+	}
+
+	@Override
+	public void saveRequest(String contextPath) {
+		response.addCookie(createSavedRequestCookie(contextPath));
 	}
 
 	@Override
@@ -98,7 +107,7 @@ public class LoginContextServiceImpl implements LoginContextService {
 		String requestUri = null;
 		if (cookies != null) for (Cookie cookie : cookies) if (WebUtils.SAVED_REQUEST_KEY.equals(cookie.getName())) {
 			requestUri = cookie.getValue();
-			Cookie deleteCookie = createSavedRequestCookie();
+			Cookie deleteCookie = createSavedRequestCookie(getContextPath());
 			deleteCookie.setMaxAge(0);
 			response.addCookie(deleteCookie);
 			break;
@@ -106,5 +115,4 @@ public class LoginContextServiceImpl implements LoginContextService {
 		if (requestUri == null) requestUri = fallbackUrl;
 		WebUtils.issueRedirect(request, response, requestUri);
   }
-	
 }

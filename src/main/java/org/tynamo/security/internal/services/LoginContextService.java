@@ -2,8 +2,7 @@ package org.tynamo.security.internal.services;
 
 import java.io.IOException;
 
-public interface LoginContextService
-{
+public interface LoginContextService {
 
 	String getLoginPage();
 
@@ -11,11 +10,14 @@ public interface LoginContextService
 
 	String getUnauthorizedPage();
 
-  public String getLocalelessPathWithinApplication();
-  
-	public String getLocaleFromPath(String path);
-	
-  public void saveRequest();
-  
-  public void redirectToSavedRequest(String fallbackUrl) throws IOException;
+	String getLocalelessPathWithinApplication();
+
+	String getLocaleFromPath(String path);
+
+	void saveRequest();
+
+	void saveRequest(String contextPath);
+
+	void redirectToSavedRequest(String fallbackUrl) throws IOException;
+
 }
