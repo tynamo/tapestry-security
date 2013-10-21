@@ -76,22 +76,22 @@ public class LoginContextServiceImpl implements LoginContextService {
 		}
 		return null;
 	}
-	
+
 	private Cookie createSavedRequestCookie() {
 		String requestUri = WebUtils.getPathWithinApplication(request);
 		if (request.getQueryString() != null) requestUri += "?" + request.getQueryString();
-  	Cookie cookie = new Cookie(WebUtils.SAVED_REQUEST_KEY, requestUri);
-  	String contextPath = request.getContextPath();
-  	if ("".equals(contextPath)) contextPath = "/";
-  	cookie.setPath(contextPath);
-  	return cookie;
+		Cookie cookie = new Cookie(WebUtils.SAVED_REQUEST_KEY, requestUri);
+		String contextPath = request.getContextPath();
+		if ("".equals(contextPath)) contextPath = "/";
+		cookie.setPath(contextPath);
+		return cookie;
 	}
-	
+
 	@Override
-  public void saveRequest() {
-  	response.addCookie(createSavedRequestCookie());
-  }
-	
+	public void saveRequest() {
+		response.addCookie(createSavedRequestCookie());
+	}
+
 	@Override
   public void redirectToSavedRequest(String fallbackUrl) throws IOException {
 		Cookie[] cookies = request.getCookies();
