@@ -62,7 +62,11 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 		});
 		}
 		finally {
-			ThreadContext.unbindSecurityManager();
+			/**
+			 * final 'clean up' operation that removes the underlying {@link ThreadLocal ThreadLocal} from the thread
+			 * at the end of execution to prevent leaks in pooled thread environments.
+			 */
+			ThreadContext.remove();
 		}
 	}
 

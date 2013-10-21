@@ -7,6 +7,8 @@ import org.apache.shiro.realm.Realm;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.mgt.DefaultWebSessionStorageEvaluator;
 import org.apache.shiro.web.session.mgt.ServletContainerSessionManager;
+import org.apache.tapestry5.ioc.annotations.PostInjection;
+import org.apache.tapestry5.ioc.services.RegistryShutdownHub;
 import org.tynamo.security.Authenticator;
 
 import java.util.Collection;
@@ -28,4 +30,14 @@ public class TapestryRealmSecurityManager extends DefaultWebSecurityManager {
 		setSessionManager(new ServletContainerSessionManager());
 		setRealms(realms);
 	}
+
+	@PostInjection
+	public void listenForShutdown(RegistryShutdownHub hub) {
+		hub.addRegistryShutdownListener(new Runnable() {
+			public void run() {
+				destroy();
+			}
+		});
+	}
+
 }
