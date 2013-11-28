@@ -3,6 +3,7 @@ package org.tynamo.security.services.impl;
 import org.apache.shiro.util.AntPathMatcher;
 import org.apache.shiro.util.PatternMatcher;
 import org.apache.shiro.util.RegExPatternMatcher;
+import org.apache.tapestry5.SymbolConstants;
 import org.apache.tapestry5.ioc.annotations.EagerLoad;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.annotations.Symbol;
@@ -36,13 +37,15 @@ public class SecurityFilterChainFactoryImpl implements SecurityFilterChainFactor
 	private final RegExPatternMatcher regExPatternMatcher= new RegExPatternMatcher();
 
 	public SecurityFilterChainFactoryImpl(Logger logger, PipelineBuilder builder, LoginContextService loginContextService,
+      @Inject @Symbol(SymbolConstants.TAPESTRY_VERSION) String tapestryVersion,
       @Inject @Symbol(SecuritySymbols.SUCCESS_URL) String successUrl,
       @Inject @Symbol(SecuritySymbols.LOGIN_URL) String loginUrl,
-      @Inject @Symbol(SecuritySymbols.UNAUTHORIZED_URL) String unauthorizedUrl, @Inject @Symbol(SecuritySymbols.REDIRECT_TO_SAVED_URL) boolean redirectToSavedUrl
+      @Inject @Symbol(SecuritySymbols.UNAUTHORIZED_URL) String unauthorizedUrl
 	) {
 		this.builder = builder;
 		this.logger = logger;
 		this.loginContextService = loginContextService;
+		AccessControlFilter.TAPESTRY_VERSION = tapestryVersion;
 		AccessControlFilter.LOGIN_URL = loginUrl;
 		AccessControlFilter.SUCCESS_URL = successUrl;
 		AccessControlFilter.UNAUTHORIZED_URL = unauthorizedUrl;

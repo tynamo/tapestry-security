@@ -48,7 +48,7 @@ import org.tynamo.security.internal.services.LoginContextService;
  */
 public abstract class AccessControlFilter extends AdviceFilter {
 	// default values - populated by the ChainFactory from symbols 
-	public static String LOGIN_URL, SUCCESS_URL, UNAUTHORIZED_URL;
+	public static String TAPESTRY_VERSION, LOGIN_URL, SUCCESS_URL, UNAUTHORIZED_URL;
 	public static boolean REDIRECT_TO_SAVED_URL;
 	
     protected PatternMatcher pathMatcher = new AntPathMatcher() {
@@ -323,8 +323,12 @@ public abstract class AccessControlFilter extends AdviceFilter {
     	if ("XMLHttpRequest".equals(WebUtils.toHttp(request).getHeader("X-Requested-With"))) {
     		WebUtils.toHttp(response).setContentType("application/json;charset=UTF-8");
     		OutputStream os = WebUtils.toHttp(response).getOutputStream();
-				os.write(("{\"redirectURL\":\"" + WebUtils.toHttp(request).getContextPath()+loginUrl + "\"}").getBytes());
-				os.close();
+		    if (TAPESTRY_VERSION.startsWith("5.4")) {
+			    os.write(("{\"_tapestry\":{\"redirectURL\":\"" + WebUtils.toHttp(request).getContextPath() + loginUrl + "\"}}").getBytes());
+		    } else {
+			    os.write(("{\"redirectURL\":\"" + WebUtils.toHttp(request).getContextPath() + loginUrl + "\"}").getBytes());
+		    }
+		    os.close();
     	}
     	else WebUtils.issueRedirect(request, response, loginUrl);
     }
