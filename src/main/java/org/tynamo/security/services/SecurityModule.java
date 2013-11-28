@@ -200,6 +200,13 @@ public class SecurityModule
 							{
 								environment.pop(MethodInvocation.class);
 							}
+						} else {
+							/**
+							 * TYNAMO-230
+							 * The ThreadContext.getSubject() call unconditionally creates the ThreadLocal.
+							 * If there was no ThreadLocal before, we should make sure it's removed from the thread.
+							 */
+							ThreadContext.remove();
 						}
 						invocation.proceed();
 
