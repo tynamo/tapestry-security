@@ -87,9 +87,9 @@
 	</dependencies>
 
 	<scm>
-		<connection>scm:svn:http://svn.codehaus.org/tynamo/trunk/tapestry-security</connection>
-		<developerConnection>scm:svn:https://svn.codehaus.org/tynamo/trunk/tapestry-security</developerConnection>
-		<url>http://svn.tynamo.codehaus.org/tynamo/trunk/tapestry-security</url>
+		<connection>scm:svn:http://svn.codehaus.org/tynamo/branches/tapestry-security-0.5.x</connection>
+		<developerConnection>scm:svn:https://svn.codehaus.org/tynamo/branches/tapestry-security-0.5.x</developerConnection>
+		<url>http://svn.tynamo.codehaus.org/tynamo/branches/tapestry-security-0.5.x</url>
 	</scm>
 
 	<distributionManagement>
