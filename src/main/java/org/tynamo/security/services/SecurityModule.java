@@ -17,14 +17,12 @@ import org.apache.tapestry5.ioc.MappedConfiguration;
 import org.apache.tapestry5.ioc.MethodAdviceReceiver;
 import org.apache.tapestry5.ioc.OrderedConfiguration;
 import org.apache.tapestry5.ioc.ServiceBinder;
-import org.apache.tapestry5.ioc.annotations.Autobuild;
 import org.apache.tapestry5.ioc.annotations.Contribute;
 import org.apache.tapestry5.ioc.annotations.InjectService;
 import org.apache.tapestry5.ioc.annotations.Local;
 import org.apache.tapestry5.ioc.annotations.Marker;
 import org.apache.tapestry5.ioc.annotations.Match;
 import org.apache.tapestry5.ioc.annotations.Order;
-import org.apache.tapestry5.ioc.annotations.SubModule;
 import org.apache.tapestry5.plastic.MethodAdvice;
 import org.apache.tapestry5.plastic.MethodInvocation;
 import org.apache.tapestry5.services.ApplicationInitializer;
@@ -38,7 +36,6 @@ import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.LibraryMapping;
 import org.apache.tapestry5.services.transform.ComponentClassTransformWorker2;
 import org.tynamo.common.ModuleProperties;
-import org.tynamo.exceptionpage.services.ExceptionPageModule;
 import org.tynamo.security.Security;
 import org.tynamo.security.SecurityComponentRequestFilter;
 import org.tynamo.security.SecuritySymbols;
@@ -60,7 +57,6 @@ import org.tynamo.shiro.extension.authz.aop.SecurityInterceptor;
  * The main entry point for Security integration.
  *
  */
-@SubModule(ExceptionPageModule.class)
 @Marker(Security.class)
 public class SecurityModule
 {
@@ -212,8 +208,8 @@ public class SecurityModule
 	}
 
 	@SuppressWarnings("rawtypes")
-	public void contributeExceptionHandler(MappedConfiguration<Class, Object> configuration, @Autobuild SecurityExceptionHandlerAssistant assistant) {
-		configuration.add(ShiroException.class, assistant);
+	public void contributeRequestExceptionHandler(MappedConfiguration<Class, Object> configuration) {
+		configuration.add(ShiroException.class, SecurityExceptionHandlerAssistant.class);
 	}
 
 	public static void contributeHttpServletRequestHandler(OrderedConfiguration<HttpServletRequestFilter> configuration,

@@ -10,9 +10,13 @@
 	<parent>
 		<groupId>org.tynamo</groupId>
 		<artifactId>tynamo-parent</artifactId>
-		<version>0.0.12</version>
+		<version>0.0.13-SNAPSHOT</version>
 	</parent>
 
+	<properties>
+		<tapestry-release-version>5.4-beta-2</tapestry-release-version>
+	</properties>
+	
 	<!-- Developers section inherited from the parent pom -->
 	<contributors>
 		<contributor>
@@ -66,12 +70,6 @@
 
 		<dependency>
 			<groupId>org.tynamo</groupId>
-			<artifactId>tapestry-exceptionpage</artifactId>
-			<version>0.1.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.tynamo</groupId>
 			<artifactId>tynamo-test</artifactId>
 			<version>0.0.1</version>
 			<scope>test</scope>
@@ -100,8 +98,8 @@
 		</site>
 	</distributionManagement>
 
-	<!-- Needed as long as we depend on Tapestry snapshot
 	<repositories>
+		<!-- Needed as long as we depend on Tapestry snapshot
 		<repository>
 			<id>apache-ci-snapshots</id>
 			<url>http://repository.apache.org/snapshots</url>
@@ -111,9 +109,14 @@
 			<releases>
 				<enabled>false</enabled>
 			</releases>
+		</repository> -->
+		
+		<!-- Needed as long as we depend on Tapestry staging builds (like alphas or betas) -->
+		<repository>
+			<id>apache-staging</id>
+			<url>https://repository.apache.org/content/groups/staging/</url>
 		</repository>
 	</repositories>
-	-->
 
 	<build>
 		<resources>

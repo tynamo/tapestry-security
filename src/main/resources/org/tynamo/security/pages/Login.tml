@@ -20,12 +20,8 @@
 				margin-bottom: 10px;	
 			}
 			
-			input {
-				font-size: 220%;
-			}
-			
 			input[type="text"], input[type="password"] {
-				font-size: 220%; width: 400px;
+				width: 400px;
 			}
 			
 			#tynamoLoginContainer {

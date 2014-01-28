@@ -215,7 +215,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
                 Page jsonLoginResponse  = webClient.getPage(ajaxRequest);
                 String ajaxLoginResp = jsonLoginResponse.getWebResponse().getContentAsString();
                 JSONObject jsonResp = new JSONObject(ajaxLoginResp);
-                String ajaxRedirectUrl = jsonResp.getString("redirectURL");
+                String ajaxRedirectUrl = jsonResp.getJSONObject("_tapestry").getString("redirectURL");
                 assertTrue(ajaxRedirectUrl.contains(APP_CONTEXT), "The ajax redirect response '" + ajaxRedirectUrl + "' did not contain app context '" + APP_CONTEXT+"'");
                 page = webClient.getPage(APP_HOST_PORT+ajaxRedirectUrl);
                 assertLoginPage();

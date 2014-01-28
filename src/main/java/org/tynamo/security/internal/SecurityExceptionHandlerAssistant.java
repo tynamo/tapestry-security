@@ -7,11 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.util.StringUtils;
+import org.apache.tapestry5.ExceptionHandlerAssistant;
 import org.apache.tapestry5.internal.services.PageResponseRenderer;
 import org.apache.tapestry5.internal.services.RequestPageCache;
 import org.apache.tapestry5.internal.structure.Page;
 import org.apache.tapestry5.services.Response;
-import org.tynamo.exceptionpage.ExceptionHandlerAssistant;
 import org.tynamo.security.internal.services.LoginContextService;
 import org.tynamo.security.services.SecurityService;
 
