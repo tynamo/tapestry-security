@@ -5,7 +5,7 @@
 	<name>Tapestry Security</name>
 	<description>Tynamo Security package for Tapestry 5 based on Shiro Security</description>
 	<packaging>jar</packaging>
-	<version>0.5.2-SNAPSHOT</version>
+	<version>0.6.0-SNAPSHOT</version>
 
 	<parent>
 		<groupId>org.tynamo</groupId>
@@ -87,9 +87,9 @@
 	</dependencies>
 
 	<scm>
-		<connection>scm:svn:http://svn.codehaus.org/tynamo/branches/tapestry-security-0.5.x</connection>
-		<developerConnection>scm:svn:https://svn.codehaus.org/tynamo/branches/tapestry-security-0.5.x</developerConnection>
-		<url>http://svn.tynamo.codehaus.org/tynamo/branches/tapestry-security-0.5.x</url>
+		<connection>scm:svn:http://svn.codehaus.org/tynamo/trunk/tapestry-security</connection>
+		<developerConnection>scm:svn:https://svn.codehaus.org/tynamo/trunk/tapestry-security</developerConnection>
+		<url>http://svn.tynamo.codehaus.org/tynamo/trunk/tapestry-security</url>
 	</scm>
 
 	<distributionManagement>
