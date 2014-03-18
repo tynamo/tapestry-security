@@ -36,14 +36,14 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	private static String APP_CONTEXT;
 	protected static String BASEURI;
 
-	@Override
 	@BeforeClass
 	public void configureWebClient()
 	{
 		APP_HOST_PORT = "http://localhost:" + port;
 		APP_CONTEXT = "/test/";
 		BASEURI = APP_HOST_PORT + APP_CONTEXT;
-		webClient.setThrowExceptionOnFailingStatusCode(false);
+		webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+		webClient.getOptions().setThrowExceptionOnScriptError(false);
 	}
 
 	@Override

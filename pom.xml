@@ -10,13 +10,13 @@
 	<parent>
 		<groupId>org.tynamo</groupId>
 		<artifactId>tynamo-parent</artifactId>
-		<version>0.0.13-SNAPSHOT</version>
+		<version>0.1.0</version>
 	</parent>
 
 	<properties>
-		<tapestry-release-version>5.4-beta-2</tapestry-release-version>
+		<tapestry-release-version>5.4-beta-3</tapestry-release-version>
 	</properties>
-	
+
 	<!-- Developers section inherited from the parent pom -->
 	<contributors>
 		<contributor>
@@ -41,12 +41,12 @@
 		<dependency>
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-web</artifactId>
-			<version>1.2.2</version>
+			<version>1.2.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-cas</artifactId>
-			<version>1.2.2</version>
+			<version>1.2.3</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -71,14 +71,7 @@
 		<dependency>
 			<groupId>org.tynamo</groupId>
 			<artifactId>tynamo-test</artifactId>
-			<version>0.0.1</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>net.sourceforge.htmlunit</groupId>
-			<artifactId>htmlunit</artifactId>
-			<version>2.10</version>
+			<version>0.1.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -110,12 +103,13 @@
 				<enabled>false</enabled>
 			</releases>
 		</repository> -->
-		
-		<!-- Needed as long as we depend on Tapestry staging builds (like alphas or betas) -->
+
+		<!-- Needed as long as we depend on Tapestry staging builds (like alphas or betas)
 		<repository>
 			<id>apache-staging</id>
 			<url>https://repository.apache.org/content/groups/staging/</url>
 		</repository>
+		-->
 	</repositories>
 
 	<build>
@@ -156,9 +150,9 @@
 
 			<!-- run the test app in the port 8180 with "mvn jetty:run" -->
 			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
+				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
-				<version>7.6.0.RC1</version>
+				<version>8.1.14.v20131031</version>
 				<configuration>
 					<contextPath>/</contextPath>
 					<useTestClasspath>true</useTestClasspath>
