@@ -49,6 +49,7 @@ import org.tynamo.security.services.impl.PageServiceImpl;
 import org.tynamo.security.services.impl.SecurityConfiguration;
 import org.tynamo.security.services.impl.SecurityFilterChainFactoryImpl;
 import org.tynamo.security.services.impl.SecurityServiceImpl;
+import org.tynamo.security.shiro.SimplePrincipalSerializer;
 import org.tynamo.shiro.extension.authz.aop.AopHelper;
 import org.tynamo.shiro.extension.authz.aop.DefaultSecurityInterceptor;
 import org.tynamo.shiro.extension.authz.aop.SecurityInterceptor;
@@ -60,8 +61,6 @@ import org.tynamo.shiro.extension.authz.aop.SecurityInterceptor;
 @Marker(Security.class)
 public class SecurityModule
 {
-
-	private static final String EXCEPTION_HANDLE_METHOD_NAME = "handleRequestException";
 	private static final String PATH_PREFIX = "security";
 	private static final String version = ModuleProperties.getVersion(SecurityModule.class);
 
@@ -73,7 +72,6 @@ public class SecurityModule
 		// because Shiro tests if the object is an instanceof LogoutAware to call logout handlers
 		binder.bind(ModularRealmAuthenticator.class);
 		binder.bind(SubjectFactory.class, DefaultWebSubjectFactory.class);
-		binder.bind(RememberMeManager.class, CookieRememberMeManager.class);
 		binder.bind(HttpServletRequestFilter.class, SecurityConfiguration.class).withId("SecurityConfiguration");
 		binder.bind(ClassInterceptorsCache.class, ClassInterceptorsCacheImpl.class);
 		binder.bind(SecurityService.class, SecurityServiceImpl.class);
@@ -82,6 +80,13 @@ public class SecurityModule
 //		binder.bind(ShiroExceptionHandler.class);
 		binder.bind(LoginContextService.class, LoginContextServiceImpl.class);
 		binder.bind(PageService.class, PageServiceImpl.class);
+	}
+
+	public static RememberMeManager buildRememberMeManager() {
+		CookieRememberMeManager rememberMeManager = new CookieRememberMeManager();
+		// the default Shiro serializer produces obnoxiously long cookies
+		rememberMeManager.setSerializer(new SimplePrincipalSerializer());
+		return rememberMeManager;
 	}
 
 	public static void contributeFactoryDefaults(MappedConfiguration<String, String> configuration)
