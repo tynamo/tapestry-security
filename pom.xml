@@ -78,10 +78,10 @@
 	</dependencies>
 
 	<scm>
-		<connection>scm:svn:http://svn.codehaus.org/tynamo/trunk/tapestry-security</connection>
-		<developerConnection>scm:svn:https://svn.codehaus.org/tynamo/trunk/tapestry-security</developerConnection>
-		<url>http://svn.tynamo.codehaus.org/tynamo/trunk/tapestry-security</url>
-	</scm>
+		<connection>scm:git:git@github.com:tynamo/tapestry-security.git</connection>
+		<developerConnection>scm:git:git@github.com:tynamo/tapestry-security.git</developerConnection>
+		<url>https://github.com/tynamo/tapestry-security</url>
+  </scm>
 
 	<distributionManagement>
 		<site>
