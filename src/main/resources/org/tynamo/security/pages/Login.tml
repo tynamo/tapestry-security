@@ -15,41 +15,17 @@
 				padding: 90px 110px;
 			}
 			
-			#tynamoLoginMessage {
-				color:red;
-				margin-bottom: 10px;	
-			}
-			
-			input[type="text"], input[type="password"] {
-				width: 400px;
-			}
-			
-			#tynamoLoginContainer {
-				margin-bottom: 50px;
-			}
-			#tynamoLoginContainer label:after { content: ": " }
-			
-			#tynamoPasswordContainer {
-				margin-bottom: 50px;
-			}
-			#tynamoPasswordContainer label:after { content: ": " }
-			
-			#tynamoRememberMeContainer {
-				margin-bottom: 40px;
-			}
-			
-			.tynamoMessage {
-				margin:0 auto;
-			}
 		</style>	
 	</head>
 
-	<body style="text-align:center;font-family:'lucida grande','lucida sans unicode','bitstream vera sans', 'trebuchet ms',arial,sans-serif;">
+	<body>
 		<div class="tynamoMessage">
 			${message}
 		</div>
-		
-		<t:security.loginform />
+
+		<div class="rounded-border form-container">
+			<t:security.loginform />
+		</div>
 			
 	</body>
 </html>

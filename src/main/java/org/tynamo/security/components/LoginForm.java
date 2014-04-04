@@ -27,8 +27,9 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.StringUtils;
-import org.apache.tapestry5.PersistenceConstants;
-import org.apache.tapestry5.annotations.Persist;
+import org.apache.tapestry5.EventConstants;
+import org.apache.tapestry5.ValidationException;
+import org.apache.tapestry5.annotations.OnEvent;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.ioc.Messages;
 import org.apache.tapestry5.ioc.annotations.Inject;
@@ -51,6 +52,8 @@ public class LoginForm
 
 	private static final Logger logger = LoggerFactory.getLogger(LoginForm.class);
 
+	private static final String LOGIN_FORM_ID = "tynamoLoginForm";
+
 	@Property
 	private String tynamoLogin;
 
@@ -60,7 +63,6 @@ public class LoginForm
 	@Property
 	private boolean tynamoRememberMe;
 
-	@Persist(PersistenceConstants.FLASH)
 	private String loginMessage;
 
 	@Inject
@@ -85,7 +87,8 @@ public class LoginForm
 	@Symbol(SecuritySymbols.REDIRECT_TO_SAVED_URL)
 	private boolean redirectToSavedUrl;
 
-	public Object onActionFromTynamoLoginForm() throws IOException
+	@OnEvent(value = EventConstants.VALIDATE, component = LOGIN_FORM_ID)
+	public void attemptToLogin() throws ValidationException
 	{
 
 		Subject currentUser = securityService.getSubject();
@@ -104,23 +107,27 @@ public class LoginForm
 			currentUser.login(token);
 		} catch (UnknownAccountException e)
 		{
-			loginMessage = messages.get("AccountDoesNotExists");;
-			return null;
+			loginMessage = messages.get("AccountDoesNotExists");
 		} catch (IncorrectCredentialsException e)
 		{
 			loginMessage = messages.get("WrongPassword");
-			return null;
 		} catch (LockedAccountException e)
 		{
 			loginMessage = messages.get("AccountLocked");
-			return null;
 		} catch (AuthenticationException e)
 		{
 			loginMessage = messages.get("AuthenticationError");
-			return null;
 		}
+		
+		if (loginMessage != null)
+		{
+		    throw new ValidationException(loginMessage);
+		}
+	}
 
-
+	@OnEvent(value = EventConstants.SUCCESS, component = LOGIN_FORM_ID)
+	public Object onSuccessfulLogin() throws IOException
+	{
 //		SavedRequest savedRequest = WebUtils.getAndClearSavedRequest(requestGlobals.getHTTPServletRequest());
 //
 //		if (savedRequest != null && savedRequest.getMethod().equalsIgnoreCase("GET"))
