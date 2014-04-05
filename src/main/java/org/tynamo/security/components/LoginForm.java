@@ -27,9 +27,11 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.StringUtils;
+import org.apache.tapestry5.BindingConstants;
 import org.apache.tapestry5.EventConstants;
 import org.apache.tapestry5.ValidationException;
 import org.apache.tapestry5.annotations.OnEvent;
+import org.apache.tapestry5.annotations.Parameter;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.ioc.Messages;
 import org.apache.tapestry5.ioc.annotations.Inject;
@@ -64,6 +66,10 @@ public class LoginForm
 	private boolean tynamoRememberMe;
 
 	private String loginMessage;
+
+	/** Use ^ for current page the component is contained in, empty for configured success url */
+	@Parameter(defaultPrefix = BindingConstants.LITERAL)
+	private String successURL;
 
 	@Inject
 	private Messages messages;
@@ -118,7 +124,7 @@ public class LoginForm
 		{
 			loginMessage = messages.get("AuthenticationError");
 		}
-		
+
 		if (loginMessage != null)
 		{
 		    throw new ValidationException(loginMessage);
@@ -146,8 +152,8 @@ public class LoginForm
 //			return pageService.getSuccessPage();
 //		}
 		if (redirectToSavedUrl) {
-			String requestUri = loginContextService.getSuccessPage();
-			if (!requestUri.startsWith("/")) {
+			String requestUri = loginContextService.getSuccessPage(this.successURL);
+			if (!requestUri.startsWith("/") && !requestUri.startsWith("http")) {
 			    requestUri = "/" + requestUri;
 			}
 			loginContextService.redirectToSavedRequest(requestUri);
@@ -159,7 +165,7 @@ public class LoginForm
 //			WebUtils.issueRedirect(requestGlobals.getHTTPServletRequest(), requestGlobals.getHTTPServletResponse(), requestUri);
 //			return null;
 //		}
-		return loginContextService.getSuccessPage();
+		return loginContextService.getSuccessPage(successURL);
 	}
 
 	public void setLoginMessage(String loginMessage)
@@ -177,4 +183,5 @@ public class LoginForm
 			return " ";
 		}
 	}
+
 }

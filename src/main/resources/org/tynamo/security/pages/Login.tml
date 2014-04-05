@@ -24,7 +24,7 @@
 		</div>
 
 		<div class="rounded-border form-container">
-			<t:security.loginform />
+			<t:security.loginform successURL="${successURL}"/>
 		</div>
 			
 	</body>

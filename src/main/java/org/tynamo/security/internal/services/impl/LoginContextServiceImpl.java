@@ -6,6 +6,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.shiro.util.StringUtils;
 import org.apache.shiro.web.util.WebUtils;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.annotations.Symbol;
@@ -16,7 +17,7 @@ import org.tynamo.security.internal.services.LoginContextService;
 public class LoginContextServiceImpl implements LoginContextService {
 
 	private String loginPage;
-	private String successPage;
+	private String defaultSuccessPage;
 	private String unauthorizedPage;
 	private final HttpServletRequest request;
 	private final HttpServletResponse response;
@@ -31,7 +32,7 @@ public class LoginContextServiceImpl implements LoginContextService {
 		this.response = response;
 		this.localizationSetter = localizationSetter;
 		this.loginPage = urlToPage(loginUrl);
-		this.successPage = urlToPage(successUrl);
+		this.defaultSuccessPage = urlToPage(successUrl);
 		this.unauthorizedPage = urlToPage(unauthorizedUrl);
 	}
 
@@ -42,7 +43,12 @@ public class LoginContextServiceImpl implements LoginContextService {
 
 	@Override
 	public String getSuccessPage() {
-		return successPage;
+		return defaultSuccessPage;
+	}
+
+	@Override
+	public String getSuccessPage(String successURL) {
+		return StringUtils.hasText(successURL) ? urlToPage(successURL) : defaultSuccessPage;
 	}
 
 	@Override
@@ -64,6 +70,7 @@ public class LoginContextServiceImpl implements LoginContextService {
 		return locale == null ? path : path.substring(locale.length() + 1);
 	}
 
+	@Override
 	public String getLocaleFromPath(String path) {
 		// we have to get the possibly encoded locale from the request, but we are not yet in the Tapestry request processing pipeline.
 		// the following was copied and modified from AppPageRenderLinkTransformer.decodePageRenderRequest(...)

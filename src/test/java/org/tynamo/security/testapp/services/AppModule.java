@@ -110,6 +110,7 @@ public class AppModule
 	 */
 	public RequestFilter buildTimingFilter(final Logger log) {
 		return new RequestFilter() {
+			@Override
 			public boolean service(Request request, Response response, RequestHandler handler)
 					throws IOException {
 				long startTime = System.currentTimeMillis();
@@ -178,6 +179,7 @@ public class AppModule
 
 		configuration.add(factory.createChain("/authc/signup").add(factory.anon()).build());
 		configuration.add(factory.createChain("/authc/**").add(factory.authc()).build());
+		configuration.add(factory.createChain("/partlyauthc/**").add(factory.anon()).build());
 		configuration.add(factory.createChain("/contributed/**").add(factory.authc()).build());
 		configuration.add(factory.createChain("/user/signup").add(factory.anon()).build());
 		configuration.add(factory.createChain("/user/**").add(factory.user()).build());
