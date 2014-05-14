@@ -23,6 +23,7 @@ import org.apache.tapestry5.ioc.annotations.Local;
 import org.apache.tapestry5.ioc.annotations.Marker;
 import org.apache.tapestry5.ioc.annotations.Match;
 import org.apache.tapestry5.ioc.annotations.Order;
+import org.apache.tapestry5.ioc.annotations.Symbol;
 import org.apache.tapestry5.plastic.MethodAdvice;
 import org.apache.tapestry5.plastic.MethodInvocation;
 import org.apache.tapestry5.services.ApplicationInitializer;
@@ -59,7 +60,7 @@ import org.tynamo.shiro.extension.authz.aop.SecurityInterceptor;
  *
  */
 @Marker(Security.class)
-public class SecurityModule
+public final class SecurityModule
 {
 	private static final String PATH_PREFIX = "security";
 	private static final String version = ModuleProperties.getVersion(SecurityModule.class);
@@ -91,65 +92,75 @@ public class SecurityModule
 
 	public static void contributeFactoryDefaults(MappedConfiguration<String, String> configuration)
 	{
+		configuration.add(SecuritySymbols.SECURITY_ENABLED, Boolean.TRUE.toString());
 		configuration.add(SecuritySymbols.LOGIN_URL, "/" + PATH_PREFIX + "/login");
 		configuration.add(SecuritySymbols.SUCCESS_URL, "/index");
 		configuration.add(SecuritySymbols.UNAUTHORIZED_URL, "/" + PATH_PREFIX + "/unauthorized");
 		configuration.add(SecuritySymbols.REDIRECT_TO_SAVED_URL, "true");
 	}
 
-
 	/**
 	 * Create ClassInterceptorsCache through annotations on the class page,
 	 * which then will use SecurityFilter.
 	 * <p/>
 	 */
-	public void contributeApplicationInitializer(OrderedConfiguration<ApplicationInitializerFilter> configuration,
+	public static void contributeApplicationInitializer(OrderedConfiguration<ApplicationInitializerFilter> configuration,
 	                                             final ComponentClassResolver componentClassResolver,
-	                                             final ClassInterceptorsCache classInterceptorsCache)
+	                                             final ClassInterceptorsCache classInterceptorsCache,
+	                                             @Symbol(SecuritySymbols.SECURITY_ENABLED) boolean securityEnabled)
 	{
-
-		configuration.add("SecurityApplicationInitializerFilter", new ApplicationInitializerFilter()
+		if(securityEnabled)
 		{
-			@Override
-			public void initializeApplication(Context context, ApplicationInitializer initializer)
+	 		configuration.add("SecurityApplicationInitializerFilter", new ApplicationInitializerFilter()
 			{
-
-				initializer.initializeApplication(context);
-
-				for (String name : componentClassResolver.getPageNames())
+				@Override
+				public void initializeApplication(Context context, ApplicationInitializer initializer)
 				{
-					String className = componentClassResolver.resolvePageNameToClassName(name);
-					Class<?> clazz = ClassUtils.forName(className);
 
-					while (clazz != null)
+					initializer.initializeApplication(context);
+
+					for (String name : componentClassResolver.getPageNames())
 					{
-						for (Class<? extends Annotation> annotationClass : AopHelper.getAutorizationAnnotationClasses())
+						String className = componentClassResolver.resolvePageNameToClassName(name);
+						Class<?> clazz = ClassUtils.forName(className);
+
+						while (clazz != null)
 						{
-							Annotation classAnnotation = clazz.getAnnotation(annotationClass);
-							if (classAnnotation != null)
+							for (Class<? extends Annotation> annotationClass : AopHelper.getAutorizationAnnotationClasses())
 							{
-								//Add in the cache which then will be used in RequestFilter
-								classInterceptorsCache.add(className, new DefaultSecurityInterceptor(classAnnotation));
+								Annotation classAnnotation = clazz.getAnnotation(annotationClass);
+								if (classAnnotation != null)
+								{
+									//Add in the cache which then will be used in RequestFilter
+									classInterceptorsCache.add(className, new DefaultSecurityInterceptor(classAnnotation));
+								}
 							}
+							clazz = clazz.getSuperclass();
 						}
-						clazz = clazz.getSuperclass();
 					}
 				}
-			}
-		});
+			});
+	    }
 	}
 
-
 	public static void contributeComponentRequestHandler(OrderedConfiguration<ComponentRequestFilter> configuration,
-	                                                     @Local ComponentRequestFilter filter)
+	                                                     @Local ComponentRequestFilter filter,
+	    	                                             @Symbol(SecuritySymbols.SECURITY_ENABLED) boolean securityEnabled)
 	{
-		 configuration.add("SecurityFilter", filter, "before:*");
+		if(securityEnabled)
+		{
+			configuration.add("SecurityFilter", filter, "before:*");
+		}
 	}
 
 	@Contribute(ComponentClassTransformWorker2.class)
-	public static void addTransformWorkers(OrderedConfiguration<ComponentClassTransformWorker2> configuration)
+	public static void addTransformWorkers(OrderedConfiguration<ComponentClassTransformWorker2> configuration,
+	        @Symbol(SecuritySymbols.SECURITY_ENABLED) boolean securityEnabled)
 	{
-		configuration.addInstance(ShiroAnnotationWorker.class.getSimpleName(), ShiroAnnotationWorker.class);
+		if(securityEnabled)
+		{
+			configuration.addInstance(ShiroAnnotationWorker.class.getSimpleName(), ShiroAnnotationWorker.class);
+		}
 	}
 
 	public static void contributeComponentClassResolver(Configuration<LibraryMapping> configuration)
@@ -170,55 +181,65 @@ public class SecurityModule
 	@Match("*")
 	@Order("before:*")
 	public static void adviseSecurityAssert(MethodAdviceReceiver receiver,
-			final @Core Environment environment)
+			final @Core Environment environment,
+	        @Symbol(SecuritySymbols.SECURITY_ENABLED) boolean securityEnabled)
 	{
-		Class<?> serviceInterface = receiver.getInterface();
-
-		for (Method method : serviceInterface.getMethods())
+		if(securityEnabled)
 		{
+			Class<?> serviceInterface = receiver.getInterface();
 
-			List<SecurityInterceptor> interceptors =
-					AopHelper.createSecurityInterceptorsSeeingInterfaces(method, serviceInterface);
-
-			for (final SecurityInterceptor interceptor : interceptors)
+			for (Method method : serviceInterface.getMethods())
 			{
-				MethodAdvice advice = new MethodAdvice()
+
+				List<SecurityInterceptor> interceptors =
+						AopHelper.createSecurityInterceptorsSeeingInterfaces(method, serviceInterface);
+
+				for (final SecurityInterceptor interceptor : interceptors)
 				{
-					@Override
-					public void advise(MethodInvocation invocation)
+					MethodAdvice advice = new MethodAdvice()
 					{
-						// Only (try to) intercept if subject is bound.
-						// This is useful in case background or initializing operations
-						// call service operations that are secure
-						if (ThreadContext.getSubject() != null)
+						@Override
+						public void advise(MethodInvocation invocation)
 						{
-							environment.push(MethodInvocation.class, invocation);
-							try
+							// Only (try to) intercept if subject is bound.
+							// This is useful in case background or initializing operations
+							// call service operations that are secure
+							if (ThreadContext.getSubject() != null)
 							{
-								interceptor.intercept();
+								environment.push(MethodInvocation.class, invocation);
+								try
+								{
+									interceptor.intercept();
+								}
+								finally
+								{
+									environment.pop(MethodInvocation.class);
+								}
 							}
-							finally
-							{
-								environment.pop(MethodInvocation.class);
-							}
+							invocation.proceed();
+
 						}
-						invocation.proceed();
+					};
+					receiver.adviseMethod(method, advice);
+				}
 
-					}
-				};
-				receiver.adviseMethod(method, advice);
 			}
-
 		}
 	}
 
 	@SuppressWarnings("rawtypes")
-	public void contributeRequestExceptionHandler(MappedConfiguration<Class, Object> configuration) {
+	public static void contributeRequestExceptionHandler(MappedConfiguration<Class, Object> configuration) {
 		configuration.add(ShiroException.class, SecurityExceptionHandlerAssistant.class);
 	}
 
 	public static void contributeHttpServletRequestHandler(OrderedConfiguration<HttpServletRequestFilter> configuration,
-			@InjectService("SecurityConfiguration") HttpServletRequestFilter securityConfiguration) {
-		configuration.add("SecurityConfiguration", securityConfiguration, "after:StoreIntoGlobals");
+			@InjectService("SecurityConfiguration") HttpServletRequestFilter securityConfiguration,
+	        @Symbol(SecuritySymbols.SECURITY_ENABLED) boolean securityEnabled) {
+	    if(securityEnabled)
+	    {
+			configuration.add("SecurityConfiguration", securityConfiguration, "after:StoreIntoGlobals");
+	    }
 	}
+
+	private SecurityModule(){}
 }
