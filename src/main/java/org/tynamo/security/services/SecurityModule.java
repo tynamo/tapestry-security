@@ -198,36 +198,8 @@ public final class SecurityModule
 
 			for (final SecurityInterceptor interceptor : interceptors)
 			{
-				MethodAdvice advice = new MethodAdvice()
-				{
-					@Override
-					public void advise(MethodInvocation invocation)
-					{
-						boolean securityEnabled = typeCoercer.coerce(symbolSource.valueForSymbol(SecuritySymbols.SECURITY_ENABLED), Boolean.class);
-
-						// If security is disabled via SecuritySymbols.SECURITY_ENABLED, skip the interceptor 
-						if(securityEnabled)
-						{
-							// Only (try to) intercept if subject is bound.
-							// This is useful in case background or initializing operations
-							// call service operations that are secure
-							if (ThreadContext.getSubject() != null)
-							{
-								environment.push(MethodInvocation.class, invocation);
-								try
-								{
-									interceptor.intercept();
-								}
-								finally
-								{
-									environment.pop(MethodInvocation.class);
-								}
-							}
-							invocation.proceed();
-						}
-
-					}
-				};
+				MethodAdvice advice = new SecurityAdvice(interceptor, typeCoercer, environment,
+						symbolSource);
 				receiver.adviseMethod(method, advice);
 			}
 
@@ -246,6 +218,50 @@ public final class SecurityModule
 	    {
 			configuration.add("SecurityConfiguration", securityConfiguration, "after:StoreIntoGlobals");
 	    }
+	}
+
+	private static final class SecurityAdvice implements MethodAdvice {
+		private final SecurityInterceptor interceptor;
+		private final TypeCoercer typeCoercer;
+		private final Environment environment;
+		private final SymbolSource symbolSource;
+
+		private SecurityAdvice(SecurityInterceptor interceptor,
+				TypeCoercer typeCoercer, Environment environment,
+				SymbolSource symbolSource) {
+			this.interceptor = interceptor;
+			this.typeCoercer = typeCoercer;
+			this.environment = environment;
+			this.symbolSource = symbolSource;
+		}
+
+		@Override
+		public void advise(MethodInvocation invocation)
+		{
+			boolean securityEnabled = typeCoercer.coerce(symbolSource.valueForSymbol(SecuritySymbols.SECURITY_ENABLED), Boolean.class);
+
+			// If security is disabled via SecuritySymbols.SECURITY_ENABLED, skip the interceptor 
+			if(securityEnabled)
+			{
+				// Only (try to) intercept if subject is bound.
+				// This is useful in case background or initializing operations
+				// call service operations that are secure
+				if (ThreadContext.getSubject() != null)
+				{
+					environment.push(MethodInvocation.class, invocation);
+					try
+					{
+						interceptor.intercept();
+					}
+					finally
+					{
+						environment.pop(MethodInvocation.class);
+					}
+				}
+				invocation.proceed();
+			}
+
+		}
 	}
 
 	private SecurityModule(){}
