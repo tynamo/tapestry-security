@@ -24,6 +24,9 @@ import org.apache.tapestry5.ioc.annotations.Marker;
 import org.apache.tapestry5.ioc.annotations.Match;
 import org.apache.tapestry5.ioc.annotations.Order;
 import org.apache.tapestry5.ioc.annotations.Symbol;
+import org.apache.tapestry5.ioc.services.Builtin;
+import org.apache.tapestry5.ioc.services.SymbolSource;
+import org.apache.tapestry5.ioc.services.TypeCoercer;
 import org.apache.tapestry5.plastic.MethodAdvice;
 import org.apache.tapestry5.plastic.MethodInvocation;
 import org.apache.tapestry5.services.ApplicationInitializer;
@@ -182,24 +185,28 @@ public final class SecurityModule
 	@Order("before:*")
 	public static void adviseSecurityAssert(MethodAdviceReceiver receiver,
 			final @Core Environment environment,
-	        @Symbol(SecuritySymbols.SECURITY_ENABLED) boolean securityEnabled)
+	        final @Builtin SymbolSource symbolSource,
+	        final @Builtin TypeCoercer typeCoercer)
 	{
-		if(securityEnabled)
+		Class<?> serviceInterface = receiver.getInterface();
+
+		for (Method method : serviceInterface.getMethods())
 		{
-			Class<?> serviceInterface = receiver.getInterface();
 
-			for (Method method : serviceInterface.getMethods())
+			List<SecurityInterceptor> interceptors =
+					AopHelper.createSecurityInterceptorsSeeingInterfaces(method, serviceInterface);
+
+			for (final SecurityInterceptor interceptor : interceptors)
 			{
-
-				List<SecurityInterceptor> interceptors =
-						AopHelper.createSecurityInterceptorsSeeingInterfaces(method, serviceInterface);
-
-				for (final SecurityInterceptor interceptor : interceptors)
+				MethodAdvice advice = new MethodAdvice()
 				{
-					MethodAdvice advice = new MethodAdvice()
+					@Override
+					public void advise(MethodInvocation invocation)
 					{
-						@Override
-						public void advise(MethodInvocation invocation)
+						boolean securityEnabled = typeCoercer.coerce(symbolSource.valueForSymbol(SecuritySymbols.SECURITY_ENABLED), Boolean.class);
+
+						// If security is disabled via SecuritySymbols.SECURITY_ENABLED, skip the interceptor 
+						if(securityEnabled)
 						{
 							// Only (try to) intercept if subject is bound.
 							// This is useful in case background or initializing operations
@@ -217,13 +224,13 @@ public final class SecurityModule
 								}
 							}
 							invocation.proceed();
-
 						}
-					};
-					receiver.adviseMethod(method, advice);
-				}
 
+					}
+				};
+				receiver.adviseMethod(method, advice);
 			}
+
 		}
 	}
 
