@@ -170,7 +170,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		click("tynamoEnter");
 		clickOnBasePage("annotated");
 		assertUnauthorizedPage();
-		clickOnBasePage("tynamoLogoutLink");
+		logoutAction();
 	}
 
 	//----------------------------------------
@@ -805,7 +805,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	@Test(dependsOnGroups = {"loggedIn"})
 	public void testLogout() throws Exception
 	{
-		clickOnBasePage("tynamoLogoutLink");
+		logoutAction();
 		assertNotAuthenticated();
 	}
 
@@ -820,7 +820,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 
 	public void testSaveRequestWithFallbackUri() throws Exception
 	{
-		clickOnBasePage("tynamoLogoutLink");
+		logoutAction();
 		CookieManager cookieManager = webClient.getCookieManager();
 		cookieManager.clearCookies();
 		boolean original = cookieManager.isCookiesEnabled();
@@ -849,11 +849,23 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 
 	public void testSaveRequestFilter() throws Exception
 	{
-		clickOnBasePage("tynamoLogoutLink");
+		logoutAction();
 		clickOnBasePage("authcCabinet");
 		assertLoginPage();
 		loginAction();
 		assertTrue(getLocation().startsWith(BASEURI + "authc/cabinet"), "Request wasn't redirected to the remebered url");
+	}
+
+	@Test(dependsOnMethods = {"testSaveRequestAnnotationHandler"})
+	public void testLoginWithCustomSuccessURL() throws Exception
+	{
+		logoutAction();
+		clickOnBasePage("partlyAuthcCabinet");
+		clickOnLinkById("Login");
+		assertLoginPage();
+		loginAction();
+		assertTrue(getLocation().startsWith(BASEURI + "partlyauthc/cabinet"), "Request wasn't redirected to the configured success url");
+		assertSuccessInvoke();
 	}
 
 	@Test
@@ -940,10 +952,15 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		openPage("");
 	}
 
-	protected void clickOnBasePage(String url) throws Exception
+	protected void clickOnBasePage(String elementId) throws Exception
 	{
 		openBase();
-		page = page.getHtmlElementById(url).click();
+		clickOnLinkById(elementId);
+	}
+
+	protected void clickOnLinkById(String elementId) throws Exception
+	{
+		page = page.getHtmlElementById(elementId).click();
 	}
 
 	protected void assertSuccessInvoke()
@@ -967,6 +984,11 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		type("tynamoLogin", "psycho");
 		type("tynamoPassword", "psycho");
 		click("tynamoEnter");
+	}
+
+	protected void logoutAction() throws Exception
+	{
+		clickOnBasePage("tynamoLogoutLink");
 	}
 
 	private void type(String id, String value)
