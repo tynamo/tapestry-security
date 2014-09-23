@@ -46,7 +46,6 @@ import org.tynamo.security.internal.SecurityExceptionHandlerAssistant;
 import org.tynamo.security.internal.services.LoginContextService;
 import org.tynamo.security.internal.services.impl.LoginContextServiceImpl;
 import org.tynamo.security.services.impl.ClassInterceptorsCacheImpl;
-import org.tynamo.security.services.impl.PageServiceImpl;
 import org.tynamo.security.services.impl.SecurityConfiguration;
 import org.tynamo.security.services.impl.SecurityFilterChainFactoryImpl;
 import org.tynamo.security.services.impl.SecurityServiceImpl;
@@ -80,7 +79,6 @@ public class SecurityModule
 		binder.bind(ComponentRequestFilter.class, SecurityComponentRequestFilter.class);
 //		binder.bind(ShiroExceptionHandler.class);
 		binder.bind(LoginContextService.class, LoginContextServiceImpl.class);
-		binder.bind(PageService.class, PageServiceImpl.class);
 	}
 
 	public static RememberMeManager buildRememberMeManager() {
