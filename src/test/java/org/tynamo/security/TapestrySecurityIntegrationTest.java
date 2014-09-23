@@ -34,10 +34,6 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	private static String APP_HOST_PORT;
 	private static String APP_CONTEXT;
 
-	{
-		// System.setProperty(SecuritySymbols.SUCCESS_URL, "/index");
-	}
-
 	@BeforeClass
 	public void configureWebClient()
 	{
