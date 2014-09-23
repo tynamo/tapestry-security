@@ -11,7 +11,7 @@
             <div id="result"><b>RESULT[${success}]</b></div>
 
             <p:else>
-                <t:pagelink id="Login" page="security/login" context="${currentURL}">Login with successURL back to this page</t:pagelink>
+                <t:pagelink id="Login" page="loginWithContext" context="${currentURL}">Login with successURL back to this page</t:pagelink>
             </p:else>
         </t:security.authenticated>
     </body>

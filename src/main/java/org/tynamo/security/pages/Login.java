@@ -18,15 +18,9 @@
  */
 package org.tynamo.security.pages;
 
-import org.apache.tapestry5.annotations.PageActivationContext;
-import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.services.ExceptionReporter;
 
 public class Login implements ExceptionReporter {
-
-	@PageActivationContext
-	@Property
-	private String successURL;
 
 	private Throwable exception;
 

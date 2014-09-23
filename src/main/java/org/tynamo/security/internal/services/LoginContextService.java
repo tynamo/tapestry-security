@@ -8,8 +8,6 @@ public interface LoginContextService {
 
 	String getSuccessPage();
 
-	String getSuccessPage(String successPage);
-
 	String getUnauthorizedPage();
 
 	String getLocalelessPathWithinApplication();

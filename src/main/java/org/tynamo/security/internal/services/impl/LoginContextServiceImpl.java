@@ -6,7 +6,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.shiro.util.StringUtils;
 import org.apache.shiro.web.util.WebUtils;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.annotations.Symbol;
@@ -44,11 +43,6 @@ public class LoginContextServiceImpl implements LoginContextService {
 	@Override
 	public String getSuccessPage() {
 		return defaultSuccessPage;
-	}
-
-	@Override
-	public String getSuccessPage(String successURL) {
-		return StringUtils.hasText(successURL) ? urlToPage(successURL) : defaultSuccessPage;
 	}
 
 	@Override

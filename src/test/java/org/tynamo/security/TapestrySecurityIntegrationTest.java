@@ -857,7 +857,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	}
 
 	@Test(dependsOnMethods = {"testSaveRequestAnnotationHandler"})
-	public void testLoginWithCustomSuccessURL() throws Exception
+	public void testLoginWithSuccessURLAsContext() throws Exception
 	{
 		logoutAction();
 		clickOnBasePage("partlyAuthcCabinet");
