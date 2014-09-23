@@ -31,10 +31,12 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	private static final String STATUS_AUTH = "STATUS[Authenticated]";
 	private HtmlPage page;
 
-	// masks the inherited field because that one is final (in model-test 0.1.0)
 	private static String APP_HOST_PORT;
 	private static String APP_CONTEXT;
-	protected static String BASEURI;
+
+	{
+		// System.setProperty(SecuritySymbols.SUCCESS_URL, "/index");
+	}
 
 	@BeforeClass
 	public void configureWebClient()
