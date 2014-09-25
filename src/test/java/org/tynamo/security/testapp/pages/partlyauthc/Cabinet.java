@@ -16,29 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.tynamo.security.pages;
+package org.tynamo.security.testapp.pages.partlyauthc;
 
-import org.apache.tapestry5.services.ExceptionReporter;
+import org.apache.tapestry5.ioc.annotations.Inject;
+import org.apache.tapestry5.services.PageRenderLinkSource;
+import org.tynamo.security.testapp.pages.AccessiblePage;
 
-public class Login implements ExceptionReporter {
 
-	private Throwable exception;
 
-	@Override
-	public void reportException(Throwable exception) {
-		this.exception = exception;
-	}
+public class Cabinet extends AccessiblePage {
 
-	public Throwable getException() {
-		return exception;
-	}
+    @Inject
+    private PageRenderLinkSource pageRenderLinkSource;
 
-	public String getMessage() {
-		if (exception != null) {
-			return exception.getMessage()+" Try login.";
-		} else {
-			return "";
-		}
-	}
-
+	public String getCurrentURL()
+    {
+        return this.pageRenderLinkSource.createPageRenderLinkWithContext(this.getClass()).toAbsoluteURI();
+    }
 }

@@ -39,6 +39,7 @@ import org.apache.tapestry5.services.RequestHandler;
 import org.apache.tapestry5.services.Response;
 import org.slf4j.Logger;
 import org.tynamo.security.Security;
+import org.tynamo.security.SecuritySymbols;
 import org.tynamo.security.TapestrySecurityIntegrationTest;
 import org.tynamo.security.services.SecurityFilterChainFactory;
 import org.tynamo.security.services.SecurityModule;
@@ -87,6 +88,8 @@ public class AppModule
 		// header. If existing assets are changed, the version number should also
 		// change, to force the browser to download new versions.
 		configuration.add(SymbolConstants.APPLICATION_VERSION, "0.0.1-SNAPSHOT");
+
+		configuration.add(SecuritySymbols.SUCCESS_URL, "/index");
 	}
 
 
@@ -110,6 +113,7 @@ public class AppModule
 	 */
 	public RequestFilter buildTimingFilter(final Logger log) {
 		return new RequestFilter() {
+			@Override
 			public boolean service(Request request, Response response, RequestHandler handler)
 					throws IOException {
 				long startTime = System.currentTimeMillis();
@@ -178,6 +182,7 @@ public class AppModule
 
 		configuration.add(factory.createChain("/authc/signup").add(factory.anon()).build());
 		configuration.add(factory.createChain("/authc/**").add(factory.authc()).build());
+		configuration.add(factory.createChain("/partlyauthc/**").add(factory.anon()).build());
 		configuration.add(factory.createChain("/contributed/**").add(factory.authc()).build());
 		configuration.add(factory.createChain("/user/signup").add(factory.anon()).build());
 		configuration.add(factory.createChain("/user/**").add(factory.user()).build());

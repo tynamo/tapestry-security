@@ -40,6 +40,7 @@
     	<h3>Testing filter works</h3>
 
     	<div><t:pagelink id="authcCabinet" page="authc/cabinet">authc/cabinet (authc filter)</t:pagelink></div>
+    	<div><t:pagelink id="partlyAuthcCabinet" page="partlyauthc/cabinet">authc/cabinet (authc filter)</t:pagelink></div>
     	<div><t:pagelink id="authcSignup" page="authc/signup">authc/signup  (anon filter)</t:pagelink></div>
     	<p />
     	<div><t:pagelink id="userCabinet" page="user/cabinet">user/cabinet (user filter)</t:pagelink></div>

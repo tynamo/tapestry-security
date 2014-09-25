@@ -12,6 +12,7 @@ import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSubjectFactory;
 import org.apache.shiro.web.mgt.WebSecurityManager;
+import org.apache.tapestry5.SymbolConstants;
 import org.apache.tapestry5.ioc.Configuration;
 import org.apache.tapestry5.ioc.MappedConfiguration;
 import org.apache.tapestry5.ioc.MethodAdviceReceiver;
@@ -49,7 +50,6 @@ import org.tynamo.security.internal.SecurityExceptionHandlerAssistant;
 import org.tynamo.security.internal.services.LoginContextService;
 import org.tynamo.security.internal.services.impl.LoginContextServiceImpl;
 import org.tynamo.security.services.impl.ClassInterceptorsCacheImpl;
-import org.tynamo.security.services.impl.PageServiceImpl;
 import org.tynamo.security.services.impl.SecurityConfiguration;
 import org.tynamo.security.services.impl.SecurityFilterChainFactoryImpl;
 import org.tynamo.security.services.impl.SecurityServiceImpl;
@@ -83,7 +83,6 @@ public final class SecurityModule
 		binder.bind(ComponentRequestFilter.class, SecurityComponentRequestFilter.class);
 //		binder.bind(ShiroExceptionHandler.class);
 		binder.bind(LoginContextService.class, LoginContextServiceImpl.class);
-		binder.bind(PageService.class, PageServiceImpl.class);
 	}
 
 	public static RememberMeManager buildRememberMeManager() {
@@ -97,7 +96,7 @@ public final class SecurityModule
 	{
 		configuration.add(SecuritySymbols.SECURITY_ENABLED, Boolean.TRUE.toString());
 		configuration.add(SecuritySymbols.LOGIN_URL, "/" + PATH_PREFIX + "/login");
-		configuration.add(SecuritySymbols.SUCCESS_URL, "/index");
+		configuration.add(SecuritySymbols.SUCCESS_URL, "/" + "${" + SymbolConstants.START_PAGE_NAME + "}");
 		configuration.add(SecuritySymbols.UNAUTHORIZED_URL, "/" + PATH_PREFIX + "/unauthorized");
 		configuration.add(SecuritySymbols.REDIRECT_TO_SAVED_URL, "true");
 	}
