@@ -2,6 +2,7 @@ package org.tynamo.security.services;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.shiro.ShiroException;
@@ -187,6 +188,13 @@ public final class SecurityModule
 	        final @Builtin SymbolSource symbolSource,
 	        final @Builtin TypeCoercer typeCoercer)
 	{
+		Marker marker = receiver.getClassAnnotationProvider().getAnnotation(Marker.class);
+		if (marker != null){
+			List<Class> markerClasses = Arrays.asList(marker.value());
+			if (markerClasses.contains(Core.class) || markerClasses.contains(Builtin.class)){
+				return;
+			}
+		}
 		Class<?> serviceInterface = receiver.getInterface();
 
 		for (Method method : serviceInterface.getMethods())
