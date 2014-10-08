@@ -23,6 +23,7 @@ import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.util.Cookie;
 
 public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 {
@@ -105,11 +106,21 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	@Test(groups = {"notLoggedIn"})
 	public void testInterceptComponentMethodWithAjaxDeny() throws Exception
 	{
+		CookieManager cookieManager = webClient.getCookieManager();
+		cookieManager.clearCookies();
 		clickOnBasePage("componentMethodInterceptorWithAjax");
 		// this executes window.location.replace so we have to wait for it. is there an event we could listen instead?
 		webClient.waitForBackgroundJavaScript(500);
 		page = (HtmlPage) webClient.getCurrentWindow().getEnclosedPage();
 		assertLoginPage();
+
+		for (Cookie cookie : cookieManager.getCookies())
+			if (cookie.getName().equals("shiroSavedRequest")) {
+				// test we've stored a page render request, not the component event request. Could also just test for existence of a dot
+				assertEquals(cookie.getPath() + "/", APP_CONTEXT);
+				return;
+			}
+		fail();
 	}
 
 	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
@@ -204,19 +215,20 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		HtmlPage indexPage = webClient.getPage(BASEURI);
 		indexPage.getHtmlElementById("tynamoLogoutLink").click();
 
-                // Clicking on this link should make an ajax request, but HTMLUnit doesn't like it and sends a non-ajax request
+		// Clicking on this link should make an ajax request, but HTMLUnit doesn't like it and sends a non-ajax request
 		HtmlElement ajaxLink = (HtmlElement) page.getElementById("ajaxLink");
-                URL ajaxUrl = new URL(APP_HOST_PORT + ajaxLink.getAttribute("href"));
-                WebRequest ajaxRequest = new WebRequest(ajaxUrl);
-                ajaxRequest.setAdditionalHeader("X-Requested-With", "XMLHttpRequest");
+		URL ajaxUrl = new URL(APP_HOST_PORT + ajaxLink.getAttribute("href"));
+		WebRequest ajaxRequest = new WebRequest(ajaxUrl);
+		ajaxRequest.setAdditionalHeader("X-Requested-With", "XMLHttpRequest");
 
-                Page jsonLoginResponse  = webClient.getPage(ajaxRequest);
-                String ajaxLoginResp = jsonLoginResponse.getWebResponse().getContentAsString();
-                JSONObject jsonResp = new JSONObject(ajaxLoginResp);
-                String ajaxRedirectUrl = jsonResp.getJSONObject("_tapestry").getString("redirectURL");
-                assertTrue(ajaxRedirectUrl.contains(APP_CONTEXT), "The ajax redirect response '" + ajaxRedirectUrl + "' did not contain app context '" + APP_CONTEXT+"'");
-                page = webClient.getPage(APP_HOST_PORT+ajaxRedirectUrl);
-                assertLoginPage();
+		Page jsonLoginResponse = webClient.getPage(ajaxRequest);
+		String ajaxLoginResp = jsonLoginResponse.getWebResponse().getContentAsString();
+		JSONObject jsonResp = new JSONObject(ajaxLoginResp);
+		String ajaxRedirectUrl = jsonResp.getJSONObject("_tapestry").getString("redirectURL");
+		assertTrue(ajaxRedirectUrl.contains(APP_CONTEXT), "The ajax redirect response '" + ajaxRedirectUrl
+			+ "' did not contain app context '" + APP_CONTEXT + "'");
+		page = webClient.getPage(APP_HOST_PORT + ajaxRedirectUrl);
+		assertLoginPage();
 	}
 
 	@Test(groups = {"notLoggedIn"})
@@ -814,11 +826,12 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		assertLoginPage();
 		loginAction();
 		assertTrue(getLocation().startsWith(BASEURI + "about"), "Request wasn't redirected to the remembered url");
+		logoutAction();
 	}
 
+	@Test(dependsOnMethods = { "testLogout" })
 	public void testSaveRequestWithFallbackUri() throws Exception
 	{
-		logoutAction();
 		CookieManager cookieManager = webClient.getCookieManager();
 		cookieManager.clearCookies();
 		boolean original = cookieManager.isCookiesEnabled();
@@ -827,6 +840,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		assertLoginPage();
 		loginAction();
 		assertTrue(getLocation().startsWith(BASEURI + "index"), "Request wasn't redirected to the default success url");
+		// note that all cookies are disabled so we don't have a session either and we are logged out in practice
 		cookieManager.setCookiesEnabled(original);
 	}
 
@@ -834,37 +848,37 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 // the following test *does not* work because of deficiency in htmlunit itself. The request parameters however are saved
 // see	http://old.nabble.com/Problem-with-WebRequestSettings.getRequestParameters%28%29-td20167941.html
 // htmlunit's current implementation only returns what's added with setRequestParameters()
-//	@Test(dependsOnMethods = {"testLogout"})
-//	public void testSaveRequestWithParameters() throws Exception
-//	{
-//		openPage("about?test=now");
-//		assertLoginPage();
-//		loginAction();
-//		assertTrue(getLocation().startsWith(BASEURI + "about"), "Request wasn't redirected to the remebered url");
-//		List<NameValuePair> valuePairs = page.getWebResponse().getRequestSettings().getRequestParameters();
-//		assertTrue(valuePairs.contains(new NameValuePair("test", "now")), "Request parameters weren't remebered");
-//	}
+	// @Test(dependsOnMethods = { "testLogout" })
+	// public void testSaveRequestWithParameters() throws Exception {
+	// openPage("about?test=now");
+	// assertLoginPage();
+	// loginAction();
+	// assertTrue(getLocation().startsWith(BASEURI + "about"), "Request wasn't redirected to the remebered url");
+	// List<NameValuePair> valuePairs = page.getWebResponse().getWebRequest().getRequestParameters();
+	// assertTrue(valuePairs.contains(new NameValuePair("test", "now")), "Request parameters weren't remebered");
+	// }
 
+	@Test(dependsOnMethods = { "testLogout" })
 	public void testSaveRequestFilter() throws Exception
 	{
-		logoutAction();
 		clickOnBasePage("authcCabinet");
 		assertLoginPage();
 		loginAction();
 		assertTrue(getLocation().startsWith(BASEURI + "authc/cabinet"), "Request wasn't redirected to the remebered url");
+		logoutAction();
 	}
 
-	@Test(dependsOnMethods = {"testSaveRequestAnnotationHandler"})
-	public void testLoginWithSuccessURLAsContext() throws Exception
-	{
-		logoutAction();
-		clickOnBasePage("partlyAuthcCabinet");
-		clickOnLinkById("Login");
-		assertLoginPage();
-		loginAction();
-		assertTrue(getLocation().startsWith(BASEURI + "partlyauthc/cabinet"), "Request wasn't redirected to the configured success url");
-		assertSuccessInvoke();
-	}
+	// @Test(dependsOnMethods = {"testSaveRequestAnnotationHandler"})
+	// public void testLoginWithSuccessURLAsContext() throws Exception
+	// {
+	// logoutAction();
+	// clickOnBasePage("partlyAuthcCabinet");
+	// clickOnLinkById("Login");
+	// assertLoginPage();
+	// loginAction();
+	// assertTrue(getLocation().startsWith(BASEURI + "partlyauthc/cabinet"), "Request wasn't redirected to the configured success url");
+	// assertSuccessInvoke();
+	// }
 
 	@Test
 	public void testPort8180Filter() throws Exception

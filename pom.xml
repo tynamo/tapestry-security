@@ -30,6 +30,12 @@
 
 
 	<dependencies>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.0.3</version>
+			<scope>test</scope>
+		</dependency>
 		<!-- slightly annoyingly, we need to use the jetty originated servlet-api because the jars are signed -->
 		<dependency>
 			<groupId>org.eclipse.jetty.orbit</groupId>

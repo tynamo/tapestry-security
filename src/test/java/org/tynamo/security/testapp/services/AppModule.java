@@ -90,6 +90,12 @@ public class AppModule
 		configuration.add(SymbolConstants.APPLICATION_VERSION, "0.0.1-SNAPSHOT");
 
 		configuration.add(SecuritySymbols.SUCCESS_URL, "/index");
+
+		// HTMLUnit gets confused with prototype's readAttribute:
+		// net.sourceforge.htmlunit.corejs.javascript.EcmaError: TypeError: Cannot find function readAttribute in object [object
+		// HTMLBodyElement]. (http://localhost:8180/test/modules.gz/t5/core/dom.js#137)
+		// and anyway, jquery is by far the more popular one nowadays
+		configuration.add(SymbolConstants.JAVASCRIPT_INFRASTRUCTURE_PROVIDER, "jquery");
 	}
 
 

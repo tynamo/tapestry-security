@@ -16,6 +16,8 @@ public interface LoginContextService {
 
 	void saveRequest();
 
+	@Deprecated
+	// to be removed in 0.7
 	void saveRequest(String contextPath);
 
 	void redirectToSavedRequest(String fallbackUrl) throws IOException;
