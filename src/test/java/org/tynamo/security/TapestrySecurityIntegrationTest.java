@@ -225,8 +225,8 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		String ajaxLoginResp = jsonLoginResponse.getWebResponse().getContentAsString();
 		JSONObject jsonResp = new JSONObject(ajaxLoginResp);
 		String ajaxRedirectUrl = jsonResp.getJSONObject("_tapestry").getString("redirectURL");
-		assertTrue(ajaxRedirectUrl.contains(APP_CONTEXT), "The ajax redirect response '" + ajaxRedirectUrl
-			+ "' did not contain app context '" + APP_CONTEXT + "'");
+		assertTrue(ajaxRedirectUrl.startsWith(APP_CONTEXT + "security/login"), "The ajax redirect response '"
+			+ ajaxRedirectUrl + "' did not start with '" + APP_CONTEXT + "security/login'");
 		page = webClient.getPage(APP_HOST_PORT + ajaxRedirectUrl);
 		assertLoginPage();
 	}
@@ -859,14 +859,25 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	// }
 
 	@Test(dependsOnMethods = { "testLogout" })
-	public void testSaveRequestFilter() throws Exception
+	public void testSaveRequestFilterWithContext() throws Exception
 	{
-		clickOnBasePage("authcCabinet");
+		// test that component event request is saved and redirected as a page render request
+		clickOnBasePage("componentMethodInterceptor");
 		assertLoginPage();
 		loginAction();
-		assertTrue(getLocation().startsWith(BASEURI + "authc/cabinet"), "Request wasn't redirected to the remebered url");
+		assertEquals(getLocation(), BASEURI);
 		logoutAction();
 	}
+
+	// @Test(dependsOnMethods = { "testLogout" })
+	// public void testSaveRequestFilter() throws Exception
+	// {
+	// clickOnBasePage("authcCabinet");
+	// assertLoginPage();
+	// loginAction();
+	// assertTrue(getLocation().startsWith(BASEURI + "authc/cabinet"), "Request wasn't redirected to the remebered url");
+	// logoutAction();
+	// }
 
 	// @Test(dependsOnMethods = {"testSaveRequestAnnotationHandler"})
 	// public void testLoginWithSuccessURLAsContext() throws Exception

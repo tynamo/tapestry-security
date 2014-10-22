@@ -58,18 +58,36 @@ public class LoginContextServiceImpl implements LoginContextService {
 	}
 
 	@Override
+	@Deprecated
 	public String getLoginPage() {
 		return loginPage;
 	}
 
 	@Override
+	@Deprecated
 	public String getSuccessPage() {
 		return defaultSuccessPage;
 	}
 
 	@Override
+	@Deprecated
 	public String getUnauthorizedPage() {
 		return unauthorizedPage;
+	}
+
+	@Override
+	public String getLoginURL() {
+		return getLoginPage();
+	}
+
+	@Override
+	public String getSuccessURL() {
+		return getSuccessPage();
+	}
+
+	@Override
+	public String getUnauthorizedURL() {
+		return getUnauthorizedURL();
 	}
 
 	private static String urlToPage(String url) {
@@ -98,6 +116,13 @@ public class LoginContextServiceImpl implements LoginContextService {
 			return localizationSetter.isSupportedLocaleName(possibleLocaleName) ? possibleLocaleName : null;
 		}
 		return null;
+	}
+
+	public void removeSavedRequest() {
+		Cookie cookie = new Cookie(WebUtils.SAVED_REQUEST_KEY, null);
+		cookie.setPath(getContextPath());
+		cookie.setMaxAge(0);
+		servletResponse.addCookie(cookie);
 	}
 
 	// In 0.7 I plan to remove the contextPath param and make this operation protected for easy overriding
@@ -129,7 +154,7 @@ public class LoginContextServiceImpl implements LoginContextService {
 			if (eventParameters != null) requestUri = createPageRenderLink(eventParameters);
 			else {
 				// Page render request? => Keep the same URL
-				requestUri = WebUtils.getPathWithinApplication(servletRequest);
+				requestUri = WebUtils.getRequestUri(servletRequest);
 				if (servletRequest.getQueryString() != null) requestUri += "?" + servletRequest.getQueryString();
 			}
 		}
@@ -175,7 +200,16 @@ public class LoginContextServiceImpl implements LoginContextService {
 				servletResponse.addCookie(cookie);
 			break;
 		}
-		if (requestUri == null) requestUri = fallbackUrl;
-		WebUtils.issueRedirect(servletRequest, servletResponse, requestUri);
+		if (requestUri == null)
+		// FIXME in 0.7.0, as part of issue #16, we should only prepend contextPath if fallbackUrl doesn't start with a leading slash
+			requestUri = fallbackUrl.startsWith(getContextPath()) ? fallbackUrl : getContextPath() + fallbackUrl;
+
+		// don't use response.sendRedirect() as that sends SC_FOUND (i.e. 302) and this redirect is typically invoked
+		// as a response to a successful (POST) login request
+		servletResponse.setStatus(303);
+		servletResponse.setHeader("Location", servletResponse.encodeRedirectURL(requestUri));
+		// if you don't flush the buffer, filters can and will change the headers afterwards
+		servletResponse.flushBuffer();
+		// servletResponse.sendRedirect(servletResponse.encodeRedirectURL(requestUri));
 	}
 }
