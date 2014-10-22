@@ -47,6 +47,7 @@ import org.tynamo.security.internal.services.LoginContextService;
 import org.tynamo.security.internal.services.impl.LoginContextServiceImpl;
 import org.tynamo.security.services.impl.ClassInterceptorsCacheImpl;
 import org.tynamo.security.services.impl.SecurityConfiguration;
+import org.tynamo.security.services.impl.SecurityFilterChain;
 import org.tynamo.security.services.impl.SecurityFilterChainFactoryImpl;
 import org.tynamo.security.services.impl.SecurityServiceImpl;
 import org.tynamo.security.shiro.SimplePrincipalSerializer;
@@ -156,11 +157,6 @@ public class SecurityModule
 		configuration.add(new LibraryMapping(PATH_PREFIX, "org.tynamo.security"));
 	}
 
-	public static void contributeClasspathAssetAliasManager(MappedConfiguration<String, String> configuration)
-	{
-		configuration.add(PATH_PREFIX + "-" + version, "org/tynamo/security");
-	}
-
 	/**
 	 * Secure all service methods that are marked with authorization annotations.
 	 * <p/>
@@ -219,5 +215,14 @@ public class SecurityModule
 	public static void contributeHttpServletRequestHandler(OrderedConfiguration<HttpServletRequestFilter> configuration,
 			@InjectService("SecurityConfiguration") HttpServletRequestFilter securityConfiguration) {
 		configuration.add("SecurityConfiguration", securityConfiguration, "after:StoreIntoGlobals");
+	}
+
+	@Contribute(HttpServletRequestFilter.class)
+	@Marker(Security.class)
+	public static void defaultSecurity(Configuration<SecurityFilterChain> configuration,
+		SecurityFilterChainFactory factory) {
+		configuration.add(factory.createChain("/modules.gz/**").add(factory.anon()).build());
+		configuration.add(factory.createChain("/modules/**").add(factory.anon()).build());
+		configuration.add(factory.createChain("/assets/**").add(factory.anon()).build());
 	}
 }
