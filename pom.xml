@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>org.tynamo</groupId>
 		<artifactId>tynamo-parent</artifactId>
-		<version>0.1.0</version>
+		<version>0.1.1</version>
 	</parent>
 
 	<properties>
@@ -159,7 +159,7 @@
 			<plugin>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
-				<version>8.1.14.v20131031</version>
+				<version>9.2.4.v20141103</version>
 				<configuration>
 					<contextPath>/</contextPath>
 					<useTestClasspath>true</useTestClasspath>
@@ -183,6 +183,6 @@
 
 		</plugins>
 	</build>
-
+	
 
 </project>
