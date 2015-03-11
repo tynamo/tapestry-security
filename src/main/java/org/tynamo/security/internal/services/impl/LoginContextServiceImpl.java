@@ -58,19 +58,16 @@ public class LoginContextServiceImpl implements LoginContextService {
 	}
 
 	@Override
-	@Deprecated
 	public String getLoginPage() {
 		return loginPage;
 	}
 
 	@Override
-	@Deprecated
 	public String getSuccessPage() {
 		return defaultSuccessPage;
 	}
 
 	@Override
-	@Deprecated
 	public String getUnauthorizedPage() {
 		return unauthorizedPage;
 	}
