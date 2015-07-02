@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>package org.tynamo.security.internal;<a name="line.1"></a>
+<span class="sourceLineNo">002</span><a name="line.2"></a>
+<span class="sourceLineNo">003</span>import java.io.IOException;<a name="line.3"></a>
+<span class="sourceLineNo">004</span>import java.util.List;<a name="line.4"></a>
+<span class="sourceLineNo">005</span><a name="line.5"></a>
+<span class="sourceLineNo">006</span>import javax.servlet.http.HttpServletResponse;<a name="line.6"></a>
+<span class="sourceLineNo">007</span><a name="line.7"></a>
+<span class="sourceLineNo">008</span>import org.apache.shiro.util.StringUtils;<a name="line.8"></a>
+<span class="sourceLineNo">009</span>import org.apache.tapestry5.ExceptionHandlerAssistant;<a name="line.9"></a>
+<span class="sourceLineNo">010</span>import org.apache.tapestry5.internal.services.PageResponseRenderer;<a name="line.10"></a>
+<span class="sourceLineNo">011</span>import org.apache.tapestry5.internal.services.RequestPageCache;<a name="line.11"></a>
+<span class="sourceLineNo">012</span>import org.apache.tapestry5.internal.structure.Page;<a name="line.12"></a>
+<span class="sourceLineNo">013</span>import org.apache.tapestry5.services.Response;<a name="line.13"></a>
+<span class="sourceLineNo">014</span>import org.tynamo.security.internal.services.LoginContextService;<a name="line.14"></a>
+<span class="sourceLineNo">015</span>import org.tynamo.security.services.SecurityService;<a name="line.15"></a>
+<span class="sourceLineNo">016</span><a name="line.16"></a>
+<span class="sourceLineNo">017</span>public class SecurityExceptionHandlerAssistant implements ExceptionHandlerAssistant {<a name="line.17"></a>
+<span class="sourceLineNo">018</span>        private final SecurityService securityService;<a name="line.18"></a>
+<span class="sourceLineNo">019</span>        private final LoginContextService loginContextService;<a name="line.19"></a>
+<span class="sourceLineNo">020</span>        private final Response response;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>        private final PageResponseRenderer renderer;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>        private final RequestPageCache pageCache;<a name="line.22"></a>
+<span class="sourceLineNo">023</span><a name="line.23"></a>
+<span class="sourceLineNo">024</span>        public SecurityExceptionHandlerAssistant(final SecurityService securityService,<a name="line.24"></a>
+<span class="sourceLineNo">025</span>                final LoginContextService pageService, final RequestPageCache pageCache, final Response response,<a name="line.25"></a>
+<span class="sourceLineNo">026</span>                final PageResponseRenderer renderer) {<a name="line.26"></a>
+<span class="sourceLineNo">027</span>                this.securityService =securityService;<a name="line.27"></a>
+<span class="sourceLineNo">028</span>                this.loginContextService = pageService;<a name="line.28"></a>
+<span class="sourceLineNo">029</span>                this.pageCache = pageCache;<a name="line.29"></a>
+<span class="sourceLineNo">030</span>                this.response = response;<a name="line.30"></a>
+<span class="sourceLineNo">031</span>                this.renderer = renderer;<a name="line.31"></a>
+<span class="sourceLineNo">032</span>        }<a name="line.32"></a>
+<span class="sourceLineNo">033</span>        @Override<a name="line.33"></a>
+<span class="sourceLineNo">034</span>        public Object handleRequestException(Throwable exception, List&lt;Object&gt; exceptionContext) throws IOException {<a name="line.34"></a>
+<span class="sourceLineNo">035</span>                if (securityService.isAuthenticated()) {<a name="line.35"></a>
+<span class="sourceLineNo">036</span>                        String unauthorizedPage = loginContextService.getUnauthorizedPage();<a name="line.36"></a>
+<span class="sourceLineNo">037</span>                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);<a name="line.37"></a>
+<span class="sourceLineNo">038</span>                        if (!StringUtils.hasText(unauthorizedPage)) return null;<a name="line.38"></a>
+<span class="sourceLineNo">039</span><a name="line.39"></a>
+<span class="sourceLineNo">040</span>                        Page page = pageCache.get(unauthorizedPage);<a name="line.40"></a>
+<span class="sourceLineNo">041</span>                        renderer.renderPageResponse(page);<a name="line.41"></a>
+<span class="sourceLineNo">042</span>                        return null;<a name="line.42"></a>
+<span class="sourceLineNo">043</span>                }<a name="line.43"></a>
+<span class="sourceLineNo">044</span><a name="line.44"></a>
+<span class="sourceLineNo">045</span>        loginContextService.saveRequest();<a name="line.45"></a>
+<span class="sourceLineNo">046</span>                return loginContextService.getLoginPage();<a name="line.46"></a>
+<span class="sourceLineNo">047</span>        }<a name="line.47"></a>
+<span class="sourceLineNo">048</span>}<a name="line.48"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

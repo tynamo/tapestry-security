@@ -1,0 +1,15 @@
+org.tynamo.security
+org.tynamo.security.components
+org.tynamo.security.internal
+org.tynamo.security.internal.services
+org.tynamo.security.internal.services.impl
+org.tynamo.security.pages
+org.tynamo.security.services
+org.tynamo.security.services.impl
+org.tynamo.security.shiro
+org.tynamo.security.shiro.authc
+org.tynamo.security.shiro.authz
+org.tynamo.shiro.extension.authc.pam
+org.tynamo.shiro.extension.authz.annotations.utils.casters.method
+org.tynamo.shiro.extension.authz.aop
+org.tynamo.shiro.extension.realm.text
