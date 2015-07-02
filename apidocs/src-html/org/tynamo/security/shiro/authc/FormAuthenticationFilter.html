@@ -1,0 +1,290 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/*<a name="line.1"></a>
+<span class="sourceLineNo">002</span> * Licensed to the Apache Software Foundation (ASF) under one<a name="line.2"></a>
+<span class="sourceLineNo">003</span> * or more contributor license agreements.  See the NOTICE file<a name="line.3"></a>
+<span class="sourceLineNo">004</span> * distributed with this work for additional information<a name="line.4"></a>
+<span class="sourceLineNo">005</span> * regarding copyright ownership.  The ASF licenses this file<a name="line.5"></a>
+<span class="sourceLineNo">006</span> * to you under the Apache License, Version 2.0 (the<a name="line.6"></a>
+<span class="sourceLineNo">007</span> * "License"); you may not use this file except in compliance<a name="line.7"></a>
+<span class="sourceLineNo">008</span> * with the License.  You may obtain a copy of the License at<a name="line.8"></a>
+<span class="sourceLineNo">009</span> *<a name="line.9"></a>
+<span class="sourceLineNo">010</span> *     http://www.apache.org/licenses/LICENSE-2.0<a name="line.10"></a>
+<span class="sourceLineNo">011</span> *<a name="line.11"></a>
+<span class="sourceLineNo">012</span> * Unless required by applicable law or agreed to in writing,<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * software distributed under the License is distributed on an<a name="line.13"></a>
+<span class="sourceLineNo">014</span> * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY<a name="line.14"></a>
+<span class="sourceLineNo">015</span> * KIND, either express or implied.  See the License for the<a name="line.15"></a>
+<span class="sourceLineNo">016</span> * specific language governing permissions and limitations<a name="line.16"></a>
+<span class="sourceLineNo">017</span> * under the License.<a name="line.17"></a>
+<span class="sourceLineNo">018</span> */<a name="line.18"></a>
+<span class="sourceLineNo">019</span>package org.tynamo.security.shiro.authc;<a name="line.19"></a>
+<span class="sourceLineNo">020</span><a name="line.20"></a>
+<span class="sourceLineNo">021</span>import javax.servlet.ServletRequest;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>import javax.servlet.ServletResponse;<a name="line.22"></a>
+<span class="sourceLineNo">023</span>import javax.servlet.http.HttpServletRequest;<a name="line.23"></a>
+<span class="sourceLineNo">024</span><a name="line.24"></a>
+<span class="sourceLineNo">025</span>import org.apache.shiro.authc.AuthenticationException;<a name="line.25"></a>
+<span class="sourceLineNo">026</span>import org.apache.shiro.authc.AuthenticationToken;<a name="line.26"></a>
+<span class="sourceLineNo">027</span>import org.apache.shiro.authc.UsernamePasswordToken;<a name="line.27"></a>
+<span class="sourceLineNo">028</span>import org.apache.shiro.subject.Subject;<a name="line.28"></a>
+<span class="sourceLineNo">029</span>import org.apache.shiro.web.filter.authc.PassThruAuthenticationFilter;<a name="line.29"></a>
+<span class="sourceLineNo">030</span>import org.apache.shiro.web.util.WebUtils;<a name="line.30"></a>
+<span class="sourceLineNo">031</span>import org.slf4j.Logger;<a name="line.31"></a>
+<span class="sourceLineNo">032</span>import org.slf4j.LoggerFactory;<a name="line.32"></a>
+<span class="sourceLineNo">033</span>import org.tynamo.security.internal.services.LoginContextService;<a name="line.33"></a>
+<span class="sourceLineNo">034</span><a name="line.34"></a>
+<span class="sourceLineNo">035</span><a name="line.35"></a>
+<span class="sourceLineNo">036</span>/**<a name="line.36"></a>
+<span class="sourceLineNo">037</span> * Requires the requesting user to be authenticated for the request to continue, and if they are not, forces the user<a name="line.37"></a>
+<span class="sourceLineNo">038</span> * to login via by redirecting them to the {@link #setLoginUrl(String) loginUrl} you configure.<a name="line.38"></a>
+<span class="sourceLineNo">039</span> * &lt;p/&gt;<a name="line.39"></a>
+<span class="sourceLineNo">040</span> * &lt;p&gt;This filter constructs a {@link UsernamePasswordToken UsernamePasswordToken} with the values found in<a name="line.40"></a>
+<span class="sourceLineNo">041</span> * {@link #setUsernameParam(String) username}, {@link #setPasswordParam(String) password},<a name="line.41"></a>
+<span class="sourceLineNo">042</span> * and {@link #setRememberMeParam(String) rememberMe} request parameters.  It then calls<a name="line.42"></a>
+<span class="sourceLineNo">043</span> * {@link org.apache.shiro.subject.Subject#login(org.apache.shiro.authc.AuthenticationToken) Subject.login(usernamePasswordToken)},<a name="line.43"></a>
+<span class="sourceLineNo">044</span> * effectively automatically performing a login attempt.  Note that the login attempt will only occur when the<a name="line.44"></a>
+<span class="sourceLineNo">045</span> * {@link #isLoginSubmission(javax.servlet.ServletRequest, javax.servlet.ServletResponse) isLoginSubmission(request,response)}<a name="line.45"></a>
+<span class="sourceLineNo">046</span> * is &lt;code&gt;true&lt;/code&gt;, which by default occurs when the request is for the {@link #setLoginUrl(String) loginUrl} and<a name="line.46"></a>
+<span class="sourceLineNo">047</span> * is a POST request.<a name="line.47"></a>
+<span class="sourceLineNo">048</span> * &lt;p/&gt;<a name="line.48"></a>
+<span class="sourceLineNo">049</span> * &lt;p&gt;If the login attempt fails, the resulting &lt;code&gt;AuthenticationException&lt;/code&gt; fully qualified class name will<a name="line.49"></a>
+<span class="sourceLineNo">050</span> * be set as a request attribute under the {@link #setFailureKeyAttribute(String) failureKeyAttribute} key.  This<a name="line.50"></a>
+<span class="sourceLineNo">051</span> * FQCN can be used as an i18n key or lookup mechanism to explain to the user why their login attempt failed<a name="line.51"></a>
+<span class="sourceLineNo">052</span> * (e.g. no account, incorrect password, etc).<a name="line.52"></a>
+<span class="sourceLineNo">053</span> * &lt;p/&gt;<a name="line.53"></a>
+<span class="sourceLineNo">054</span> * &lt;p&gt;If you would prefer to handle the authentication validation and login in your own code, consider using the<a name="line.54"></a>
+<span class="sourceLineNo">055</span> * {@link PassThruAuthenticationFilter} instead, which allows requests to the<a name="line.55"></a>
+<span class="sourceLineNo">056</span> * {@link #loginUrl} to pass through to your application's code directly.<a name="line.56"></a>
+<span class="sourceLineNo">057</span> *<a name="line.57"></a>
+<span class="sourceLineNo">058</span> * @see PassThruAuthenticationFilter<a name="line.58"></a>
+<span class="sourceLineNo">059</span> * @since 0.4.0<a name="line.59"></a>
+<span class="sourceLineNo">060</span> */<a name="line.60"></a>
+<span class="sourceLineNo">061</span>public class FormAuthenticationFilter extends AuthenticatingFilter {<a name="line.61"></a>
+<span class="sourceLineNo">062</span>        public FormAuthenticationFilter(LoginContextService loginContextService) {<a name="line.62"></a>
+<span class="sourceLineNo">063</span>                super(loginContextService);<a name="line.63"></a>
+<span class="sourceLineNo">064</span>        }<a name="line.64"></a>
+<span class="sourceLineNo">065</span><a name="line.65"></a>
+<span class="sourceLineNo">066</span>    //TODO - complete JavaDoc<a name="line.66"></a>
+<span class="sourceLineNo">067</span><a name="line.67"></a>
+<span class="sourceLineNo">068</span>    public static final String DEFAULT_ERROR_KEY_ATTRIBUTE_NAME = "shiroLoginFailure";<a name="line.68"></a>
+<span class="sourceLineNo">069</span><a name="line.69"></a>
+<span class="sourceLineNo">070</span>    public static final String DEFAULT_USERNAME_PARAM = "username";<a name="line.70"></a>
+<span class="sourceLineNo">071</span>    public static final String DEFAULT_PASSWORD_PARAM = "password";<a name="line.71"></a>
+<span class="sourceLineNo">072</span>    public static final String DEFAULT_REMEMBER_ME_PARAM = "rememberMe";<a name="line.72"></a>
+<span class="sourceLineNo">073</span><a name="line.73"></a>
+<span class="sourceLineNo">074</span>    private static final Logger log = LoggerFactory.getLogger(FormAuthenticationFilter.class);<a name="line.74"></a>
+<span class="sourceLineNo">075</span><a name="line.75"></a>
+<span class="sourceLineNo">076</span>    private String usernameParam = DEFAULT_USERNAME_PARAM;<a name="line.76"></a>
+<span class="sourceLineNo">077</span>    private String passwordParam = DEFAULT_PASSWORD_PARAM;<a name="line.77"></a>
+<span class="sourceLineNo">078</span>    private String rememberMeParam = DEFAULT_REMEMBER_ME_PARAM;<a name="line.78"></a>
+<span class="sourceLineNo">079</span><a name="line.79"></a>
+<span class="sourceLineNo">080</span>    private String failureKeyAttribute = DEFAULT_ERROR_KEY_ATTRIBUTE_NAME;<a name="line.80"></a>
+<span class="sourceLineNo">081</span><a name="line.81"></a>
+<span class="sourceLineNo">082</span>    @Override<a name="line.82"></a>
+<span class="sourceLineNo">083</span>    public void setLoginUrl(String loginUrl) {<a name="line.83"></a>
+<span class="sourceLineNo">084</span>        super.setLoginUrl(loginUrl);<a name="line.84"></a>
+<span class="sourceLineNo">085</span>        if (log.isTraceEnabled()) {<a name="line.85"></a>
+<span class="sourceLineNo">086</span>            log.trace("Adding login url to applied paths.");<a name="line.86"></a>
+<span class="sourceLineNo">087</span>        }<a name="line.87"></a>
+<span class="sourceLineNo">088</span>    }<a name="line.88"></a>
+<span class="sourceLineNo">089</span><a name="line.89"></a>
+<span class="sourceLineNo">090</span>    public String getUsernameParam() {<a name="line.90"></a>
+<span class="sourceLineNo">091</span>        return usernameParam;<a name="line.91"></a>
+<span class="sourceLineNo">092</span>    }<a name="line.92"></a>
+<span class="sourceLineNo">093</span><a name="line.93"></a>
+<span class="sourceLineNo">094</span>    /**<a name="line.94"></a>
+<span class="sourceLineNo">095</span>     * Sets the request parameter name to look for when acquiring the username.  Unless overridden by calling this<a name="line.95"></a>
+<span class="sourceLineNo">096</span>     * method, the default is &lt;code&gt;username&lt;/code&gt;.<a name="line.96"></a>
+<span class="sourceLineNo">097</span>     *<a name="line.97"></a>
+<span class="sourceLineNo">098</span>     * @param usernameParam the name of the request param to check for acquiring the username.<a name="line.98"></a>
+<span class="sourceLineNo">099</span>     */<a name="line.99"></a>
+<span class="sourceLineNo">100</span>    public void setUsernameParam(String usernameParam) {<a name="line.100"></a>
+<span class="sourceLineNo">101</span>        this.usernameParam = usernameParam;<a name="line.101"></a>
+<span class="sourceLineNo">102</span>    }<a name="line.102"></a>
+<span class="sourceLineNo">103</span><a name="line.103"></a>
+<span class="sourceLineNo">104</span>    public String getPasswordParam() {<a name="line.104"></a>
+<span class="sourceLineNo">105</span>        return passwordParam;<a name="line.105"></a>
+<span class="sourceLineNo">106</span>    }<a name="line.106"></a>
+<span class="sourceLineNo">107</span><a name="line.107"></a>
+<span class="sourceLineNo">108</span>    /**<a name="line.108"></a>
+<span class="sourceLineNo">109</span>     * Sets the request parameter name to look for when acquiring the password.  Unless overridden by calling this<a name="line.109"></a>
+<span class="sourceLineNo">110</span>     * method, the default is &lt;code&gt;password&lt;/code&gt;.<a name="line.110"></a>
+<span class="sourceLineNo">111</span>     *<a name="line.111"></a>
+<span class="sourceLineNo">112</span>     * @param passwordParam the name of the request param to check for acquiring the password.<a name="line.112"></a>
+<span class="sourceLineNo">113</span>     */<a name="line.113"></a>
+<span class="sourceLineNo">114</span>    public void setPasswordParam(String passwordParam) {<a name="line.114"></a>
+<span class="sourceLineNo">115</span>        this.passwordParam = passwordParam;<a name="line.115"></a>
+<span class="sourceLineNo">116</span>    }<a name="line.116"></a>
+<span class="sourceLineNo">117</span><a name="line.117"></a>
+<span class="sourceLineNo">118</span>    public String getRememberMeParam() {<a name="line.118"></a>
+<span class="sourceLineNo">119</span>        return rememberMeParam;<a name="line.119"></a>
+<span class="sourceLineNo">120</span>    }<a name="line.120"></a>
+<span class="sourceLineNo">121</span><a name="line.121"></a>
+<span class="sourceLineNo">122</span>    /**<a name="line.122"></a>
+<span class="sourceLineNo">123</span>     * Sets the request parameter name to look for when acquiring the rememberMe boolean value.  Unless overridden<a name="line.123"></a>
+<span class="sourceLineNo">124</span>     * by calling this method, the default is &lt;code&gt;rememberMe&lt;/code&gt;.<a name="line.124"></a>
+<span class="sourceLineNo">125</span>     * &lt;p/&gt;<a name="line.125"></a>
+<span class="sourceLineNo">126</span>     * RememberMe will be &lt;code&gt;true&lt;/code&gt; if the parameter value equals any of those supported by<a name="line.126"></a>
+<span class="sourceLineNo">127</span>     * {@link org.apache.shiro.web.util.WebUtils#isTrue(javax.servlet.ServletRequest, String) WebUtils.isTrue(request,value)}, &lt;code&gt;false&lt;/code&gt;<a name="line.127"></a>
+<span class="sourceLineNo">128</span>     * otherwise.<a name="line.128"></a>
+<span class="sourceLineNo">129</span>     *<a name="line.129"></a>
+<span class="sourceLineNo">130</span>     * @param rememberMeParam the name of the request param to check for acquiring the rememberMe boolean value.<a name="line.130"></a>
+<span class="sourceLineNo">131</span>     */<a name="line.131"></a>
+<span class="sourceLineNo">132</span>    public void setRememberMeParam(String rememberMeParam) {<a name="line.132"></a>
+<span class="sourceLineNo">133</span>        this.rememberMeParam = rememberMeParam;<a name="line.133"></a>
+<span class="sourceLineNo">134</span>    }<a name="line.134"></a>
+<span class="sourceLineNo">135</span><a name="line.135"></a>
+<span class="sourceLineNo">136</span>    public String getFailureKeyAttribute() {<a name="line.136"></a>
+<span class="sourceLineNo">137</span>        return failureKeyAttribute;<a name="line.137"></a>
+<span class="sourceLineNo">138</span>    }<a name="line.138"></a>
+<span class="sourceLineNo">139</span><a name="line.139"></a>
+<span class="sourceLineNo">140</span>    public void setFailureKeyAttribute(String failureKeyAttribute) {<a name="line.140"></a>
+<span class="sourceLineNo">141</span>        this.failureKeyAttribute = failureKeyAttribute;<a name="line.141"></a>
+<span class="sourceLineNo">142</span>    }<a name="line.142"></a>
+<span class="sourceLineNo">143</span><a name="line.143"></a>
+<span class="sourceLineNo">144</span>    protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {<a name="line.144"></a>
+<span class="sourceLineNo">145</span>        if (isLoginRequest(request, response)) {<a name="line.145"></a>
+<span class="sourceLineNo">146</span>            if (isLoginSubmission(request, response)) {<a name="line.146"></a>
+<span class="sourceLineNo">147</span>                if (log.isTraceEnabled()) {<a name="line.147"></a>
+<span class="sourceLineNo">148</span>                    log.trace("Login submission detected.  Attempting to execute login.");<a name="line.148"></a>
+<span class="sourceLineNo">149</span>                }<a name="line.149"></a>
+<span class="sourceLineNo">150</span>                return executeLogin(request, response);<a name="line.150"></a>
+<span class="sourceLineNo">151</span>            } else {<a name="line.151"></a>
+<span class="sourceLineNo">152</span>                if (log.isTraceEnabled()) {<a name="line.152"></a>
+<span class="sourceLineNo">153</span>                    log.trace("Login page view.");<a name="line.153"></a>
+<span class="sourceLineNo">154</span>                }<a name="line.154"></a>
+<span class="sourceLineNo">155</span>                //allow them to see the login page ;)<a name="line.155"></a>
+<span class="sourceLineNo">156</span>                return true;<a name="line.156"></a>
+<span class="sourceLineNo">157</span>            }<a name="line.157"></a>
+<span class="sourceLineNo">158</span>        } else {<a name="line.158"></a>
+<span class="sourceLineNo">159</span>            if (log.isTraceEnabled()) {<a name="line.159"></a>
+<span class="sourceLineNo">160</span>                log.trace("Attempting to access a path which requires authentication.  Forwarding to the " +<a name="line.160"></a>
+<span class="sourceLineNo">161</span>                        "Authentication url [" + getLoginUrl() + "]");<a name="line.161"></a>
+<span class="sourceLineNo">162</span>            }<a name="line.162"></a>
+<span class="sourceLineNo">163</span><a name="line.163"></a>
+<span class="sourceLineNo">164</span>            saveRequestAndRedirectToLogin(request, response);<a name="line.164"></a>
+<span class="sourceLineNo">165</span>            return false;<a name="line.165"></a>
+<span class="sourceLineNo">166</span>        }<a name="line.166"></a>
+<span class="sourceLineNo">167</span>    }<a name="line.167"></a>
+<span class="sourceLineNo">168</span><a name="line.168"></a>
+<span class="sourceLineNo">169</span>    /**<a name="line.169"></a>
+<span class="sourceLineNo">170</span>     * This default implementation merely returns &lt;code&gt;true&lt;/code&gt; if the request is an HTTP &lt;code&gt;POST&lt;/code&gt;,<a name="line.170"></a>
+<span class="sourceLineNo">171</span>     * &lt;code&gt;false&lt;/code&gt; otherwise. Can be overridden by subclasses for custom login submission detection behavior.<a name="line.171"></a>
+<span class="sourceLineNo">172</span>     *<a name="line.172"></a>
+<span class="sourceLineNo">173</span>     * @param request  the incoming ServletRequest<a name="line.173"></a>
+<span class="sourceLineNo">174</span>     * @param response the outgoing ServletResponse.<a name="line.174"></a>
+<span class="sourceLineNo">175</span>     * @return &lt;code&gt;true&lt;/code&gt; if the request is an HTTP &lt;code&gt;POST&lt;/code&gt;, &lt;code&gt;false&lt;/code&gt; otherwise.<a name="line.175"></a>
+<span class="sourceLineNo">176</span>     */<a name="line.176"></a>
+<span class="sourceLineNo">177</span>    @SuppressWarnings({"UnusedDeclaration"})<a name="line.177"></a>
+<span class="sourceLineNo">178</span>    protected boolean isLoginSubmission(ServletRequest request, ServletResponse response) {<a name="line.178"></a>
+<span class="sourceLineNo">179</span>        return (request instanceof HttpServletRequest) &amp;&amp; WebUtils.toHttp(request).getMethod().equalsIgnoreCase(POST_METHOD);<a name="line.179"></a>
+<span class="sourceLineNo">180</span>    }<a name="line.180"></a>
+<span class="sourceLineNo">181</span><a name="line.181"></a>
+<span class="sourceLineNo">182</span>    protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {<a name="line.182"></a>
+<span class="sourceLineNo">183</span>        String username = getUsername(request);<a name="line.183"></a>
+<span class="sourceLineNo">184</span>        String password = getPassword(request);<a name="line.184"></a>
+<span class="sourceLineNo">185</span>        return createToken(username, password, request, response);<a name="line.185"></a>
+<span class="sourceLineNo">186</span>    }<a name="line.186"></a>
+<span class="sourceLineNo">187</span><a name="line.187"></a>
+<span class="sourceLineNo">188</span>    protected boolean isRememberMe(ServletRequest request) {<a name="line.188"></a>
+<span class="sourceLineNo">189</span>        return WebUtils.isTrue(request, getRememberMeParam());<a name="line.189"></a>
+<span class="sourceLineNo">190</span>    }<a name="line.190"></a>
+<span class="sourceLineNo">191</span><a name="line.191"></a>
+<span class="sourceLineNo">192</span>    protected boolean onLoginSuccess(AuthenticationToken token, Subject subject,<a name="line.192"></a>
+<span class="sourceLineNo">193</span>                                     ServletRequest request, ServletResponse response) throws Exception {<a name="line.193"></a>
+<span class="sourceLineNo">194</span>        issueSuccessRedirect(request, response);<a name="line.194"></a>
+<span class="sourceLineNo">195</span>        //we handled the success redirect directly, prevent the chain from continuing:<a name="line.195"></a>
+<span class="sourceLineNo">196</span>        return false;<a name="line.196"></a>
+<span class="sourceLineNo">197</span>    }<a name="line.197"></a>
+<span class="sourceLineNo">198</span><a name="line.198"></a>
+<span class="sourceLineNo">199</span>    protected boolean onLoginFailure(AuthenticationToken token, AuthenticationException e,<a name="line.199"></a>
+<span class="sourceLineNo">200</span>                                     ServletRequest request, ServletResponse response) {<a name="line.200"></a>
+<span class="sourceLineNo">201</span>        setFailureAttribute(request, e);<a name="line.201"></a>
+<span class="sourceLineNo">202</span>        //login failed, let request continue back to the login page:<a name="line.202"></a>
+<span class="sourceLineNo">203</span>        return true;<a name="line.203"></a>
+<span class="sourceLineNo">204</span>    }<a name="line.204"></a>
+<span class="sourceLineNo">205</span><a name="line.205"></a>
+<span class="sourceLineNo">206</span>    protected void setFailureAttribute(ServletRequest request, AuthenticationException ae) {<a name="line.206"></a>
+<span class="sourceLineNo">207</span>        String className = ae.getClass().getName();<a name="line.207"></a>
+<span class="sourceLineNo">208</span>        request.setAttribute(getFailureKeyAttribute(), className);<a name="line.208"></a>
+<span class="sourceLineNo">209</span>    }<a name="line.209"></a>
+<span class="sourceLineNo">210</span><a name="line.210"></a>
+<span class="sourceLineNo">211</span>    protected String getUsername(ServletRequest request) {<a name="line.211"></a>
+<span class="sourceLineNo">212</span>        return WebUtils.getCleanParam(request, getUsernameParam());<a name="line.212"></a>
+<span class="sourceLineNo">213</span>    }<a name="line.213"></a>
+<span class="sourceLineNo">214</span><a name="line.214"></a>
+<span class="sourceLineNo">215</span>    protected String getPassword(ServletRequest request) {<a name="line.215"></a>
+<span class="sourceLineNo">216</span>        return WebUtils.getCleanParam(request, getPasswordParam());<a name="line.216"></a>
+<span class="sourceLineNo">217</span>    }<a name="line.217"></a>
+<span class="sourceLineNo">218</span>}<a name="line.218"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

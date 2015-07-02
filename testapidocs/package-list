@@ -1,0 +1,14 @@
+org.tynamo.security
+org.tynamo.security.services.impl
+org.tynamo.security.testapp.pages
+org.tynamo.security.testapp.pages.annotated
+org.tynamo.security.testapp.pages.authc
+org.tynamo.security.testapp.pages.contributed
+org.tynamo.security.testapp.pages.partlyauthc
+org.tynamo.security.testapp.pages.perms
+org.tynamo.security.testapp.pages.ports
+org.tynamo.security.testapp.pages.roles
+org.tynamo.security.testapp.pages.user
+org.tynamo.security.testapp.services
+org.tynamo.security.testapp.services.ilac
+org.tynamo.security.testapp.services.impl
