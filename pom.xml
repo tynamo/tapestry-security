@@ -10,11 +10,11 @@
 	<parent>
 		<groupId>org.tynamo</groupId>
 		<artifactId>tynamo-parent</artifactId>
-		<version>0.1.1</version>
+		<version>0.2.1</version>
 	</parent>
 
 	<properties>
-		<tapestry-release-version>5.4-beta-22</tapestry-release-version>
+		<tapestry-release-version>5.4-beta-26</tapestry-release-version>
 	</properties>
 
 	<!-- Developers section inherited from the parent pom -->
@@ -90,14 +90,6 @@
     <tag>HEAD</tag>
   </scm>
 
-	<distributionManagement>
-		<site>
-			<id>tynamo-site</id>
-			<!-- Note the url. Only static files deployed in /constant/ can be decorated by Unity -->
-			<url>dav:https://dav.codehaus.org/tynamo/constant/sites/tapestry-security</url>
-		</site>
-	</distributionManagement>
-
 	<repositories>
 		<!-- Needed as long as we depend on Tapestry snapshot
 		<repository>
@@ -129,7 +121,6 @@
 				<filtering>true</filtering>
 			</resource>
 		</resources>
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
