@@ -2,7 +2,6 @@ package org.tynamo.security.services.impl;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.concurrent.Callable;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +15,7 @@ import org.apache.shiro.web.subject.WebSubject;
 import org.apache.tapestry5.services.ApplicationGlobals;
 import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.HttpServletRequestHandler;
+import org.apache.tapestry5.services.RequestGlobals;
 import org.tynamo.security.internal.services.LoginContextService;
 
 public class SecurityConfiguration implements HttpServletRequestFilter {
@@ -25,12 +25,16 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 	private final LoginContextService loginContextService;
 
 	private final Collection<SecurityFilterChain> chains;
+	private final RequestGlobals requestGlobals;
 
-	public SecurityConfiguration(ApplicationGlobals applicationGlobals, final WebSecurityManager securityManager, LoginContextService loginContextService, final Collection<SecurityFilterChain> chains) {
+	public SecurityConfiguration(ApplicationGlobals applicationGlobals, RequestGlobals requestGlobals,
+		final WebSecurityManager securityManager, LoginContextService loginContextService,
+		final Collection<SecurityFilterChain> chains) {
 
 		this.securityManager = securityManager;
 		this.loginContextService = loginContextService;
 		this.servletContext = applicationGlobals.getServletContext();
+		this.requestGlobals = requestGlobals;
 		this.chains = chains;
 
 	}
@@ -47,25 +51,29 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 
 		final SecurityFilterChain chain = getMatchingChain(requestURI);
 
+		requestGlobals.storeServletRequestResponse(request, response);
+
 		ThreadContext.bind(securityManager);
-		WebSubject subject = new WebSubject.Builder(securityManager, originalRequest, response).buildWebSubject();
+		WebSubject subject = new WebSubject.Builder(securityManager, request, response).buildWebSubject();
+		ThreadContext.bind(subject);
 
 		try {
-		return subject.execute(new Callable<Boolean>() {
-			public Boolean call() throws Exception {
+			// return subject.execute(new Callable<Boolean>() {
+			// public Boolean call() throws Exception {
 				if (chain == null) return handler.service(request, response);
 				else {
 					boolean handled = chain.getHandler().service(request, response);
 					return handled || handler.service(request, response);
 				}
-			}
-		});
+			// }
+			// });
 		}
 		finally {
 			/**
 			 * final 'clean up' operation that removes the underlying {@link ThreadLocal ThreadLocal} from the thread
 			 * at the end of execution to prevent leaks in pooled thread environments.
 			 */
+			ThreadContext.remove(subject);
 			ThreadContext.remove();
 		}
 	}

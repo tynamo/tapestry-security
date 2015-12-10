@@ -214,7 +214,7 @@ public class SecurityModule
 
 	public static void contributeHttpServletRequestHandler(OrderedConfiguration<HttpServletRequestFilter> configuration,
 			@InjectService("SecurityConfiguration") HttpServletRequestFilter securityConfiguration) {
-		configuration.add("SecurityConfiguration", securityConfiguration, "after:StoreIntoGlobals");
+		configuration.add("SecurityConfiguration", securityConfiguration, "after:StoreIntoGlobals", "before:IgnoredPaths");
 	}
 
 	@Contribute(HttpServletRequestFilter.class)
