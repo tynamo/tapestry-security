@@ -221,7 +221,7 @@ public class SecurityServiceImpl implements SecurityService
 			return callable.call();
 		}
 		finally {
-			if (securityManager == null) ThreadContext.bind(securityManager);
+			if (securityManager != null) ThreadContext.bind(securityManager);
 		}
 	}
 }
