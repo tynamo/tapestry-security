@@ -164,6 +164,22 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	}
 
 	@Test(groups = {"notLoggedIn"})
+	public void testRequiresUserRememberMe() throws Exception {
+		clickOnBasePage("tynamoLoginLink");
+		type("tynamoLogin", "psycho");
+		type("tynamoPassword", "psycho");
+		page.getForms().get(0).<HtmlInput> getInputByName("tynamoRememberMe").setChecked(true);
+		click("tynamoEnter");
+		webClient.getCookieManager().removeCookie(webClient.getCookieManager().getCookie("JSESSIONID"));
+		assertNotNull(webClient.getCookieManager().getCookie("rememberMe"));
+		clickOnBasePage("alphaServiceRequiresUser");
+		assertSuccessInvoke();
+		clickOnBasePage("alphaServiceRequiresAuthentication");
+		assertLoginPage();
+		webClient.getCookieManager().clearCookies();
+	}
+
+	@Test(groups = { "notLoggedIn" })
 	public void testRequiresGuestAccess() throws Exception
 	{
 		clickOnBasePage("alphaServiceRequiresGuest");
@@ -865,7 +881,9 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		clickOnBasePage("componentMethodInterceptor");
 		assertLoginPage();
 		loginAction();
-		assertEquals(getLocation(), BASEURI);
+		String location = getLocation();
+		if (location.contains(";")) location = location.substring(0, location.indexOf(";"));
+		assertEquals(location, BASEURI);
 		logoutAction();
 	}
 
@@ -1012,6 +1030,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	protected void logoutAction() throws Exception
 	{
 		clickOnBasePage("tynamoLogoutLink");
+		webClient.getCookieManager().clearCookies();
 	}
 
 	private void type(String id, String value)

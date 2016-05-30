@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.apache.shiro.ShiroException;
+import org.apache.shiro.io.Serializer;
 import org.apache.shiro.mgt.RememberMeManager;
 import org.apache.shiro.mgt.SubjectFactory;
 import org.apache.shiro.util.ClassUtils;
@@ -36,7 +37,6 @@ import org.apache.tapestry5.services.Environment;
 import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.LibraryMapping;
 import org.apache.tapestry5.services.transform.ComponentClassTransformWorker2;
-import org.tynamo.common.ModuleProperties;
 import org.tynamo.security.Security;
 import org.tynamo.security.SecurityComponentRequestFilter;
 import org.tynamo.security.SecuritySymbols;
@@ -63,7 +63,6 @@ import org.tynamo.shiro.extension.authz.aop.SecurityInterceptor;
 public class SecurityModule
 {
 	private static final String PATH_PREFIX = "security";
-	private static final String version = ModuleProperties.getVersion(SecurityModule.class);
 
 	public static void bind(final ServiceBinder binder)
 	{
@@ -80,12 +79,14 @@ public class SecurityModule
 		binder.bind(ComponentRequestFilter.class, SecurityComponentRequestFilter.class);
 //		binder.bind(ShiroExceptionHandler.class);
 		binder.bind(LoginContextService.class, LoginContextServiceImpl.class);
+		binder.bind(Serializer.class, SimplePrincipalSerializer.class);
 	}
 
-	public static RememberMeManager buildRememberMeManager() {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static RememberMeManager buildRememberMeManager(Serializer serializer) {
 		CookieRememberMeManager rememberMeManager = new CookieRememberMeManager();
 		// the default Shiro serializer produces obnoxiously long cookies
-		rememberMeManager.setSerializer(new SimplePrincipalSerializer());
+		rememberMeManager.setSerializer(serializer);
 		return rememberMeManager;
 	}
 
@@ -146,11 +147,20 @@ public class SecurityModule
 		 configuration.add("SecurityFilter", filter, "before:*");
 	}
 
+	@SuppressWarnings("rawtypes")
+	@Contribute(Serializer.class)
+	public static void addSafePrincipalTypes(Configuration<Class> configuration) {
+		configuration.add(Long.class);
+		configuration.add(String.class);
+		configuration.add(Integer.class);
+	}
+
 	@Contribute(ComponentClassTransformWorker2.class)
 	public static void addTransformWorkers(OrderedConfiguration<ComponentClassTransformWorker2> configuration)
 	{
 		configuration.addInstance(ShiroAnnotationWorker.class.getSimpleName(), ShiroAnnotationWorker.class);
 	}
+
 
 	public static void contributeComponentClassResolver(Configuration<LibraryMapping> configuration)
 	{

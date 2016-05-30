@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
 import java.util.Collection;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -23,6 +24,13 @@ public class SimplePrincipalSerializer implements Serializer<PrincipalCollection
 	 * Magic number to signal that this is a SimplePrincipalSerializer file so that we don't try to decode something crap.
 	 */
 	private static final int MAGIC = 0x0BADBEEF;
+	@SuppressWarnings("rawtypes")
+	private final Collection<Class> knownPrincipalTypes;
+
+	@SuppressWarnings("rawtypes")
+	public SimplePrincipalSerializer(Collection<Class> knownPrincipalTypes) {
+		this.knownPrincipalTypes = knownPrincipalTypes;
+	}
 
 	public byte[] serialize(PrincipalCollection pc) throws SerializationException {
 		ByteArrayOutputStream ba = new ByteArrayOutputStream();
@@ -61,7 +69,16 @@ public class SimplePrincipalSerializer implements Serializer<PrincipalCollection
 
 		try {
 			GZIPInputStream gin = new GZIPInputStream(ba);
-			ObjectInputStream in = new ObjectInputStream(gin);
+			ObjectInputStream in = new ObjectInputStream(gin) {
+				// only allow deserializing known principal types to protect against deserialization vulnerability
+				// see https://www.contrastsecurity.com/security-influencers/java-serialization-vulnerability-threatens-millions-of-applications
+				protected Class<?> resolveClass(ObjectStreamClass osc) throws IOException, ClassNotFoundException {
+					Class<?> aClass = super.resolveClass(osc);
+					if (knownPrincipalTypes.contains(aClass)) return aClass;
+					throw new SecurityException("Security violation: attempt to deserialize unauthorized " + aClass);
+				}
+			};
+
 			SimplePrincipalCollection pc = new SimplePrincipalCollection();
 
 			// Check magic number
