@@ -14,7 +14,7 @@
 	</parent>
 
 	<properties>
-		<tapestry-release-version>5.4-rc-1</tapestry-release-version>
+		<tapestry-release-version>5.4.1</tapestry-release-version>
 	</properties>
 
 	<!-- Developers section inherited from the parent pom -->
@@ -66,6 +66,12 @@
 			<groupId>org.apache.tapestry</groupId>
 			<artifactId>tapestry-ioc</artifactId>
 			<version>${tapestry-release-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
