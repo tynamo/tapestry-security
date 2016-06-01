@@ -1,5 +1,6 @@
 package org.tynamo.security.services;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -25,6 +26,7 @@ import org.apache.tapestry5.ioc.annotations.Local;
 import org.apache.tapestry5.ioc.annotations.Marker;
 import org.apache.tapestry5.ioc.annotations.Match;
 import org.apache.tapestry5.ioc.annotations.Order;
+import org.apache.tapestry5.ioc.annotations.Symbol;
 import org.apache.tapestry5.plastic.MethodAdvice;
 import org.apache.tapestry5.plastic.MethodInvocation;
 import org.apache.tapestry5.services.ApplicationInitializer;
@@ -37,6 +39,7 @@ import org.apache.tapestry5.services.Environment;
 import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.LibraryMapping;
 import org.apache.tapestry5.services.transform.ComponentClassTransformWorker2;
+import org.slf4j.Logger;
 import org.tynamo.security.Security;
 import org.tynamo.security.SecurityComponentRequestFilter;
 import org.tynamo.security.SecuritySymbols;
@@ -83,10 +86,30 @@ public class SecurityModule
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static RememberMeManager buildRememberMeManager(Serializer serializer) {
+	public static RememberMeManager buildRememberMeManager(Serializer serializer, Logger logger,
+		@Symbol(SymbolConstants.HMAC_PASSPHRASE) String hmacPassphrase,
+		@Symbol(SecuritySymbols.REMEMBERME_CIPHERKERY) String rememberMeCipherKey) throws UnsupportedEncodingException {
 		CookieRememberMeManager rememberMeManager = new CookieRememberMeManager();
 		// the default Shiro serializer produces obnoxiously long cookies
 		rememberMeManager.setSerializer(serializer);
+		String cipherKey = rememberMeCipherKey;
+		if (cipherKey.isEmpty()) {
+			if (hmacPassphrase.isEmpty()) {
+				logger
+					.error("Neither symbol '"
+						+ SecuritySymbols.REMEMBERME_CIPHERKERY
+						+ "' nor  '"
+						+ SymbolConstants.HMAC_PASSPHRASE
+						+ "' is set. Using a random value as the cipher key for encrypting rememberMe information. Cookies will be invalidated when the JVM is restarted");
+				return rememberMeManager;
+			}
+
+			logger.warn("Symbol '" + SecuritySymbols.REMEMBERME_CIPHERKERY + "' is not set, using '"
+				+ SymbolConstants.HMAC_PASSPHRASE
+				+ "' as the cipher. Beware that changing the value will invalidate rememberMe cookies");
+			cipherKey = hmacPassphrase;
+		}
+		rememberMeManager.setCipherKey(cipherKey.getBytes("UTF-8"));
 		return rememberMeManager;
 	}
 
@@ -96,6 +119,7 @@ public class SecurityModule
 		configuration.add(SecuritySymbols.SUCCESS_URL, "/" + "${" + SymbolConstants.START_PAGE_NAME + "}");
 		configuration.add(SecuritySymbols.UNAUTHORIZED_URL, "/" + PATH_PREFIX + "/unauthorized");
 		configuration.add(SecuritySymbols.REDIRECT_TO_SAVED_URL, "true");
+		configuration.add(SecuritySymbols.REMEMBERME_CIPHERKERY, "");
 	}
 
 
