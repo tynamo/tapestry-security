@@ -3,9 +3,11 @@ package org.tynamo.security.services;
 import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.shiro.ShiroException;
+import org.apache.shiro.codec.Base64;
 import org.apache.shiro.io.Serializer;
 import org.apache.shiro.mgt.RememberMeManager;
 import org.apache.shiro.mgt.SubjectFactory;
@@ -92,8 +94,10 @@ public class SecurityModule
 		CookieRememberMeManager rememberMeManager = new CookieRememberMeManager();
 		// the default Shiro serializer produces obnoxiously long cookies
 		rememberMeManager.setSerializer(serializer);
-		String cipherKey = rememberMeCipherKey;
-		if (cipherKey.isEmpty()) {
+
+		// assume properly configured cipher is of the right width (divisable by 16)
+		byte[] cipherKey = Base64.decode(rememberMeCipherKey);
+		if (cipherKey.length <= 0) {
 			if (hmacPassphrase.isEmpty()) {
 				logger
 					.error("Neither symbol '"
@@ -107,9 +111,11 @@ public class SecurityModule
 			logger.warn("Symbol '" + SecuritySymbols.REMEMBERME_CIPHERKERY + "' is not set, using '"
 				+ SymbolConstants.HMAC_PASSPHRASE
 				+ "' as the cipher. Beware that changing the value will invalidate rememberMe cookies");
-			cipherKey = hmacPassphrase;
+			if (hmacPassphrase.length() < 16) hmacPassphrase = hmacPassphrase + ("================".substring(hmacPassphrase.length()));
+			cipherKey = hmacPassphrase.getBytes("UTF-8");
+			if (cipherKey.length > 16) cipherKey = Arrays.copyOf(cipherKey, 16);
 		}
-		rememberMeManager.setCipherKey(cipherKey.getBytes("UTF-8"));
+		rememberMeManager.setCipherKey(cipherKey);
 		return rememberMeManager;
 	}
 
