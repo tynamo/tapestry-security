@@ -29,7 +29,6 @@ import org.apache.tapestry5.ioc.OrderedConfiguration;
 import org.apache.tapestry5.ioc.ServiceBinder;
 import org.apache.tapestry5.ioc.annotations.Contribute;
 import org.apache.tapestry5.ioc.annotations.Local;
-import org.apache.tapestry5.ioc.annotations.Marker;
 import org.apache.tapestry5.ioc.annotations.Startup;
 import org.apache.tapestry5.ioc.annotations.SubModule;
 import org.apache.tapestry5.services.HttpServletRequestFilter;
@@ -162,7 +161,7 @@ public class AppModule
 	}
 
 	@Contribute(HttpServletRequestFilter.class)
-	@Marker(Security.class)
+	@Security
 	public static void setupSecurity(Configuration<SecurityFilterChain> configuration,
 			SecurityFilterChainFactory factory, WebSecurityManager securityManager) {
 //		if (securityManager instanceof DefaultSecurityManager) {

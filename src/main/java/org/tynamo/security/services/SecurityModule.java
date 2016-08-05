@@ -25,7 +25,6 @@ import org.apache.tapestry5.ioc.ServiceBinder;
 import org.apache.tapestry5.ioc.annotations.Contribute;
 import org.apache.tapestry5.ioc.annotations.InjectService;
 import org.apache.tapestry5.ioc.annotations.Local;
-import org.apache.tapestry5.ioc.annotations.Marker;
 import org.apache.tapestry5.ioc.annotations.Match;
 import org.apache.tapestry5.ioc.annotations.Order;
 import org.apache.tapestry5.ioc.annotations.Symbol;
@@ -64,7 +63,7 @@ import org.tynamo.shiro.extension.authz.aop.SecurityInterceptor;
  * The main entry point for Security integration.
  *
  */
-@Marker(Security.class)
+@Security
 public class SecurityModule
 {
 	private static final String PATH_PREFIX = "security";
@@ -77,7 +76,7 @@ public class SecurityModule
 		// because Shiro tests if the object is an instanceof LogoutAware to call logout handlers
 		binder.bind(ModularRealmAuthenticator.class);
 		binder.bind(SubjectFactory.class, DefaultWebSubjectFactory.class);
-		binder.bind(HttpServletRequestFilter.class, SecurityConfiguration.class).withId("SecurityConfiguration");
+		binder.bind(HttpServletRequestFilter.class, SecurityConfiguration.class).withId("SecurityConfiguration").withMarker(Security.class);
 		binder.bind(ClassInterceptorsCache.class, ClassInterceptorsCacheImpl.class);
 		binder.bind(SecurityService.class, SecurityServiceImpl.class);
 		binder.bind(SecurityFilterChainFactory.class, SecurityFilterChainFactoryImpl.class);
@@ -258,7 +257,7 @@ public class SecurityModule
 	}
 
 	@Contribute(HttpServletRequestFilter.class)
-	@Marker(Security.class)
+	@Security
 	public static void defaultSecurity(Configuration<SecurityFilterChain> configuration,
 		SecurityFilterChainFactory factory) {
 		configuration.add(factory.createChain("/modules.gz/**").add(factory.anon()).build());
