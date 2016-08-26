@@ -183,6 +183,7 @@ public class SecurityModule
 		configuration.add(Long.class);
 		configuration.add(String.class);
 		configuration.add(Integer.class);
+		configuration.add(Number.class);
 	}
 
 	@Contribute(ComponentClassTransformWorker2.class)
