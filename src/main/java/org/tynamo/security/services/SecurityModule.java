@@ -53,6 +53,7 @@ import org.tynamo.security.services.impl.ClassInterceptorsCacheImpl;
 import org.tynamo.security.services.impl.SecurityConfiguration;
 import org.tynamo.security.services.impl.SecurityFilterChain;
 import org.tynamo.security.services.impl.SecurityFilterChainFactoryImpl;
+import org.tynamo.security.services.impl.SecurityFilterChainHubImpl;
 import org.tynamo.security.services.impl.SecurityServiceImpl;
 import org.tynamo.security.shiro.SimplePrincipalSerializer;
 import org.tynamo.shiro.extension.authz.aop.AopHelper;
@@ -70,7 +71,6 @@ public class SecurityModule
 
 	public static void bind(final ServiceBinder binder)
 	{
-
 		binder.bind(WebSecurityManager.class, TapestryRealmSecurityManager.class);
 		// TYNAMO-155 It's not enough to identify ModularRealmAuthenticator by it's Authenticator interface only
 		// because Shiro tests if the object is an instanceof LogoutAware to call logout handlers
@@ -81,6 +81,7 @@ public class SecurityModule
 		binder.bind(SecurityService.class, SecurityServiceImpl.class);
 		binder.bind(SecurityFilterChainFactory.class, SecurityFilterChainFactoryImpl.class);
 		binder.bind(ComponentRequestFilter.class, SecurityComponentRequestFilter.class);
+		binder.bind(SecurityFilterChainHub.class, SecurityFilterChainHubImpl.class);
 //		binder.bind(ShiroExceptionHandler.class);
 		binder.bind(LoginContextService.class, LoginContextServiceImpl.class);
 		binder.bind(Serializer.class, SimplePrincipalSerializer.class);
