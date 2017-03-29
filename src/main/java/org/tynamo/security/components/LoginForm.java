@@ -110,7 +110,7 @@ public class LoginForm
 
 		if (currentUser == null)
 		{
-			throw new IllegalStateException("Subject can`t be null");
+			throw new IllegalStateException("Subject can't be null");
 		}
 
 		UsernamePasswordToken token = new UsernamePasswordToken(tynamoLogin, tynamoPassword);
