@@ -52,7 +52,7 @@ public class ExtendedPropertiesRealm extends PropertiesRealm
 		UsernamePasswordToken upToken = (UsernamePasswordToken) token;
 		if (!accountExists(upToken.getUsername()))
 		{
-			throw new UnknownAccountException("Unknown account" + upToken.getUsername());
+			throw new UnknownAccountException("Unknown account " + upToken.getUsername());
 		}
 
 		return super.doGetAuthenticationInfo(token);
