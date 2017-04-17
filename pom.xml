@@ -1,3 +1,12 @@
+<!--
+  ~ Copyright (c) 1996-2017 homburg Softwaretechnik
+  ~                          All Rights Reserved.
+  ~
+  ~ Permission to use, copy, modify, and distribute this software and its
+  ~ documentation for any purpose, without fee, and without a written
+  ~ agreement, is not allowed.
+  -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
@@ -14,7 +23,7 @@
 	</parent>
 
 	<properties>
-		<tapestry-release-version>5.4.1</tapestry-release-version>
+		<tapestry-release-version>5.4.2</tapestry-release-version>
 	</properties>
 
 	<!-- Developers section inherited from the parent pom -->
