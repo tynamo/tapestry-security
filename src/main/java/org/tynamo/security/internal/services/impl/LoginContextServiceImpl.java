@@ -1,7 +1,15 @@
+/*
+ * Copyright (c) 1996-2017 homburg Softwaretechnik
+ *                                All Rights Reserved.
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose, without fee, and without a written
+ *  agreement, is not allowed.
+ */
+
 package org.tynamo.security.internal.services.impl;
 
 import java.io.IOException;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +29,7 @@ import org.apache.tapestry5.services.ComponentEventRequestParameters;
 import org.apache.tapestry5.services.LocalizationSetter;
 import org.apache.tapestry5.services.Request;
 import org.apache.tapestry5.services.RequestGlobals;
+
 import org.tynamo.security.SecuritySymbols;
 import org.tynamo.security.internal.services.LoginContextService;
 
@@ -207,6 +216,6 @@ public class LoginContextServiceImpl implements LoginContextService {
 		servletResponse.setHeader("Location", servletResponse.encodeRedirectURL(requestUri));
 		// if you don't flush the buffer, filters can and will change the headers afterwards
 		servletResponse.flushBuffer();
-		// servletResponse.sendRedirect(servletResponse.encodeRedirectURL(requestUri));
+//		 servletResponse.sendRedirect(servletResponse.encodeRedirectURL(requestUri));
 	}
 }
