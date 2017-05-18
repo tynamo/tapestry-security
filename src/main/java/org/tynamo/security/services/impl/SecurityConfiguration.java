@@ -2,6 +2,7 @@ package org.tynamo.security.services.impl;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,7 +32,7 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 
 	public SecurityConfiguration(ApplicationGlobals applicationGlobals, RequestGlobals requestGlobals,
 								 final WebSecurityManager securityManager, LoginContextService loginContextService,
-								 final Collection<SecurityFilterChain> chains,
+								 final List<SecurityFilterChain> chains,
 								 final SecurityFilterChainHub securityFilterChainHub) {
 
 		this.securityManager = securityManager;
