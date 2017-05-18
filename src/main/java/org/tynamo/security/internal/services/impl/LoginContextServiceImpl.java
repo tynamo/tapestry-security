@@ -1,12 +1,3 @@
-/*
- * Copyright (c) 1996-2017 homburg Softwaretechnik
- *                                All Rights Reserved.
- *
- * Permission to use, copy, modify, and distribute this software and its
- * documentation for any purpose, without fee, and without a written
- *  agreement, is not allowed.
- */
-
 package org.tynamo.security.internal.services.impl;
 
 import java.io.IOException;
