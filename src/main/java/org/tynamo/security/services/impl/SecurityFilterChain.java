@@ -1,16 +1,17 @@
 package org.tynamo.security.services.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.servlet.Filter;
+
 import org.apache.shiro.util.AntPathMatcher;
 import org.apache.shiro.util.PatternMatcher;
 import org.apache.tapestry5.ioc.services.PipelineBuilder;
 import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.HttpServletRequestHandler;
+
 import org.slf4j.Logger;
 import org.tynamo.security.shiro.AccessControlFilter;
-
-import javax.servlet.Filter;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SecurityFilterChain {
 
@@ -36,6 +37,10 @@ public class SecurityFilterChain {
 	@Deprecated
 	public SecurityFilterChain(String path, HttpServletRequestHandler handler) {
 		this(path, handler, defaultPatternMatcher);
+	}
+
+	public String getPath() {
+		return path;
 	}
 
 	public HttpServletRequestHandler getHandler() {

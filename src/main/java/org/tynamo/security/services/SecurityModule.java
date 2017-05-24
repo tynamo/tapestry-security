@@ -40,6 +40,7 @@ import org.apache.tapestry5.services.Environment;
 import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.LibraryMapping;
 import org.apache.tapestry5.services.transform.ComponentClassTransformWorker2;
+
 import org.slf4j.Logger;
 import org.tynamo.security.Security;
 import org.tynamo.security.SecurityComponentRequestFilter;
@@ -53,6 +54,7 @@ import org.tynamo.security.services.impl.ClassInterceptorsCacheImpl;
 import org.tynamo.security.services.impl.SecurityConfiguration;
 import org.tynamo.security.services.impl.SecurityFilterChain;
 import org.tynamo.security.services.impl.SecurityFilterChainFactoryImpl;
+import org.tynamo.security.services.impl.SecurityFilterChainHubImpl;
 import org.tynamo.security.services.impl.SecurityServiceImpl;
 import org.tynamo.security.shiro.SimplePrincipalSerializer;
 import org.tynamo.shiro.extension.authz.aop.AopHelper;
@@ -61,16 +63,12 @@ import org.tynamo.shiro.extension.authz.aop.SecurityInterceptor;
 
 /**
  * The main entry point for Security integration.
- *
  */
 @Security
-public class SecurityModule
-{
+public class SecurityModule {
 	private static final String PATH_PREFIX = "security";
 
-	public static void bind(final ServiceBinder binder)
-	{
-
+	public static void bind(final ServiceBinder binder) {
 		binder.bind(WebSecurityManager.class, TapestryRealmSecurityManager.class);
 		// TYNAMO-155 It's not enough to identify ModularRealmAuthenticator by it's Authenticator interface only
 		// because Shiro tests if the object is an instanceof LogoutAware to call logout handlers
@@ -81,15 +79,16 @@ public class SecurityModule
 		binder.bind(SecurityService.class, SecurityServiceImpl.class);
 		binder.bind(SecurityFilterChainFactory.class, SecurityFilterChainFactoryImpl.class);
 		binder.bind(ComponentRequestFilter.class, SecurityComponentRequestFilter.class);
+		binder.bind(SecurityFilterChainHub.class, SecurityFilterChainHubImpl.class);
 //		binder.bind(ShiroExceptionHandler.class);
 		binder.bind(LoginContextService.class, LoginContextServiceImpl.class);
 		binder.bind(Serializer.class, SimplePrincipalSerializer.class);
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes", "unchecked"})
 	public static RememberMeManager buildRememberMeManager(Serializer serializer, Logger logger,
-		@Symbol(SymbolConstants.HMAC_PASSPHRASE) String hmacPassphrase,
-		@Symbol(SecuritySymbols.REMEMBERME_CIPHERKERY) String rememberMeCipherKey) throws UnsupportedEncodingException {
+														   @Symbol(SymbolConstants.HMAC_PASSPHRASE) String hmacPassphrase,
+														   @Symbol(SecuritySymbols.REMEMBERME_CIPHERKERY) String rememberMeCipherKey) throws UnsupportedEncodingException {
 		CookieRememberMeManager rememberMeManager = new CookieRememberMeManager();
 		// the default Shiro serializer produces obnoxiously long cookies
 		rememberMeManager.setSerializer(serializer);
@@ -99,18 +98,19 @@ public class SecurityModule
 		if (cipherKey.length <= 0) {
 			if (hmacPassphrase.isEmpty()) {
 				logger
-					.error("Neither symbol '"
-						+ SecuritySymbols.REMEMBERME_CIPHERKERY
-						+ "' nor  '"
-						+ SymbolConstants.HMAC_PASSPHRASE
-						+ "' is set. Using a random value as the cipher key for encrypting rememberMe information. Cookies will be invalidated when the JVM is restarted");
+						.error("Neither symbol '"
+									   + SecuritySymbols.REMEMBERME_CIPHERKERY
+									   + "' nor  '"
+									   + SymbolConstants.HMAC_PASSPHRASE
+									   + "' is set. Using a random value as the cipher key for encrypting rememberMe information. Cookies will be invalidated when the JVM is restarted");
 				return rememberMeManager;
 			}
 
 			logger.warn("Symbol '" + SecuritySymbols.REMEMBERME_CIPHERKERY + "' is not set, using '"
-				+ SymbolConstants.HMAC_PASSPHRASE
-				+ "' as the cipher. Beware that changing the value will invalidate rememberMe cookies");
-			if (hmacPassphrase.length() < 16) hmacPassphrase = hmacPassphrase + ("================".substring(hmacPassphrase.length()));
+								+ SymbolConstants.HMAC_PASSPHRASE
+								+ "' as the cipher. Beware that changing the value will invalidate rememberMe cookies");
+			if (hmacPassphrase.length() < 16)
+				hmacPassphrase = hmacPassphrase + ("================".substring(hmacPassphrase.length()));
 			cipherKey = hmacPassphrase.getBytes("UTF-8");
 			if (cipherKey.length > 16) cipherKey = Arrays.copyOf(cipherKey, 16);
 		}
@@ -118,8 +118,7 @@ public class SecurityModule
 		return rememberMeManager;
 	}
 
-	public static void contributeFactoryDefaults(MappedConfiguration<String, String> configuration)
-	{
+	public static void contributeFactoryDefaults(MappedConfiguration<String, String> configuration) {
 		configuration.add(SecuritySymbols.LOGIN_URL, "/" + PATH_PREFIX + "/login");
 		configuration.add(SecuritySymbols.SUCCESS_URL, "/" + "${" + SymbolConstants.START_PAGE_NAME + "}");
 		configuration.add(SecuritySymbols.UNAUTHORIZED_URL, "/" + PATH_PREFIX + "/unauthorized");
@@ -131,33 +130,26 @@ public class SecurityModule
 	/**
 	 * Create ClassInterceptorsCache through annotations on the class page,
 	 * which then will use SecurityFilter.
-	 * <p/>
+	 * <p>
 	 */
 	public void contributeApplicationInitializer(OrderedConfiguration<ApplicationInitializerFilter> configuration,
-	                                             final ComponentClassResolver componentClassResolver,
-	                                             final ClassInterceptorsCache classInterceptorsCache)
-	{
+												 final ComponentClassResolver componentClassResolver,
+												 final ClassInterceptorsCache classInterceptorsCache) {
 
-		configuration.add("SecurityApplicationInitializerFilter", new ApplicationInitializerFilter()
-		{
+		configuration.add("SecurityApplicationInitializerFilter", new ApplicationInitializerFilter() {
 			@Override
-			public void initializeApplication(Context context, ApplicationInitializer initializer)
-			{
+			public void initializeApplication(Context context, ApplicationInitializer initializer) {
 
 				initializer.initializeApplication(context);
 
-				for (String name : componentClassResolver.getPageNames())
-				{
+				for (String name : componentClassResolver.getPageNames()) {
 					String className = componentClassResolver.resolvePageNameToClassName(name);
 					Class<?> clazz = ClassUtils.forName(className);
 
-					while (clazz != null)
-					{
-						for (Class<? extends Annotation> annotationClass : AopHelper.getAutorizationAnnotationClasses())
-						{
+					while (clazz != null) {
+						for (Class<? extends Annotation> annotationClass : AopHelper.getAutorizationAnnotationClasses()) {
 							Annotation classAnnotation = clazz.getAnnotation(annotationClass);
-							if (classAnnotation != null)
-							{
+							if (classAnnotation != null) {
 								//Add in the cache which then will be used in RequestFilter
 								classInterceptorsCache.add(className, new DefaultSecurityInterceptor(classAnnotation));
 							}
@@ -171,9 +163,8 @@ public class SecurityModule
 
 
 	public static void contributeComponentRequestHandler(OrderedConfiguration<ComponentRequestFilter> configuration,
-	                                                     @Local ComponentRequestFilter filter)
-	{
-		 configuration.add("SecurityFilter", filter, "before:*");
+														 @Local ComponentRequestFilter filter) {
+		configuration.add("SecurityFilter", filter, "before:*");
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -186,54 +177,44 @@ public class SecurityModule
 	}
 
 	@Contribute(ComponentClassTransformWorker2.class)
-	public static void addTransformWorkers(OrderedConfiguration<ComponentClassTransformWorker2> configuration)
-	{
+	public static void addTransformWorkers(OrderedConfiguration<ComponentClassTransformWorker2> configuration) {
 		configuration.addInstance(ShiroAnnotationWorker.class.getSimpleName(), ShiroAnnotationWorker.class);
 	}
 
 
-	public static void contributeComponentClassResolver(Configuration<LibraryMapping> configuration)
-	{
+	public static void contributeComponentClassResolver(Configuration<LibraryMapping> configuration) {
 		configuration.add(new LibraryMapping(PATH_PREFIX, "org.tynamo.security"));
 	}
 
 	/**
 	 * Secure all service methods that are marked with authorization annotations.
-	 * <p/>
+	 * <p>
 	 * <b>Restriction:</b> Only service interfaces can be annotated.
 	 */
 	@Match("*")
 	@Order("before:*")
 	public static void adviseSecurityAssert(MethodAdviceReceiver receiver,
-			final @Core Environment environment)
-	{
+											final @Core Environment environment) {
 		Class<?> serviceInterface = receiver.getInterface();
 
-		for (Method method : serviceInterface.getMethods())
-		{
+		for (Method method : serviceInterface.getMethods()) {
 
 			List<SecurityInterceptor> interceptors =
 					AopHelper.createSecurityInterceptorsSeeingInterfaces(method, serviceInterface);
 
-			for (final SecurityInterceptor interceptor : interceptors)
-			{
-				MethodAdvice advice = new MethodAdvice()
-				{
+			for (final SecurityInterceptor interceptor : interceptors) {
+				MethodAdvice advice = new MethodAdvice() {
 					@Override
-					public void advise(MethodInvocation invocation)
-					{
+					public void advise(MethodInvocation invocation) {
 						// Only (try to) intercept if subject is bound.
 						// This is useful in case background or initializing operations
 						// call service operations that are secure
-						if (ThreadContext.getSubject() != null)
-						{
+						if (ThreadContext.getSubject() != null) {
 							environment.push(MethodInvocation.class, invocation);
-							try
-							{
+							try {
 								interceptor.intercept();
 							}
-							finally
-							{
+							finally {
 								environment.pop(MethodInvocation.class);
 							}
 						}
@@ -253,16 +234,16 @@ public class SecurityModule
 	}
 
 	public static void contributeHttpServletRequestHandler(OrderedConfiguration<HttpServletRequestFilter> configuration,
-			@InjectService("SecurityConfiguration") HttpServletRequestFilter securityConfiguration) {
+														   @InjectService("SecurityConfiguration") HttpServletRequestFilter securityConfiguration) {
 		configuration.add("SecurityConfiguration", securityConfiguration, "after:StoreIntoGlobals", "before:IgnoredPaths");
 	}
 
 	@Contribute(HttpServletRequestFilter.class)
 	@Security
-	public static void defaultSecurity(Configuration<SecurityFilterChain> configuration,
-		SecurityFilterChainFactory factory) {
-		configuration.add(factory.createChain("/modules.gz/**").add(factory.anon()).build());
-		configuration.add(factory.createChain("/modules/**").add(factory.anon()).build());
-		configuration.add(factory.createChain("/assets/**").add(factory.anon()).build());
+	public static void defaultSecurity(OrderedConfiguration<SecurityFilterChain> configuration,
+									   SecurityFilterChainFactory factory) {
+		configuration.add("ModulesCompressed", factory.createChain("/modules.gz/**").add(factory.anon()).build(), "before:*");
+		configuration.add("Modules", factory.createChain("/modules/**").add(factory.anon()).build(), "before:*", "after:ModulesCompressed");
+		configuration.add("Assets", factory.createChain("/assets/**").add(factory.anon()).build(), "before:*", "after:Modules");
 	}
 }

@@ -2,7 +2,7 @@ package org.tynamo.security.services.impl;
 
 import java.io.IOException;
 import java.util.Collection;
-
+import java.util.List;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,27 +16,31 @@ import org.apache.tapestry5.services.ApplicationGlobals;
 import org.apache.tapestry5.services.HttpServletRequestFilter;
 import org.apache.tapestry5.services.HttpServletRequestHandler;
 import org.apache.tapestry5.services.RequestGlobals;
+
 import org.tynamo.security.internal.services.LoginContextService;
+import org.tynamo.security.services.SecurityFilterChainHub;
 
 public class SecurityConfiguration implements HttpServletRequestFilter {
 
 	private final SecurityManager securityManager;
 	private final ServletContext servletContext;
 	private final LoginContextService loginContextService;
+	private final SecurityFilterChainHub securityFilterChainHub;
 
-	private final Collection<SecurityFilterChain> chains;
+	private Collection<SecurityFilterChain> chains;
 	private final RequestGlobals requestGlobals;
 
 	public SecurityConfiguration(ApplicationGlobals applicationGlobals, RequestGlobals requestGlobals,
-		final WebSecurityManager securityManager, LoginContextService loginContextService,
-		final Collection<SecurityFilterChain> chains) {
+								 final WebSecurityManager securityManager, LoginContextService loginContextService,
+								 final List<SecurityFilterChain> chains,
+								 final SecurityFilterChainHub securityFilterChainHub) {
 
 		this.securityManager = securityManager;
 		this.loginContextService = loginContextService;
+		this.securityFilterChainHub = securityFilterChainHub;
 		this.servletContext = applicationGlobals.getServletContext();
 		this.requestGlobals = requestGlobals;
 		this.chains = chains;
-
 	}
 
 	public boolean service(final HttpServletRequest originalRequest, final HttpServletResponse response, final HttpServletRequestHandler handler)
@@ -49,6 +53,8 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 
 		final String requestURI = loginContextService.getLocalelessPathWithinApplication();
 
+		runChainListeners();
+
 		final SecurityFilterChain chain = getMatchingChain(requestURI);
 
 		requestGlobals.storeServletRequestResponse(request, response);
@@ -60,11 +66,11 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 		try {
 			// return subject.execute(new Callable<Boolean>() {
 			// public Boolean call() throws Exception {
-				if (chain == null) return handler.service(request, response);
-				else {
-					boolean handled = chain.getHandler().service(request, response);
-					return handled || handler.service(request, response);
-				}
+			if (chain == null) return handler.service(request, response);
+			else {
+				boolean handled = chain.getHandler().service(request, response);
+				return handled || handler.service(request, response);
+			}
 			// }
 			// });
 		}
@@ -76,6 +82,10 @@ public class SecurityConfiguration implements HttpServletRequestFilter {
 			ThreadContext.remove(subject);
 			ThreadContext.remove();
 		}
+	}
+
+	private void runChainListeners() {
+		securityFilterChainHub.commitModifications(chains);
 	}
 
 	private SecurityFilterChain getMatchingChain(final String requestURI) {

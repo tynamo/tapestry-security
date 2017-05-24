@@ -36,6 +36,7 @@ import org.apache.tapestry5.services.Request;
 import org.apache.tapestry5.services.RequestFilter;
 import org.apache.tapestry5.services.RequestHandler;
 import org.apache.tapestry5.services.Response;
+
 import org.slf4j.Logger;
 import org.tynamo.security.Security;
 import org.tynamo.security.SecuritySymbols;
@@ -162,7 +163,7 @@ public class AppModule
 
 	@Contribute(HttpServletRequestFilter.class)
 	@Security
-	public static void setupSecurity(Configuration<SecurityFilterChain> configuration,
+	public static void setupSecurity(OrderedConfiguration<SecurityFilterChain> configuration,
 			SecurityFilterChainFactory factory, WebSecurityManager securityManager) {
 //		if (securityManager instanceof DefaultSecurityManager) {
 //			DefaultSecurityManager defaultManager = (DefaultSecurityManager) securityManager;
@@ -185,22 +186,22 @@ public class AppModule
 //		/perms/view/** = perms[news:view]
 //		/perms/edit/** = perms[news:edit]
 
-		configuration.add(factory.createChain("/authc/signup").add(factory.anon()).build());
-		configuration.add(factory.createChain("/authc/**").add(factory.authc()).build());
-		configuration.add(factory.createChain("/partlyauthc/**").add(factory.anon()).build());
-		configuration.add(factory.createChain("/contributed/**").add(factory.authc()).build());
-		configuration.add(factory.createChain("/user/signup").add(factory.anon()).build());
-		configuration.add(factory.createChain("/user/**").add(factory.user()).build());
-		configuration.add(factory.createChain("/roles/user/**").add(factory.roles(), "user").build());
-		configuration.add(factory.createChain("/roles/manager/**").add(factory.roles(), "manager").build());
-		configuration.add(factory.createChain("/perms/view/**").add(factory.perms(), "news:view").build());
-		configuration.add(factory.createChain("/perms/edit/**").add(factory.perms(), "news:edit").build());
+		configuration.add("authc_signup", factory.createChain("/authc/signup").add(factory.anon()).build());
+		configuration.add("authc", factory.createChain("/authc/**").add(factory.authc()).build());
+		configuration.add("partlyauthc", factory.createChain("/partlyauthc/**").add(factory.anon()).build());
+		configuration.add("contributed", factory.createChain("/contributed/**").add(factory.authc()).build());
+		configuration.add("user_signup", factory.createChain("/user/signup").add(factory.anon()).build());
+		configuration.add("user", factory.createChain("/user/**").add(factory.user()).build());
+		configuration.add("roles_user", factory.createChain("/roles/user/**").add(factory.roles(), "user").build());
+		configuration.add("roles_manager", factory.createChain("/roles/manager/**").add(factory.roles(), "manager").build());
+		configuration.add("perms_view", factory.createChain("/perms/view/**").add(factory.perms(), "news:view").build());
+		configuration.add("perms_edit", factory.createChain("/perms/edit/**").add(factory.perms(), "news:edit").build());
 
-		configuration.add(factory.createChain("/ports/ssl").add(factory.ssl()).build());
-		configuration.add(factory.createChain("/ports/portinuse").add(factory.port(), String.valueOf(TapestrySecurityIntegrationTest.port)).build());
-		configuration.add(factory.createChain("/ports/port9090").add(factory.port(), "9090").build());
+		configuration.add("ports_ssl", factory.createChain("/ports/ssl").add(factory.ssl()).build());
+		configuration.add("ports_inuse", factory.createChain("/ports/portinuse").add(factory.port(), String.valueOf(TapestrySecurityIntegrationTest.port)).build());
+		configuration.add("ports_9000", factory.createChain("/ports/port9090").add(factory.port(), "9090").build());
 
-		configuration.add(factory.createChain("/hidden/**").add(factory.notfound()).build());
+		configuration.add("hidden", factory.createChain("/hidden/**").add(factory.notfound()).build());
 	}
 
 	@Startup
