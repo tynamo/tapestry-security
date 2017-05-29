@@ -60,10 +60,10 @@ public class LoginForm
 	private static final String LOGIN_FORM_ID = "tynamoLoginForm";
 
 	@Property
-	private String tynamoLogin;
+	private String login;
 
 	@Property
-	private String tynamoPassword;
+	private String password;
 
 	@Property
 	private boolean tynamoRememberMe;
@@ -113,7 +113,7 @@ public class LoginForm
 			throw new IllegalStateException("Subject can't be null");
 		}
 
-		UsernamePasswordToken token = new UsernamePasswordToken(tynamoLogin, tynamoPassword);
+		UsernamePasswordToken token = new UsernamePasswordToken(login, password);
 		token.setRememberMe(tynamoRememberMe);
 
 
