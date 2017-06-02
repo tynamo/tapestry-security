@@ -14,7 +14,7 @@
 	</parent>
 
 	<properties>
-		<tapestry-release-version>5.4.2</tapestry-release-version>
+		<tapestry-release-version>5.4.3</tapestry-release-version>
 	</properties>
 
 	<!-- Developers section inherited from the parent pom -->
