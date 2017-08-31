@@ -204,5 +204,14 @@
 		<t:security.ifGranted t:allPermissions="book:read|book:write">
 			<div id="IfGrantedAllPermissionsComponentFailed">IfGrantedAllPermissionsComponentFailed - RENDERED</div>
 		</t:security.ifGranted>
+    
+        <t:if test="permission:book:read">
+          <div id="PermissionBindingSuccess">PermissionBindingSuccess - RENDERED</div>
+        </t:if>
+    
+        <t:if test="permission:book:write">
+          <div id="PermissionBindingFailed">PermissionBindingFailed - RENDERED</div>
+        </t:if>
+    
     </body>
 </html>

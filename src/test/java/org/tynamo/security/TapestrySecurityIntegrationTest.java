@@ -825,6 +825,23 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		}
 	}
 
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testPermissionBindingSuccess() throws Exception
+	{
+		openBase();
+		assertText("PermissionBindingSuccess", "PermissionBindingSuccess - RENDERED");
+	}
+	
+	@Test(groups = {"loggedIn"}, dependsOnMethods = {"testLogin"})
+	public void testPermissionBindingFailed() throws Exception
+	{
+		openBase();
+		if (isElementPresent("PermissionBindingFailed"))
+		{
+			throw new AssertionError("Permission binding failed");
+		}
+	}
+	
 	//----------------------------------------
 
 
