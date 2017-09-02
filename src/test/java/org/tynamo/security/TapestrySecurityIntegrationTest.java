@@ -166,8 +166,8 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	@Test(groups = {"notLoggedIn"})
 	public void testRequiresUserRememberMe() throws Exception {
 		clickOnBasePage("tynamoLoginLink");
-		type("tynamoLogin", "psycho");
-		type("tynamoPassword", "psycho");
+		type("login", "psycho");
+		type("password", "psycho");
 		page.getForms().get(0).<HtmlInput> getInputByName("tynamoRememberMe").setChecked(true);
 		click("tynamoEnter");
 		webClient.getCookieManager().removeCookie(webClient.getCookieManager().getCookie("JSESSIONID"));
@@ -190,8 +190,8 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 	public void testRequiresRole() throws Exception
 	{
 		clickOnBasePage("tynamoLoginLink");
-		type("tynamoLogin", "student");
-		type("tynamoPassword", "student");
+		type("login", "student");
+		type("password", "student");
 		click("tynamoEnter");
 		clickOnBasePage("annotated");
 		assertUnauthorizedPage();
@@ -946,8 +946,8 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 
 	protected void assertLoginPage()
 	{
-		assertNotNull(page.getElementById("tynamoLogin"), "Page doesn't contain login field. Not a login page.");
-		assertEquals("password", getAttribute("tynamoPassword", "type"),
+		assertNotNull(page.getElementById("login"), "Page doesn't contain login field. Not a login page.");
+		assertEquals("password", getAttribute("password", "type"),
 				"Page doesn't contain password field. Not a login page.");
 		assertEquals("checkbox", getAttribute("tynamoRememberMe", "type"),
 				"Page doesn't contain rememberMe field. Not a login page.");
@@ -1022,8 +1022,8 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 
 	protected void loginAction() throws IOException
 	{
-		type("tynamoLogin", "psycho");
-		type("tynamoPassword", "psycho");
+		type("login", "psycho");
+		type("password", "psycho");
 		click("tynamoEnter");
 	}
 
