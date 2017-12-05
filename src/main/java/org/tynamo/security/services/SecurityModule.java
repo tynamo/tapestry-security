@@ -32,6 +32,8 @@ import org.apache.tapestry5.plastic.MethodAdvice;
 import org.apache.tapestry5.plastic.MethodInvocation;
 import org.apache.tapestry5.services.ApplicationInitializer;
 import org.apache.tapestry5.services.ApplicationInitializerFilter;
+import org.apache.tapestry5.services.BindingFactory;
+import org.apache.tapestry5.services.BindingSource;
 import org.apache.tapestry5.services.ComponentClassResolver;
 import org.apache.tapestry5.services.ComponentRequestFilter;
 import org.apache.tapestry5.services.Context;
@@ -50,6 +52,7 @@ import org.tynamo.security.internal.ModularRealmAuthenticator;
 import org.tynamo.security.internal.SecurityExceptionHandlerAssistant;
 import org.tynamo.security.internal.services.LoginContextService;
 import org.tynamo.security.internal.services.impl.LoginContextServiceImpl;
+import org.tynamo.security.internal.services.impl.PermissionBindingFactory;
 import org.tynamo.security.services.impl.ClassInterceptorsCacheImpl;
 import org.tynamo.security.services.impl.SecurityConfiguration;
 import org.tynamo.security.services.impl.SecurityFilterChain;
@@ -60,6 +63,7 @@ import org.tynamo.security.shiro.SimplePrincipalSerializer;
 import org.tynamo.shiro.extension.authz.aop.AopHelper;
 import org.tynamo.shiro.extension.authz.aop.DefaultSecurityInterceptor;
 import org.tynamo.shiro.extension.authz.aop.SecurityInterceptor;
+
 
 /**
  * The main entry point for Security integration.
@@ -245,5 +249,10 @@ public class SecurityModule {
 		configuration.add("ModulesCompressed", factory.createChain("/modules.gz/**").add(factory.anon()).build(), "before:*");
 		configuration.add("Modules", factory.createChain("/modules/**").add(factory.anon()).build(), "before:*", "after:ModulesCompressed");
 		configuration.add("Assets", factory.createChain("/assets/**").add(factory.anon()).build(), "before:*", "after:Modules");
+	}
+
+	@Contribute(BindingSource.class)
+	public static void addPermissionBinding(final MappedConfiguration<String, BindingFactory> configuration) {
+	    configuration.addInstance("permission", PermissionBindingFactory.class);
 	}
 }

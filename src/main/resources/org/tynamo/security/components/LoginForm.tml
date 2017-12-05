@@ -5,13 +5,13 @@
 			<t:if test="loginMessage"><div class="alert alert-danger">${loginMessage}</div></t:if>
 
 			<div class="form-group">
-				<t:label for="tynamoLogin">${message:loginLabel}</t:label>
-				<t:textfield t:id="tynamoLogin" validate="required"/>
+				<t:label for="login">${message:loginLabel}</t:label>
+				<t:textfield t:id="login" validate="required"/>
 			</div>
 			
 			<div class="form-group">
-				<t:label for="tynamoPassword">${message:passwordLabel}</t:label>
-				<t:passwordfield t:id="tynamoPassword" validate="required"/>
+				<t:label for="password">${message:passwordLabel}</t:label>
+				<t:passwordfield t:id="password" validate="required"/>
 			</div>
 			
 			<div class="checkbox">

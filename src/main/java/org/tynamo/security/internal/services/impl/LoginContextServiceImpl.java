@@ -84,7 +84,7 @@ public class LoginContextServiceImpl implements LoginContextService {
 
 	@Override
 	public String getUnauthorizedURL() {
-		return getUnauthorizedURL();
+		return getUnauthorizedPage();
 	}
 
 	private static String urlToPage(String url) {
