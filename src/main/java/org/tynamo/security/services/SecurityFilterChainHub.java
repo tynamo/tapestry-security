@@ -9,6 +9,8 @@ public interface SecurityFilterChainHub {
 
 	void insertChain(String path, AccessControlFilter filter, String config);
 
+	void insertChainWithRegEx(String path, AccessControlFilter filter, String config);
+
 	void updateChain(String path, AccessControlFilter filter, String config);
 
 	void removeChain(String path);

@@ -43,6 +43,15 @@ public class SecurityFilterChain {
 		return path;
 	}
 
+	/**
+	 *
+	 * @deprecated remove when the deprecated PatternMatcher {@link #defaultPatternMatcher} is removed or changed to {@link org.apache.shiro.util.RegExPatternMatcher}
+	 */
+	@Deprecated
+	public PatternMatcher getPatternMatcher() {
+		return patternMatcher;
+	}
+
 	public HttpServletRequestHandler getHandler() {
 		return handler;
 	}
