@@ -18,25 +18,25 @@ public class SecurityComponentRequestFilter implements ComponentRequestFilter {
 	private final ClassInterceptorsCache classInterceptorsCache;
 	private final String loginClassName;
 	private final String unauthorizedClassName;
-	
-	
+
+
 	public SecurityComponentRequestFilter(LoginContextService loginContextService,
 			ComponentClassResolver resolver,
 			ClassInterceptorsCache classInterceptorsCache) {
-		
+
 		this.resolver = resolver;
 		this.classInterceptorsCache = classInterceptorsCache;
-		
+
 		loginClassName = resolver.resolvePageNameToClassName(loginContextService.getLoginPage());
 		unauthorizedClassName = resolver.resolvePageNameToClassName(loginContextService.getUnauthorizedPage());
-		
+
 	}
 
 	@Override
 	public void handleComponentEvent(
 			ComponentEventRequestParameters parameters,
 			ComponentRequestHandler handler) throws IOException {
-		
+
 		checkInternal(parameters.getActivePageName());
 		handler.handleComponentEvent(parameters);
 	}
@@ -44,9 +44,9 @@ public class SecurityComponentRequestFilter implements ComponentRequestFilter {
 	@Override
 	public void handlePageRender(PageRenderRequestParameters parameters,
 			ComponentRequestHandler handler) throws IOException {
-		
+
 		checkInternal(parameters.getLogicalPageName());
-		handler.handlePageRender(parameters);	
+		handler.handlePageRender(parameters);
 	}
 
 	private void checkInternal(String logicalPageName) {
@@ -55,19 +55,17 @@ public class SecurityComponentRequestFilter implements ComponentRequestFilter {
 		if (
 			!(pageClassName.equals(loginClassName) ||
 			  pageClassName.equals(unauthorizedClassName))
-					
+
 		) {
-			
-			String className = resolver.resolvePageNameToClassName(logicalPageName);
-			
-			List<SecurityInterceptor> interceptors = classInterceptorsCache.get(className);
-			
+
+			List<SecurityInterceptor> interceptors = classInterceptorsCache.get(pageClassName);
+
 			if (interceptors != null) {
 				for (SecurityInterceptor interceptor : interceptors) {
 					interceptor.intercept();
 				}
 			}
-			
-		}			
+
+		}
 	}
 }
