@@ -246,9 +246,9 @@ public class SecurityModule {
 	@Security
 	public static void defaultSecurity(OrderedConfiguration<SecurityFilterChain> configuration,
 									   SecurityFilterChainFactory factory) {
-		configuration.add("ModulesCompressed", factory.createChain("/modules.gz/**").add(factory.anon()).build(), "before:*");
-		configuration.add("Modules", factory.createChain("/modules/**").add(factory.anon()).build(), "before:*", "after:ModulesCompressed");
-		configuration.add("Assets", factory.createChain("/assets/**").add(factory.anon()).build(), "before:*", "after:Modules");
+		configuration.add("ModulesCompressed", factory.createChain("/modules.gz/**").add(factory.anon()).build());
+		configuration.add("Modules", factory.createChain("/modules/**").add(factory.anon()).build());
+		configuration.add("Assets", factory.createChain("/assets/**").add(factory.anon()).build());
 	}
 
 	@Contribute(BindingSource.class)
