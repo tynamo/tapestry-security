@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.shiro.util.RegExPatternMatcher;
 import org.apache.tapestry5.func.F;
 import org.apache.tapestry5.func.Worker;
 
 import org.slf4j.Logger;
-import org.tynamo.security.services.SecurityFilterChainHub;
 import org.tynamo.security.services.SecurityFilterChainFactory;
+import org.tynamo.security.services.SecurityFilterChainHub;
 import org.tynamo.security.shiro.AccessControlFilter;
 
 import static org.apache.tapestry5.ioc.internal.util.CollectionFactory.newThreadSafeList;
@@ -30,7 +31,12 @@ public class SecurityFilterChainHubImpl implements SecurityFilterChainHub {
 
 	@Override
 	public void insertChain(String path, AccessControlFilter filter, String config) {
-		insertChains.add(factory.createChain(path).add(filter, config).build());
+		insertChains.add(factory.createChainWithAntPath(path).add(filter, config).build());
+	}
+
+	@Override
+	public void insertChainWithRegEx(String path, AccessControlFilter filter, String config) {
+		insertChains.add(factory.createChainWithRegEx(path).add(filter, config).build());
 	}
 
 	@Override
@@ -54,7 +60,10 @@ public class SecurityFilterChainHubImpl implements SecurityFilterChainHub {
 					for (SecurityFilterChain chain : chains) {
 						if (chain.getPath().equalsIgnoreCase(updateChainConfig.path)) {
 							chainsToRemove.add(chain);
-							insertChains.add(factory.createChain(updateChainConfig.path).add(updateChainConfig.filter, updateChainConfig.config).build());
+							if (chain.getPatternMatcher() instanceof RegExPatternMatcher)
+								insertChains.add(factory.createChainWithRegEx(updateChainConfig.path).add(updateChainConfig.filter, updateChainConfig.config).build());
+							else
+								insertChains.add(factory.createChain(updateChainConfig.path).add(updateChainConfig.filter, updateChainConfig.config).build());
 							break;
 						}
 					}
