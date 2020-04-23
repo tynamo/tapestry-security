@@ -5,16 +5,16 @@
 	<name>Tapestry Security</name>
 	<description>Tynamo Security package for Tapestry 5 based on Shiro Security</description>
 	<packaging>jar</packaging>
-	<version>0.7.2-SNAPSHOT</version>
+	<version>0.8.0-SNAPSHOT</version>
 
 	<parent>
 		<groupId>org.tynamo</groupId>
 		<artifactId>tynamo-parent</artifactId>
-		<version>0.2.2</version>
+		<version>0.2.3</version>
 	</parent>
 
 	<properties>
-		<tapestry-release-version>5.4.3</tapestry-release-version>
+		<tapestry-release-version>5.5.0</tapestry-release-version>
 	</properties>
 
 	<!-- Developers section inherited from the parent pom -->

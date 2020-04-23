@@ -240,7 +240,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		Page jsonLoginResponse = webClient.getPage(ajaxRequest);
 		String ajaxLoginResp = jsonLoginResponse.getWebResponse().getContentAsString();
 		JSONObject jsonResp = new JSONObject(ajaxLoginResp);
-		String ajaxRedirectUrl = jsonResp.getJSONObject("_tapestry").getString("redirectURL");
+		String ajaxRedirectUrl = jsonResp.getString("redirectURL");
 		assertTrue(ajaxRedirectUrl.startsWith(APP_CONTEXT + "security/login"), "The ajax redirect response '"
 			+ ajaxRedirectUrl + "' did not start with '" + APP_CONTEXT + "security/login'");
 		page = webClient.getPage(APP_HOST_PORT + ajaxRedirectUrl);
