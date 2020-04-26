@@ -15,7 +15,6 @@
 
 	<properties>
 		<tapestry-release-version>5.5.0</tapestry-release-version>
-		<javadoc.opts>-Xdoclint:none</javadoc.opts>
 	</properties>
 
 	<!-- Developers section inherited from the parent pom -->
@@ -142,6 +141,13 @@
 			</resource>
 		</resources>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<additionalparam>-Xdoclint:none</additionalparam>
+				</configuration>
+			</plugin>		
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
