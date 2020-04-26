@@ -15,6 +15,7 @@
 
 	<properties>
 		<tapestry-release-version>5.5.0</tapestry-release-version>
+		<javadoc.opts>-Xdoclint:none</javadoc.opts>
 	</properties>
 
 	<!-- Developers section inherited from the parent pom -->

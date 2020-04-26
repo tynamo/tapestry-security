@@ -18,19 +18,18 @@ import org.tynamo.shiro.extension.authz.aop.SecurityInterceptor;
 
 /**
  * Transform components based on annotation.
- * <p/>
+ * 
  * Support annotation on method.
- * <p/>
+ * 
  * The following rules
  * <ul>
  * <li>Annotations on methods are <b>not</b> inherited.</li>
- * <li>The annotations only in target class, unlike services </li>
- * <ul>
- * <p/>
+ * <li>The annotations only in target class, unlike services</li>
+ * </ul>
+ * 
  *
  * @see org.tynamo.security.services.SecurityModule#buildSecurityFilter(org.slf4j.Logger,
- *      org.apache.tapestry5.services.ComponentEventLinkEncoder,
- *      org.apache.tapestry5.services.ComponentClassResolver,
+ *      org.apache.tapestry5.services.ComponentEventLinkEncoder, org.apache.tapestry5.services.ComponentClassResolver,
  *      org.tynamo.security.services.ClassInterceptorsCache)
  */
 public class ShiroAnnotationWorker implements ComponentClassTransformWorker2

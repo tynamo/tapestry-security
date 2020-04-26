@@ -18,16 +18,18 @@
  */
 package org.tynamo.shiro.extension.authz.annotations.utils.casters.method;
 
-import org.apache.shiro.authz.annotation.*;
-
 import java.lang.annotation.Annotation;
+
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresGuest;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.authz.annotation.RequiresUser;
 
 
 /**
- * Class for accepting
- * {@link org.tynamo.shiro.extension.authz.annotations.utils.casters.method.MethodAnnotationCasterVisitor}
- * visitors.
- * <p/>
+ * Class for accepting {@link org.tynamo.shiro.extension.authz.annotations.utils.casters.method.MethodAnnotationCasterVisitor} visitors.
+ * 
  * Provides call the desired method of the visitor, depending on the annotation type.
  *
  * @see org.tynamo.shiro.extension.authz.annotations.utils.casters.method.MethodAnnotationCasterVisitor
