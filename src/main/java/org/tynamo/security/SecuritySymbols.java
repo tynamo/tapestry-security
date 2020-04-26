@@ -7,5 +7,8 @@ public class SecuritySymbols
 	public static final String SUCCESS_URL = "security.successurl";
 	public static final String UNAUTHORIZED_URL = "security.unauthorizedurl";
 	public static final String REDIRECT_TO_SAVED_URL = "security.redirecttosavedurl";
-	public static final String REMEMBERME_CIPHERKERY = "security.remembermecipherkey";
+	public static final String REMEMBERME_CIPHERKEY = "security.remembermecipherkey";
+	// There was a typo in 0.6, 0.7 version of tapestry-security
+	@Deprecated
+	public static final String REMEMBERME_CIPHERKERY = REMEMBERME_CIPHERKEY;
 }
