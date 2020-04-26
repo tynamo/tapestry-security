@@ -18,15 +18,24 @@
  */
 package org.tynamo.shiro.extension.authz.aop;
 
-import org.apache.shiro.authz.annotation.*;
-import org.apache.shiro.authz.aop.AuthorizingAnnotationHandler;
-import org.tynamo.shiro.extension.authz.annotations.utils.casters.method.HandlerCreateVisitor;
-import org.tynamo.shiro.extension.authz.annotations.utils.casters.method.MethodAnnotationCaster;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresGuest;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.authz.annotation.RequiresUser;
+import org.apache.shiro.authz.aop.AuthorizingAnnotationHandler;
+import org.tynamo.shiro.extension.authz.annotations.utils.casters.method.HandlerCreateVisitor;
+import org.tynamo.shiro.extension.authz.annotations.utils.casters.method.MethodAnnotationCaster;
 
 
 /**
@@ -56,11 +65,11 @@ public class AopHelper
 	}
 
 	/**
-	 * Create {@link org.apache.shiro.authz.aop.AuthorizingAnnotationHandler}
-	 * for annotation.
+	 * Create {@link org.apache.shiro.authz.aop.AuthorizingAnnotationHandler} for annotation.
 	 *
 	 * @param annotation
-	 * @return
+	 *          the given annotation
+	 * @return Returns implementation for this AuthorizingAnnotationHandler
 	 */
 	public static AuthorizingAnnotationHandler createHandler(Annotation annotation)
 	{
@@ -70,13 +79,11 @@ public class AopHelper
 	}
 
 	/**
-	 * Create list of {@link org.tynamo.shiro.extension.authz.aop.SecurityInterceptor}
-	 * instances for method. This method search all method and class annotations and use
-	 * annotation data for create interceptors.
-	 * <p/>
-	 * This method considers only those annotations that have been declared
-	 * in the set through parameters of the method and class, regardless of the
-	 * inheritance or interface implementations
+	 * Create list of {@link org.tynamo.shiro.extension.authz.aop.SecurityInterceptor} instances for method. This method search all method and
+	 * class annotations and use annotation data for create interceptors.
+	 * 
+	 * This method considers only those annotations that have been declared in the set through parameters of the method and class, regardless
+	 * of the inheritance or interface implementations
 	 *
 	 * @param method
 	 * @param clazz
@@ -113,21 +120,20 @@ public class AopHelper
 	}
 
 	/**
-	 * Create list of {@link org.tynamo.shiro.extension.authz.aop.SecurityInterceptor}
-	 * instances for method. This method search all method and class annotations and use
-	 * annotation data for create interceptors.
-	 * <p/>
-	 * In contrast of the {@link #createSecurityInterceptors(Method, Class)}, this method
-	 * looking for the annotations in all interfaces, witch implement the targetClass.
-	 * <p/>
+	 * Create list of {@link org.tynamo.shiro.extension.authz.aop.SecurityInterceptor} instances for method. This method search all method and
+	 * class annotations and use annotation data for create interceptors.
+	 * 
+	 * In contrast of the {@link #createSecurityInterceptors(Method, Class)}, this method looking for the annotations in all interfaces, witch
+	 * implement the targetClass.
+	 * 
 	 * The following rules
 	 * <ul>
-	 * <li>If annotation on class presents, will be intercepted all methods in the class,
-	 * that satisfy the {@link #isInterceptOnClassAnnotation(Method) rule}.</li>
+	 * <li>If annotation on class presents, will be intercepted all methods in the class, that satisfy the
+	 * {@link #isInterceptOnClassAnnotation(Method) rule}.</li>
 	 * <li>Annotations on methods are <b>not</b> inherited.</li>
 	 * <li>Annotations on classes are <b>not</b> inherited.</li>
 	 * <li>The annotations are searched in all interfaces, witch implement the targetClass.</li>
-	 * <ul>
+	 * </ul>
 	 *
 	 * @param method
 	 * @param targetClass
@@ -165,10 +171,9 @@ public class AopHelper
 
 	/**
 	 * Find the target method of interface.
-	 * <p/>
-	 * Ensure this: If a class have an interface, then method parameter from interface and
-	 * targetClass implementation.
-	 * <p/>
+	 * 
+	 * Ensure this: If a class have an interface, then method parameter from interface and targetClass implementation.
+	 * 
 	 */
 	public static Method findTargetMethod(Method method, Class<?> targetClass)
 	{
@@ -206,7 +211,7 @@ public class AopHelper
 
 	/**
 	 * Rule under which determined the fate of the class contains annotation.
-	 * <p/>
+	 * 
 	 * All public and protected methods.
 	 */
 	public static boolean isInterceptOnClassAnnotation(int modifiers)

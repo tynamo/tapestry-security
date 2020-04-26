@@ -18,17 +18,15 @@
  */
 package org.tynamo.shiro.extension.authz.aop;
 
-import org.apache.shiro.authz.aop.AuthorizingAnnotationHandler;
-
 import java.lang.annotation.Annotation;
+
+import org.apache.shiro.authz.aop.AuthorizingAnnotationHandler;
 
 
 /**
- * Generic interceptor for use in different aop implementations.
- * Created based on <b>method</b> annotation.
- * <p/>
- * To create the interceptor based on the class annotation, use
- * {@link org.tynamo.shiro.extension.authz.annotations.utils.AnnotationFactory}
+ * Generic interceptor for use in different aop implementations. Created based on <b>method</b> annotation.
+ * 
+ * To create the interceptor based on the class annotation, use {@link org.tynamo.shiro.extension.authz.annotations.utils.AnnotationFactory}
  * for convert class annotation to method annotation.
  *
  */
@@ -41,11 +39,13 @@ public class DefaultSecurityInterceptor implements SecurityInterceptor
 
 	/**
 	 * Used in cases where previously known {@link org.apache.shiro.authz.aop.AuthorizingAnnotationHandler} object.
-	 * <p/>
+	 * 
 	 * if the handler object is unknown use {@link #DefaultSecurityInterceptor(Annotation)} constructor
 	 *
 	 * @param handler
+	 *          given AnnotationHandler
 	 * @param annotation
+	 *          the annotation itself
 	 */
 	public DefaultSecurityInterceptor(AuthorizingAnnotationHandler handler, Annotation annotation)
 	{

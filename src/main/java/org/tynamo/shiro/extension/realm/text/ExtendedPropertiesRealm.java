@@ -18,7 +18,11 @@
  */
 package org.tynamo.shiro.extension.realm.text;
 
-import org.apache.shiro.authc.*;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.realm.text.PropertiesRealm;
 
@@ -41,7 +45,6 @@ public class ExtendedPropertiesRealm extends PropertiesRealm
 	/**
 	 * Eliminates the error generating NullPointerException,
 	 * when trying to register for non-existent account.
-	 * <p/>
 	 *
 	 * @see org.apache.shiro.realm.SimpleAccountRealm#doGetAuthenticationInfo(org.apache.shiro.authc.AuthenticationToken)
 	 */
