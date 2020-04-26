@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>org.tynamo</groupId>
 		<artifactId>tynamo-parent</artifactId>
-		<version>0.2.3</version>
+		<version>0.3.1</version>
 	</parent>
 
 	<properties>
@@ -36,11 +36,12 @@
 			<version>1.0.3</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- slightly annoyingly, we need to use the jetty originated servlet-api because the jars are signed -->
+		<!-- tapestry-security runs on older servlet container but jetty 9.x we test with is a servlet 3.1 container
+		Also resteasy requires at least 3.0 servlet api -->
 		<dependency>
-			<groupId>org.eclipse.jetty.orbit</groupId>
-			<artifactId>javax.servlet</artifactId>
-			<version>3.0.0.v201112011016</version>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -54,6 +55,12 @@
 			<artifactId>shiro-cas</artifactId>
 			<version>1.5.2</version>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -90,7 +97,7 @@
 		<dependency>
 			<groupId>org.tynamo</groupId>
 			<artifactId>tynamo-test</artifactId>
-			<version>0.1.1</version>
+			<version>0.2.1</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -163,7 +170,6 @@
 			<plugin>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
-				<version>9.2.4.v20141103</version>
 				<configuration>
 					<webApp>
 						<contextPath>/</contextPath>
