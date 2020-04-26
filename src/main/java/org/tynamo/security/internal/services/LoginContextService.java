@@ -4,22 +4,22 @@ import java.io.IOException;
 
 public interface LoginContextService {
 
-	@Deprecated
-	// to be removed in 0.7
 	String getLoginPage();
 
-	@Deprecated
-	// to be removed in 0.7
 	String getSuccessPage();
 
-	@Deprecated
-	// to be removed in 0.7
 	String getUnauthorizedPage();
 
+	@Deprecated
+	// to be removed in 0.9
 	String getLoginURL();
 
+	@Deprecated
+	// to be removed in 0.9
 	String getSuccessURL();
 
+	@Deprecated
+	// to be removed in 0.9
 	String getUnauthorizedURL();
 
 	String getLocalelessPathWithinApplication();
