@@ -13,7 +13,7 @@ import org.apache.shiro.authz.permission.WildcardPermission;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.tapestry5.ioc.Configuration;
+import org.apache.tapestry5.commons.Configuration;
 import org.apache.tapestry5.ioc.ServiceBinder;
 import org.apache.tapestry5.plastic.MethodInvocation;
 import org.apache.tapestry5.services.Environment;

@@ -1,5 +1,7 @@
 package org.tynamo.security.services.impl;
 
+import static org.apache.tapestry5.commons.util.CollectionFactory.newThreadSafeList;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -7,13 +9,10 @@ import java.util.List;
 import org.apache.shiro.util.RegExPatternMatcher;
 import org.apache.tapestry5.func.F;
 import org.apache.tapestry5.func.Worker;
-
 import org.slf4j.Logger;
 import org.tynamo.security.services.SecurityFilterChainFactory;
 import org.tynamo.security.services.SecurityFilterChainHub;
 import org.tynamo.security.shiro.AccessControlFilter;
-
-import static org.apache.tapestry5.ioc.internal.util.CollectionFactory.newThreadSafeList;
 
 public class SecurityFilterChainHubImpl implements SecurityFilterChainHub {
 

@@ -5,7 +5,7 @@
 	<name>Tapestry Security</name>
 	<description>Tynamo Security package for Tapestry 5 based on Shiro Security</description>
 	<packaging>jar</packaging>
-	<version>0.8.1-SNAPSHOT</version>
+	<version>0.9.0-SNAPSHOT</version>
 
 	<parent>
 		<groupId>org.tynamo</groupId>
@@ -14,7 +14,7 @@
 	</parent>
 
 	<properties>
-		<tapestry-release-version>5.5.0</tapestry-release-version>
+		<tapestry-release-version>5.7.2</tapestry-release-version>
 	</properties>
 
 	<!-- Developers section inherited from the parent pom -->
@@ -72,6 +72,18 @@
 		<dependency>
 			<groupId>org.apache.tapestry</groupId>
 			<artifactId>tapestry-ioc</artifactId>
+			<version>${tapestry-release-version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.tapestry</groupId>
+			<artifactId>tapestry-http</artifactId>
+			<version>${tapestry-release-version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.tapestry</groupId>
+			<artifactId>commons</artifactId>
 			<version>${tapestry-release-version}</version>
 		</dependency>
 

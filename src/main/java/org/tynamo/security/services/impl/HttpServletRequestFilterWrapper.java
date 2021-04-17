@@ -27,8 +27,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.tapestry5.services.HttpServletRequestFilter;
-import org.apache.tapestry5.services.HttpServletRequestHandler;
+import org.apache.tapestry5.http.services.HttpServletRequestFilter;
+import org.apache.tapestry5.http.services.HttpServletRequestHandler;
 
 public class HttpServletRequestFilterWrapper implements HttpServletRequestFilter {
 	private final Filter filter;

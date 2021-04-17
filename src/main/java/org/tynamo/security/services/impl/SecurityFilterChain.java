@@ -2,14 +2,14 @@ package org.tynamo.security.services.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.servlet.Filter;
 
 import org.apache.shiro.util.AntPathMatcher;
 import org.apache.shiro.util.PatternMatcher;
+import org.apache.tapestry5.http.services.HttpServletRequestFilter;
+import org.apache.tapestry5.http.services.HttpServletRequestHandler;
 import org.apache.tapestry5.ioc.services.PipelineBuilder;
-import org.apache.tapestry5.services.HttpServletRequestFilter;
-import org.apache.tapestry5.services.HttpServletRequestHandler;
-
 import org.slf4j.Logger;
 import org.tynamo.security.shiro.AccessControlFilter;
 

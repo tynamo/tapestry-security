@@ -2,7 +2,7 @@ package org.tynamo.security.internal.services.impl;
 
 import org.apache.tapestry5.Binding;
 import org.apache.tapestry5.ComponentResources;
-import org.apache.tapestry5.ioc.Location;
+import org.apache.tapestry5.commons.Location;
 import org.apache.tapestry5.services.BindingFactory;
 import org.tynamo.security.internal.PermissionBinding;
 import org.tynamo.security.services.SecurityService;
