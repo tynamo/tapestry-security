@@ -14,7 +14,7 @@
 	</parent>
 
 	<properties>
-		<tapestry-release-version>5.7.2</tapestry-release-version>
+		<tapestry-release-version>5.8.0</tapestry-release-version>
 	</properties>
 
 	<!-- Developers section inherited from the parent pom -->
@@ -48,12 +48,12 @@
 		<dependency>
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-web</artifactId>
-			<version>1.7.1</version>
+			<version>1.9.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-cas</artifactId>
-			<version>1.7.1</version>
+			<version>1.9.0</version>
 			<scope>provided</scope>
 			<exclusions>
 				<exclusion>
@@ -74,13 +74,13 @@
 			<artifactId>tapestry-ioc</artifactId>
 			<version>${tapestry-release-version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.tapestry</groupId>
 			<artifactId>tapestry-http</artifactId>
 			<version>${tapestry-release-version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.tapestry</groupId>
 			<artifactId>commons</artifactId>
@@ -159,7 +159,7 @@
 				<configuration>
 					<doclint>none</doclint>
 				</configuration>
-			</plugin>		
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
