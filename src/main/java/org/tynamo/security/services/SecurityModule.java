@@ -4,14 +4,14 @@ import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 
-import org.apache.shiro.ShiroException;
-import org.apache.shiro.codec.Base64;
-import org.apache.shiro.io.Serializer;
+import org.apache.shiro.lang.ShiroException;
+import org.apache.shiro.lang.io.Serializer;
+import org.apache.shiro.lang.util.ClassUtils;
 import org.apache.shiro.mgt.RememberMeManager;
 import org.apache.shiro.mgt.SubjectFactory;
-import org.apache.shiro.util.ClassUtils;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSubjectFactory;
@@ -97,7 +97,7 @@ public class SecurityModule {
 		rememberMeManager.setSerializer(serializer);
 
 		// assume properly configured cipher is of the right width (divisable by 16)
-		byte[] cipherKey = Base64.decode(rememberMeCipherKey);
+		byte[] cipherKey = Base64.getDecoder().decode(rememberMeCipherKey);
 		if (cipherKey.length <= 0) {
 			if (hmacPassphrase.isEmpty()) {
 				logger

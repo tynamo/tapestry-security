@@ -11,7 +11,7 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.CryptoException;
-import org.apache.shiro.io.Serializer;
+import org.apache.shiro.lang.io.Serializer;
 import org.apache.shiro.mgt.AbstractRememberMeManager;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;

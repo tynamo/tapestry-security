@@ -25,7 +25,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.config.ConfigurationException;
-import org.apache.shiro.util.StringUtils;
+import org.apache.shiro.lang.util.StringUtils;
 import org.apache.shiro.web.util.WebUtils;
 import org.tynamo.security.internal.services.LoginContextService;
 

@@ -24,8 +24,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.shiro.lang.util.StringUtils;
 import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.StringUtils;
 import org.apache.shiro.web.util.WebUtils;
 import org.tynamo.security.internal.services.LoginContextService;
 import org.tynamo.security.shiro.AccessControlFilter;

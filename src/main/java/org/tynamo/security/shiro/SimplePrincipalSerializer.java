@@ -10,8 +10,8 @@ import java.util.Collection;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import org.apache.shiro.io.SerializationException;
-import org.apache.shiro.io.Serializer;
+import org.apache.shiro.lang.io.SerializationException;
+import org.apache.shiro.lang.io.Serializer;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 

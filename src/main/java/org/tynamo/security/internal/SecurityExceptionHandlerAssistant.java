@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.shiro.util.StringUtils;
+import org.apache.shiro.lang.util.StringUtils;
 import org.apache.tapestry5.ExceptionHandlerAssistant;
 import org.apache.tapestry5.http.services.Response;
 import org.apache.tapestry5.internal.services.PageResponseRenderer;

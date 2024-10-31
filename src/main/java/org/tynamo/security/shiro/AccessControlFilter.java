@@ -18,8 +18,6 @@
  */
 package org.tynamo.security.shiro;
 
-import static org.apache.shiro.util.StringUtils.split;
-
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -27,6 +25,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.lang.util.StringUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.AntPathMatcher;
 import org.apache.shiro.util.PatternMatcher;
@@ -81,7 +80,7 @@ public abstract class AccessControlFilter extends AdviceFilter {
 
 		
 		public void setConfig(String config) {
-      if (config != null) configElements = split(config);
+      if (config != null) configElements = StringUtils.split(config);
       else configElements = new String[0];
       this.config = config;
 		}

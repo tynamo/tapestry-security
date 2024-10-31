@@ -18,13 +18,14 @@
  */
 package org.tynamo.security.shiro.authc;
 
+import java.util.Base64;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.codec.Base64;
 import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -356,7 +357,7 @@ public class BasicHttpAuthenticationFilter extends AuthenticatingFilter {
      * @return the username (index 0)/password (index 1) pair obtained from the encoded header data.
      */
     protected String[] getPrincipalsAndCredentials(String scheme, String encoded) {
-        String decoded = Base64.decodeToString(encoded);
+        String decoded = Base64.getDecoder().decode(encoded).toString();
         return decoded.split(":");
     }
 }
