@@ -14,7 +14,7 @@
 	</parent>
 
 	<properties>
-		<tapestry-release-version>5.8.2</tapestry-release-version>
+		<tapestry-release-version>5.9.0-preview-2</tapestry-release-version>
 	</properties>
 
 	<!-- Developers section inherited from the parent pom -->
@@ -39,9 +39,9 @@
 		<!-- tapestry-security runs on older servlet container but jetty 9.x we test with is a servlet 3.1 container
 		Also resteasy requires at least 3.0 servlet api -->
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.1.0</version>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+			<version>4.0.4</version>
 			<scope>provided</scope>
 		</dependency>
 
