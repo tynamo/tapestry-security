@@ -20,9 +20,9 @@ package org.tynamo.security.shiro.authz;
 
 import java.io.IOException;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.config.ConfigurationException;
 import org.apache.shiro.lang.util.StringUtils;

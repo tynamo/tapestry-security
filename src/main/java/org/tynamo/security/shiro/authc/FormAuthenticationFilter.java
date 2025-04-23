@@ -18,9 +18,9 @@
  */
 package org.tynamo.security.shiro.authc;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -42,7 +42,7 @@ import org.tynamo.security.internal.services.LoginContextService;
  * and {@link #setRememberMeParam(String) rememberMe} request parameters.  It then calls
  * {@link org.apache.shiro.subject.Subject#login(org.apache.shiro.authc.AuthenticationToken) Subject.login(usernamePasswordToken)},
  * effectively automatically performing a login attempt.  Note that the login attempt will only occur when the
- * {@link #isLoginSubmission(javax.servlet.ServletRequest, javax.servlet.ServletResponse) isLoginSubmission(request,response)}
+ * {@link #isLoginSubmission(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse) isLoginSubmission(request,response)}
  * is <code>true</code>, which by default occurs when the request is for the {@link #setLoginUrl(String) loginUrl} and
  * is a POST request.
  * <p/>
@@ -124,7 +124,7 @@ public class FormAuthenticationFilter extends AuthenticatingFilter {
      * by calling this method, the default is <code>rememberMe</code>.
      * <p/>
      * RememberMe will be <code>true</code> if the parameter value equals any of those supported by
-     * {@link org.apache.shiro.web.util.WebUtils#isTrue(javax.servlet.ServletRequest, String) WebUtils.isTrue(request,value)}, <code>false</code>
+     * {@link org.apache.shiro.web.util.WebUtils#isTrue(jakarta.servlet.ServletRequest, String) WebUtils.isTrue(request,value)}, <code>false</code>
      * otherwise.
      *
      * @param rememberMeParam the name of the request param to check for acquiring the rememberMe boolean value.

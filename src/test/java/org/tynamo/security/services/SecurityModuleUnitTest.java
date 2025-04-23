@@ -1,6 +1,6 @@
 package org.tynamo.security.services;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -25,7 +25,9 @@ public class SecurityModuleUnitTest {
 	Serializer serializer;
 	Subject subject = mock(Subject.class);
 	AuthenticationToken authenticationToken = new UsernamePasswordToken();
-	AuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo();
+	AuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo( "principalName",
+			"credentials",
+			"realmName");
 
 	@SuppressWarnings("unchecked")
 	@BeforeClass
@@ -44,7 +46,7 @@ public class SecurityModuleUnitTest {
 	@Test(expectedExceptions = CryptoException.class)
 	public void buildRememberMeInvalidCipherKey() throws UnsupportedEncodingException {
 		AbstractRememberMeManager rememberMeManager = (AbstractRememberMeManager) SecurityModule.buildRememberMeManager(
-			serializer, logger, "", "invalidcipher");
+			serializer, logger, "", "invalidcipher00000000000");
 		rememberMeManager.rememberIdentity(subject, authenticationToken, authenticationInfo);
 	}
 

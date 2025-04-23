@@ -20,9 +20,9 @@ package org.tynamo.security.shiro.authz;
 
 import java.io.IOException;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.lang.util.StringUtils;
 import org.apache.shiro.subject.Subject;
@@ -32,10 +32,10 @@ import org.tynamo.security.shiro.AccessControlFilter;
 
 /**
  * Superclass for authorization-related filters.  If an request is unauthorized, response handling is delegated to the
- * {@link #onAccessDenied(javax.servlet.ServletRequest, javax.servlet.ServletResponse) onAccessDenied} method, which
+ * {@link #onAccessDenied(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse) onAccessDenied} method, which
  * provides reasonable handling for most applications.
  *
- * @see #onAccessDenied(javax.servlet.ServletRequest, javax.servlet.ServletResponse)
+ * @see #onAccessDenied(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse)
  * @since 0.4.0
  */
 public abstract class AuthorizationFilter extends AccessControlFilter {
@@ -88,7 +88,7 @@ public abstract class AuthorizationFilter extends AccessControlFilter {
      * <ul>
      * <li>If the {@code Subject} is unknown<sup><a href="#known">[1]</a></sup>:
      * <ol><li>The incoming request will be saved and they will be redirected to the login page for authentication
-     * (via the {@link #saveRequestAndRedirectToLogin(javax.servlet.ServletRequest, javax.servlet.ServletResponse)}
+     * (via the {@link #saveRequestAndRedirectToLogin(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse)}
      * method).</li>
      * <li>Once successfully authenticated, they will be redirected back to the originally attempted page.</li></ol>
      * </li>

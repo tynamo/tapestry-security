@@ -3,8 +3,8 @@ package org.tynamo.security.testapp.services;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.tapestry5.http.services.HttpServletRequestFilter;
 import org.apache.tapestry5.http.services.HttpServletRequestHandler;
