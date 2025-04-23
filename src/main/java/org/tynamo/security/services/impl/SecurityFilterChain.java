@@ -3,7 +3,7 @@ package org.tynamo.security.services.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.Filter;
+import jakarta.servlet.Filter;
 
 import org.apache.shiro.util.AntPathMatcher;
 import org.apache.shiro.util.PatternMatcher;
@@ -32,7 +32,7 @@ public class SecurityFilterChain {
 	}
 
 	/**
-	 * @deprecated in 0.4.5 Use {@link #SecurityFilterChain(String, org.apache.tapestry5.services.HttpServletRequestHandler, org.apache.shiro.util.PatternMatcher)} instead
+	 * @deprecated in 0.4.5 Use {@link #SecurityFilterChain(String, org.apache.tapestry5.http.services.HttpServletRequestHandler, org.apache.shiro.util.PatternMatcher)} instead
 	 */
 	@Deprecated
 	public SecurityFilterChain(String path, HttpServletRequestHandler handler) {

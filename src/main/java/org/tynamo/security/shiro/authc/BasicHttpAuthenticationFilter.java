@@ -20,10 +20,10 @@ package org.tynamo.security.shiro.authc;
 
 import java.util.Base64;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.web.util.WebUtils;
@@ -52,7 +52,7 @@ import org.tynamo.security.internal.services.LoginContextService;
  * <li>The client then sends another request for the same resource with the following header:<br/>
  * <p><code>Authorization: Basic <em>Base64_encoded_username_and_password</em></code></p></li>
  * </ol>
- * The {@link #onAccessDenied(javax.servlet.ServletRequest, javax.servlet.ServletResponse)} method will
+ * The {@link #onAccessDenied(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse)} method will
  * only be called if the subject making the request is not
  * {@link org.apache.shiro.subject.Subject#isAuthenticated() authenticated}
  *
@@ -220,7 +220,7 @@ public class BasicHttpAuthenticationFilter extends AuthenticatingFilter {
      * <p/>
      * This implementation merely casts the request to an <code>HttpServletRequest</code> and returns the header:
      * <p/>
-     * <code>HttpServletRequest httpRequest = {@link WebUtils#toHttp(javax.servlet.ServletRequest) toHttp(reaquest)};<br/>
+     * <code>HttpServletRequest httpRequest = {@link WebUtils#toHttp(jakarta.servlet.ServletRequest) toHttp(reaquest)};<br/>
      * return httpRequest.getHeader({@link #AUTHORIZATION_HEADER AUTHORIZATION_HEADER});</code>
      *
      * @param request the incoming <code>ServletRequest</code>
@@ -242,7 +242,7 @@ public class BasicHttpAuthenticationFilter extends AuthenticatingFilter {
      * return authzHeader.toLowerCase().startsWith(authzScheme);</code>
      *
      * @param authzHeader the 'Authorization' header value (guaranteed to be non-null if the
-     *                    {@link #isLoginAttempt(javax.servlet.ServletRequest, javax.servlet.ServletResponse)} method is not overriden).
+     *                    {@link #isLoginAttempt(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse)} method is not overriden).
      * @return <code>true</code> if the authzHeader value matches that configured as defined by
      *         the {@link #getAuthzScheme() authzScheme}.
      */
@@ -279,10 +279,10 @@ public class BasicHttpAuthenticationFilter extends AuthenticatingFilter {
      * <p/>
      * This implementation:
      * <ol><li>acquires the username and password based on the request's
-     * {@link #getAuthzHeader(javax.servlet.ServletRequest) authorization header} via the
-     * {@link #getPrincipalsAndCredentials(String, javax.servlet.ServletRequest) getPrincipalsAndCredentials} method</li>
+     * {@link #getAuthzHeader(jakarta.servlet.ServletRequest) authorization header} via the
+     * {@link #getPrincipalsAndCredentials(String, jakarta.servlet.ServletRequest) getPrincipalsAndCredentials} method</li>
      * <li>The return value of that method is converted to an <code>AuthenticationToken</code> via the
-     * {@link #createToken(String, String, javax.servlet.ServletRequest, javax.servlet.ServletResponse) createToken} method</li>
+     * {@link #createToken(String, String, jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse) createToken} method</li>
      * <li>The created <code>AuthenticationToken</code> is returned.</li>
      * </ol>
      *
@@ -318,7 +318,7 @@ public class BasicHttpAuthenticationFilter extends AuthenticatingFilter {
 
     /**
      * Returns the username obtained from the
-     * {@link #getAuthzHeader(javax.servlet.ServletRequest) authorizationHeader}.
+     * {@link #getAuthzHeader(jakarta.servlet.ServletRequest) authorizationHeader}.
      * <p/>
      * Once the {@code authzHeader} is split per the RFC (based on the space character ' '), the resulting split tokens
      * are translated into the username/password pair by the
@@ -327,7 +327,7 @@ public class BasicHttpAuthenticationFilter extends AuthenticatingFilter {
      * @param authorizationHeader the authorization header obtained from the request.
      * @param request             the incoming ServletRequest
      * @return the username (index 0)/password pair (index 1) submitted by the user for the given header value and request.
-     * @see #getAuthzHeader(javax.servlet.ServletRequest)
+     * @see #getAuthzHeader(jakarta.servlet.ServletRequest)
      */
     protected String[] getPrincipalsAndCredentials(String authorizationHeader, ServletRequest request) {
         if (authorizationHeader == null) {
@@ -351,7 +351,7 @@ public class BasicHttpAuthenticationFilter extends AuthenticatingFilter {
      * return decoded.split(":");</code>
      *
      * @param scheme  the {@link #getAuthcScheme() authcScheme} found in the request
-     *                {@link #getAuthzHeader(javax.servlet.ServletRequest) authzHeader}.  It is ignored by this implementation,
+     *                {@link #getAuthzHeader(jakarta.servlet.ServletRequest) authzHeader}.  It is ignored by this implementation,
      *                but available to overriding implementations should they find it useful.
      * @param encoded the Base64-encoded username:password value found after the scheme in the header
      * @return the username (index 0)/password (index 1) pair obtained from the encoded header data.

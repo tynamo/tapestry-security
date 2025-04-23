@@ -2,9 +2,9 @@ package org.tynamo.security.internal.services.impl;
 
 import java.io.IOException;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.web.util.WebUtils;
 import org.apache.tapestry5.EventContext;

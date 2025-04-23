@@ -21,8 +21,8 @@ package org.tynamo.security.shiro;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.lang.util.StringUtils;
@@ -33,10 +33,12 @@ import org.apache.shiro.web.servlet.AdviceFilter;
 import org.apache.shiro.web.util.WebUtils;
 import org.tynamo.security.internal.services.LoginContextService;
 
+import static org.apache.shiro.web.util.WebUtils.getPathWithinApplication;
+
 /**
  * Superclass for any filter that controls access to a resource and may redirect the user to the login page
  * if they are not authenticated.  This superclass provides the method
- * {@link #saveRequestAndRedirectToLogin(javax.servlet.ServletRequest, javax.servlet.ServletResponse)}
+ * {@link #saveRequestAndRedirectToLogin(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse)}
  * which is used by many subclasses as the behavior when a user is unauthenticated.
  * 
  * This class and the subclasses that are used as Shiro's built-in filters were copied from Shiro 1.1.0
@@ -199,7 +201,7 @@ public abstract class AccessControlFilter extends AdviceFilter {
 
     /**
      * Processes requests where the subject was denied access as determined by the
-     * {@link #isAccessAllowed(javax.servlet.ServletRequest, javax.servlet.ServletResponse, Object) isAccessAllowed}
+     * {@link #isAccessAllowed(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse, Object) isAccessAllowed}
      * method, retaining the {@code mappedValue} that was used during configuration.
      * <p/>
      * This method immediately delegates to {@link #onAccessDenied(ServletRequest,ServletResponse)} as a
@@ -219,7 +221,7 @@ public abstract class AccessControlFilter extends AdviceFilter {
 
     /**
      * Processes requests where the subject was denied access as determined by the
-     * {@link #isAccessAllowed(javax.servlet.ServletRequest, javax.servlet.ServletResponse, Object) isAccessAllowed}
+     * {@link #isAccessAllowed(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse, Object) isAccessAllowed}
      * method.
      *
      * @param request  the incoming <code>ServletRequest</code>
@@ -237,9 +239,9 @@ public abstract class AccessControlFilter extends AdviceFilter {
      * {@link #onAccessDenied(ServletRequest,ServletResponse,Object) onAccessDenied(Request,Response,Object)}.
      *
      * @return <code>true</code> if
-     *         {@link #isAccessAllowed(javax.servlet.ServletRequest, javax.servlet.ServletResponse, Object) isAccessAllowed},
+     *         {@link #isAccessAllowed(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse, Object) isAccessAllowed},
      *         otherwise returns the result of
-     *         {@link #onAccessDenied(javax.servlet.ServletRequest, javax.servlet.ServletResponse) onAccessDenied}.
+     *         {@link #onAccessDenied(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse) onAccessDenied}.
      * @throws Exception if an error occurs.
      */
     public boolean onPreHandle(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
@@ -262,14 +264,14 @@ public abstract class AccessControlFilter extends AdviceFilter {
      * @return <code>true</code> if the incoming request is a login request, <code>false</code> otherwise.
      */
     protected boolean isLoginRequest(ServletRequest request, ServletResponse response) {
-      return pathMatcher.matches(getLoginUrl(), WebUtils.getPathWithinApplication(WebUtils.toHttp(request)));
+      return pathMatcher.matches(getLoginUrl(), getPathWithinApplication(WebUtils.toHttp(request)));
     }
 
     /**
      * Convenience method for subclasses to use when a login redirect is required.
      * <p/>
-     * This implementation simply calls {@link #saveRequest(javax.servlet.ServletRequest) saveRequest(request)}
-     * and then {@link #redirectToLogin(javax.servlet.ServletRequest, javax.servlet.ServletResponse) redirectToLogin(request,response)}.
+     * This implementation simply calls {@link #saveRequest(jakarta.servlet.ServletRequest) saveRequest(request)}
+     * and then {@link #redirectToLogin(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse) redirectToLogin(request,response)}.
      *
      * @param request  the incoming <code>ServletRequest</code>
      * @param response the outgoing <code>ServletResponse</code>
@@ -282,12 +284,12 @@ public abstract class AccessControlFilter extends AdviceFilter {
 
     /**
      * Convenience method merely delegates to
-     * {@link WebUtils#saveRequest(javax.servlet.ServletRequest) WebUtils.saveRequest(request)} to save the request
+     * {@link WebUtils#saveRequest(jakarta.servlet.ServletRequest) WebUtils.saveRequest(request)} to save the request
      * state for reuse later.  This is mostly used to retain user request state when a redirect is issued to
      * return the user to their originally requested url/resource.
      * <p/>
      * If you need to save and then immediately redirect the user to login, consider using
-     * {@link #saveRequestAndRedirectToLogin(javax.servlet.ServletRequest, javax.servlet.ServletResponse)
+     * {@link #saveRequestAndRedirectToLogin(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse)
      * saveRequestAndRedirectToLogin(request,response)} directly.
      *
      * @param request the incoming ServletRequest to save for re-use later (for example, after a redirect).
@@ -304,7 +306,7 @@ public abstract class AccessControlFilter extends AdviceFilter {
      * <p/>
      * <b>N.B.</b>  If you want to issue a redirect with the intention of allowing the user to then return to their
      * originally requested URL, don't use this method directly.  Instead you should call
-     * {@link #saveRequestAndRedirectToLogin(javax.servlet.ServletRequest, javax.servlet.ServletResponse)
+     * {@link #saveRequestAndRedirectToLogin(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse)
      * saveRequestAndRedirectToLogin(request,response)}, which will save the current request state so that it can
      * be reconstructed and re-used after a successful login.
      *
@@ -314,7 +316,7 @@ public abstract class AccessControlFilter extends AdviceFilter {
      */
     protected void redirectToLogin(ServletRequest request, ServletResponse response) throws IOException {
 //        String loginUrl = getLoginUrl();
-    	String localeName = loginContextService.getLocaleFromPath(WebUtils.getPathWithinApplication(WebUtils.toHttp(request)));
+    	String localeName = loginContextService.getLocaleFromPath(getPathWithinApplication(WebUtils.toHttp(request)));
     	String loginUrl = localeName == null ? '/' + loginContextService.getLoginPage() : '/' + localeName + '/' + loginContextService.getLoginPage();
     	
     	// We are not in the response pipeline yet, and it's possible that Tapestry isn't handling this response, but it's still probably 

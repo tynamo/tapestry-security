@@ -20,8 +20,8 @@ package org.tynamo.security.shiro.authz;
 
 import java.io.IOException;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 import org.apache.shiro.subject.Subject;
 import org.tynamo.security.internal.services.LoginContextService;

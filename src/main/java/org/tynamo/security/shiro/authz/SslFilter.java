@@ -18,8 +18,8 @@
  */
 package org.tynamo.security.shiro.authz;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 import org.tynamo.security.internal.services.LoginContextService;
 
@@ -28,7 +28,7 @@ import org.tynamo.security.internal.services.LoginContextService;
  *
  * Filter which requires a request to be over SSL.  Access is allowed if the request is received on the configured
  * server {@link #setPort(int) port} <em>and</em> the
- * {@code request.}{@link javax.servlet.ServletRequest#isSecure() isSecure()}.  If either condition is {@code false},
+ * {@code request.}{@link jakarta.servlet.ServletRequest#isSecure() isSecure()}.  If either condition is {@code false},
  * the filter chain will not continue.
  * <p/>
  * The {@link #getPort() port} property defaults to {@code 443} and also additionally guarantees that the
@@ -57,14 +57,14 @@ public class SslFilter extends PortFilter {
 
 	/**
 	 * Retains the parent method's port-matching behavior but additionally guarantees that the
-	 * {@code ServletRequest.}{@link javax.servlet.ServletRequest#isSecure() isSecure()}.  If the port does not match or
+	 * {@code ServletRequest.}{@link jakarta.servlet.ServletRequest#isSecure() isSecure()}.  If the port does not match or
 	 * the request is not secure, access is denied.
 	 *
 	 * @param request     the incoming {@code ServletRequest}
 	 * @param response    the outgoing {@code ServletResponse} - ignored in this implementation
 	 * @param mappedValue the filter-specific config value mapped to this filter in the URL rules mappings - ignored by this implementation.
 	 * @return {@code true} if the request is received on an expected SSL port and the
-	 *         {@code request.}{@link javax.servlet.ServletRequest#isSecure() isSecure()}, {@code false} otherwise.
+	 *         {@code request.}{@link jakarta.servlet.ServletRequest#isSecure() isSecure()}, {@code false} otherwise.
 	 * @throws Exception if the call to {@code super.isAccessAllowed} throws an exception.
 	 * @since 0.4.1
 	 */

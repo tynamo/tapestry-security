@@ -20,9 +20,9 @@ package org.tynamo.security.shiro.authc;
 
 import java.io.IOException;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -80,7 +80,7 @@ public class CasFilter extends AuthenticatingFilter {
     }
     
     /**
-     * Execute login by creating {@link #createToken(javax.servlet.ServletRequest, javax.servlet.ServletResponse) token} and logging subject
+     * Execute login by creating {@link #createToken(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse) token} and logging subject
      * with this token.
      * 
      * @param request the incoming request

@@ -18,8 +18,8 @@
  */
 package org.tynamo.security.shiro.authc;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 import org.apache.shiro.subject.Subject;
 import org.tynamo.security.internal.services.LoginContextService;
@@ -41,13 +41,13 @@ public class UserFilter extends AccessControlFilter {
 
     /**
      * Returns <code>true</code> if the request is a
-     * {@link #isLoginRequest(javax.servlet.ServletRequest, javax.servlet.ServletResponse) loginRequest} or
-     * if the current {@link #getSubject(javax.servlet.ServletRequest, javax.servlet.ServletResponse) subject}
+     * {@link #isLoginRequest(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse) loginRequest} or
+     * if the current {@link #getSubject(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse) subject}
      * is not <code>null</code>, <code>false</code> otherwise.
      *
      * @return <code>true</code> if the request is a
-     * {@link #isLoginRequest(javax.servlet.ServletRequest, javax.servlet.ServletResponse) loginRequest} or
-     * if the current {@link #getSubject(javax.servlet.ServletRequest, javax.servlet.ServletResponse) subject}
+     * {@link #isLoginRequest(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse) loginRequest} or
+     * if the current {@link #getSubject(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse) subject}
      * is not <code>null</code>, <code>false</code> otherwise.
      */
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
@@ -62,7 +62,7 @@ public class UserFilter extends AccessControlFilter {
 
     /**
      * This default implementation simply calls
-     * {@link #saveRequestAndRedirectToLogin(javax.servlet.ServletRequest, javax.servlet.ServletResponse) saveRequestAndRedirectToLogin}
+     * {@link #saveRequestAndRedirectToLogin(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse) saveRequestAndRedirectToLogin}
      * and then immediately returns <code>false</code>, thereby preventing the chain from continuing so the redirect may
      * execute.
      */

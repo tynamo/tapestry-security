@@ -3,7 +3,7 @@ package org.tynamo.security.internal;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.lang.util.StringUtils;
 import org.apache.tapestry5.ExceptionHandlerAssistant;
