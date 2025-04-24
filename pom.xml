@@ -5,7 +5,7 @@
 	<name>Tapestry Security</name>
 	<description>Tynamo Security package for Tapestry 5 based on Shiro Security</description>
 	<packaging>jar</packaging>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>0.9.1-jakarta</version>
 
 	<parent>
 		<groupId>org.tynamo</groupId>
@@ -33,7 +33,7 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.2.13</version>
+			<version>1.5.18</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- tapestry-security runs on older servlet container but jetty 9.x we test with is a servlet 3.1 container
@@ -78,13 +78,13 @@
 
 		<dependency>
 			<groupId>org.apache.tapestry</groupId>
-			<artifactId>tapestry-ioc</artifactId>
+			<artifactId>tapestry-ioc-jakarta</artifactId>
 			<version>${tapestry-release-version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.apache.tapestry</groupId>
-			<artifactId>tapestry-http</artifactId>
+			<artifactId>tapestry-http-jakarta</artifactId>
 			<version>${tapestry-release-version}</version>
 		</dependency>
 		
@@ -96,13 +96,43 @@
 
 		<dependency>
 			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
+			<artifactId>mockito-core</artifactId>
+			<version>5.14.2</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>apache-jsp</artifactId>
+			<version>11.0.24</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-util</artifactId>
+			<version>11.0.24</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+			<version>11.0.24</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-webapp</artifactId>
+			<version>11.0.24</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
+			<version>7.7.0</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -110,6 +140,12 @@
 			<groupId>org.tynamo</groupId>
 			<artifactId>tynamo-common</artifactId>
 			<version>0.0.3</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
