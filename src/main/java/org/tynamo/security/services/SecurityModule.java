@@ -244,10 +244,12 @@ public class SecurityModule {
 	@Contribute(HttpServletRequestFilter.class)
 	@Security
 	public static void defaultSecurity(OrderedConfiguration<SecurityFilterChain> configuration,
-									   SecurityFilterChainFactory factory) {
-		configuration.add("ModulesCompressed", factory.createChain("/modules.gz/**").add(factory.anon()).build());
-		configuration.add("Modules", factory.createChain("/modules/**").add(factory.anon()).build());
-		configuration.add("Assets", factory.createChain("/assets/**").add(factory.anon()).build());
+									   SecurityFilterChainFactory factory,
+										@Symbol(SymbolConstants.MODULE_PATH_PREFIX) String modulesPathPrefix,
+										@Symbol(SymbolConstants.ASSET_PATH_PREFIX) String assetPathPrefix) {
+		configuration.add("ModulesCompressed", factory.createChain("/" + modulesPathPrefix + ".gz/**").add(factory.anon()).build());
+		configuration.add("Modules", factory.createChain("/" + modulesPathPrefix + "/**").add(factory.anon()).build());
+		configuration.add("Assets", factory.createChain("/" + assetPathPrefix + "/**").add(factory.anon()).build());
 	}
 
 	@Contribute(BindingSource.class)
