@@ -10,20 +10,19 @@ import java.net.ConnectException;
 import java.net.URL;
 
 import org.apache.tapestry5.json.JSONObject;
-import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.ee10.webapp.WebAppContext;
+import org.htmlunit.CookieManager;
+import org.htmlunit.Page;
+import org.htmlunit.WebRequest;
+import org.htmlunit.html.HtmlElement;
+import org.htmlunit.html.HtmlInput;
+import org.htmlunit.html.HtmlPage;
+import org.htmlunit.util.Cookie;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
 import org.tynamo.security.testapp.services.impl.Invoker;
 import org.tynamo.test.AbstractContainerTest;
-
-import com.gargoylesoftware.htmlunit.CookieManager;
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebRequest;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlInput;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.util.Cookie;
 
 public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 {
@@ -254,7 +253,7 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 		// or that resulting login page is not correctly localized anymore (requested locale is lost)
 		openPage("fi_FI/authc/cabinet");
 		assertLoginPage();
-		page.getElementById("tynamoEnter").asText().contains("Kirjaudu sisään");
+		page.getElementById("tynamoEnter").asNormalizedText().contains("Kirjaudu sisään");
 	}
 
 	@Test(groups = {"notLoggedIn"})
@@ -1062,13 +1061,13 @@ public class TapestrySecurityIntegrationTest extends AbstractContainerTest
 
 	private String getText(String id)
 	{
-		return page.getElementById(id).asText();
+		return page.getElementById(id).asNormalizedText();
 	}
 
 
 	private void assertText(String id, String text)
 	{
-		assertEquals(page.getElementById(id).asText(), text);
+		assertEquals(page.getElementById(id).asNormalizedText(), text);
 	}
 
 	private boolean isElementPresent(String id)

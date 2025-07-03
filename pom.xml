@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>org.tynamo</groupId>
 		<artifactId>tynamo-parent</artifactId>
-		<version>0.3.1</version>
+		<version>1.0.1</version>
 	</parent>
 
 	<properties>
@@ -36,8 +36,7 @@
 			<version>1.5.18</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- tapestry-security runs on older servlet container but jetty 9.x we test with is a servlet 3.1 container
-		Also resteasy requires at least 3.0 servlet api -->
+		<!-- tapestry 5.9.0 requires jakarta servlet api -->
 		<dependency>
 			<groupId>jakarta.servlet</groupId>
 			<artifactId>jakarta.servlet-api</artifactId>
@@ -102,34 +101,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>apache-jsp</artifactId>
-			<version>11.0.24</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-util</artifactId>
-			<version>11.0.24</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-server</artifactId>
-			<version>11.0.24</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-webapp</artifactId>
-			<version>11.0.24</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
 			<version>7.7.0</version>
@@ -151,7 +122,7 @@
 		<dependency>
 			<groupId>org.tynamo</groupId>
 			<artifactId>tynamo-test</artifactId>
-			<version>0.2.1</version>
+			<version>1.0.0</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -161,7 +132,7 @@
 		<connection>scm:git:git@github.com:tynamo/tapestry-security.git</connection>
 		<developerConnection>scm:git:git@github.com:tynamo/tapestry-security.git</developerConnection>
 		<url>https://github.com/tynamo/tapestry-security</url>
-		<tag>tapestry-security-0.9.0</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<repositories>
