@@ -357,7 +357,7 @@ public class BasicHttpAuthenticationFilter extends AuthenticatingFilter {
      * @return the username (index 0)/password (index 1) pair obtained from the encoded header data.
      */
     protected String[] getPrincipalsAndCredentials(String scheme, String encoded) {
-        String decoded = Base64.getDecoder().decode(encoded).toString();
+        String decoded = new String(Base64.getDecoder().decode(encoded));
         return decoded.split(":");
     }
 }
