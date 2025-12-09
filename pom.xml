@@ -1,181 +1,271 @@
+<?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>tapestry-security</artifactId>
-	<name>Tapestry Security</name>
-	<description>Tynamo Security package for Tapestry 5 based on Shiro Security</description>
-	<packaging>jar</packaging>
-	<version>1.0.2</version>
-
-	<parent>
-		<groupId>org.tynamo</groupId>
-		<artifactId>tynamo-parent</artifactId>
-		<version>1.0.1</version>
-	</parent>
-
-	<properties>
-		<tapestry-release-version>5.9.0</tapestry-release-version>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>tapestry-security</artifactId>
+    <name>Tapestry Security</name>
+    <description>Tynamo Security package for Tapestry 5 based on Shiro Security</description>
+    <packaging>jar</packaging>
+    <version>1.0.3</version>
+    <parent>
+        <groupId>org.tynamo</groupId>
+        <artifactId>tynamo-parent</artifactId>
+        <version>1.0.1</version>
+    </parent>
+    <properties>
+        <tapestry-release-version>5.9.0</tapestry-release-version>
+        <shiro-version>2.0.6</shiro-version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-	</properties>
-
-	<!-- Developers section inherited from the parent pom -->
-	<contributors>
-		<contributor>
-			<name>Valentin Yerastov</name>
-			<email>xibyte (-at-) gmail.com</email>
-			<roles>
-				<role>Original author of tapestry-jsecurity</role>
-			</roles>
-		</contributor>
-	</contributors>
-
-
-	<dependencies>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>1.5.18</version>
-			<scope>test</scope>
-		</dependency>
-		<!-- tapestry 5.9.0 requires jakarta servlet api -->
-		<dependency>
-			<groupId>jakarta.servlet</groupId>
-			<artifactId>jakarta.servlet-api</artifactId>
-			<version>6.1.0</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.shiro</groupId>
-			<artifactId>shiro-web</artifactId>
-			<classifier>jakarta</classifier>
-			<version>2.0.3</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.shiro</groupId>
-			<artifactId>shiro-jakarta-ee</artifactId>
-			<classifier>jakarta</classifier>
-			<version>2.0.3</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.shiro</groupId>
-			<artifactId>shiro-cas</artifactId>
-			<version>1.13.0</version>
-			<scope>provided</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>javax.servlet</groupId>
-					<artifactId>servlet-api</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.tapestry</groupId>
-			<artifactId>tapestry-core-jakarta</artifactId>
-			<version>${tapestry-release-version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.tapestry</groupId>
-			<artifactId>tapestry-ioc-jakarta</artifactId>
-			<version>${tapestry-release-version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.apache.tapestry</groupId>
-			<artifactId>tapestry-http-jakarta</artifactId>
-			<version>${tapestry-release-version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.apache.tapestry</groupId>
-			<artifactId>commons</artifactId>
-			<version>${tapestry-release-version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<version>5.14.2</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
-			<version>7.7.0</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.tynamo</groupId>
-			<artifactId>tynamo-common</artifactId>
-			<version>0.0.3</version>
-			<exclusions>
-				<exclusion>
-					<groupId>javax.servlet</groupId>
-					<artifactId>servlet-api</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.tynamo</groupId>
-			<artifactId>tynamo-test</artifactId>
-			<version>1.0.0</version>
-			<scope>test</scope>
-		</dependency>
-
-	</dependencies>
-
-	<scm>
-		<connection>scm:git:git@github.com:tynamo/tapestry-security.git</connection>
-		<developerConnection>scm:git:git@github.com:tynamo/tapestry-security.git</developerConnection>
-		<url>https://github.com/tynamo/tapestry-security</url>
-		<tag>HEAD</tag>
-	</scm>
-
-	<repositories>
-		<!-- Needed as long as we depend on Tapestry snapshot
-		<repository>
-			<id>apache-ci-snapshots</id>
-			<url>http://repository.apache.org/snapshots</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-		</repository> -->
-
-		<!-- Needed as long as we depend on Tapestry staging builds (like alphas or betas)
-		<repository>
-			<id>apache-staging</id>
-			<url>https://repository.apache.org/content/groups/staging/</url>
-		</repository>
-		-->
-	</repositories>
-
-	<build>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-			<resource>
-				<directory>src/main/filtered-resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<configuration>
-					<doclint>none</doclint>
-				</configuration>
-			</plugin>
+    </properties>
+    <!-- Developers section inherited from the parent pom -->
+    <contributors>
+        <contributor>
+            <name>Valentin Yerastov</name>
+            <email>xibyte (-at-) gmail.com</email>
+            <roles>
+                <role>Original author of tapestry-jsecurity</role>
+            </roles>
+        </contributor>
+    </contributors>
+    <dependencyManagement>
+        <dependencies>
+            <!-- the official way: https://shiro.apache.org/jakarta-ee.html -->
+            <!--
+              <dependency>
+                  <groupId>org.apache.shiro</groupId>
+                  <artifactId>shiro-bom</artifactId>
+                  <version>2.0.6</version>
+                  <scope>import</scope>
+                  <type>pom</type>
+              </dependency>
+              -->
+            <!-- same this done manually: reset transitive deps which -->
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-core</artifactId>
+                <classifier>jakarta</classifier>
+                <version>${shiro-version}</version>
+                <!-- eddyson: exclusion for shiro-crypto-cipher -->
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.shiro</groupId>
+                        <artifactId>shiro-crypto-cipher</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-web</artifactId>
+                <classifier>jakarta</classifier>
+                <version>${shiro-version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.shiro</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-jakarta-ee</artifactId>
+                <classifier>jakarta</classifier>
+                <version>${shiro-version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.shiro</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-cdi</artifactId>
+                <version>${shiro-version}</version>
+                <classifier>jakarta</classifier>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.shiro</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-jaxrs</artifactId>
+                <version>${shiro-version}</version>
+                <classifier>jakarta</classifier>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.shiro</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.5.18</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- tapestry 5.9.0 requires jakarta servlet api -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- explicitly list shiro deps; including all transitive modules that have a -jakarta flavor -->
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-web</artifactId>
+            <classifier>jakarta</classifier>
+            <version>${shiro-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-jakarta-ee</artifactId>
+            <classifier>jakarta</classifier>
+            <version>${shiro-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-core</artifactId>
+            <classifier>jakarta</classifier>
+            <version>${shiro-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-cdi</artifactId>
+            <classifier>jakarta</classifier>
+            <version>${shiro-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-crypto-cipher</artifactId>
+            <classifier>jakarta</classifier>
+            <version>${shiro-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-cas</artifactId>
+            <version>1.13.0</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+                <!--
+                shiro-cas is obsolete and pulls old shiro-*; do we
+                have to exclude them as well?
+                -->
+                <exclusion>
+                    <groupId>org.apache.shiro</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tapestry</groupId>
+            <artifactId>tapestry-core-jakarta</artifactId>
+            <version>${tapestry-release-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tapestry</groupId>
+            <artifactId>tapestry-ioc-jakarta</artifactId>
+            <version>${tapestry-release-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tapestry</groupId>
+            <artifactId>tapestry-http-jakarta</artifactId>
+            <version>${tapestry-release-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tapestry</groupId>
+            <artifactId>commons</artifactId>
+            <version>${tapestry-release-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.14.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>7.7.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.tynamo</groupId>
+            <artifactId>tynamo-common</artifactId>
+            <version>0.0.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.tynamo</groupId>
+            <artifactId>tynamo-test</artifactId>
+            <version>1.0.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <scm>
+        <connection>scm:git:git@github.com:tynamo/tapestry-security.git</connection>
+        <developerConnection>scm:git:git@github.com:tynamo/tapestry-security.git</developerConnection>
+        <url>https://github.com/tynamo/tapestry-security</url>
+        <tag>HEAD</tag>
+    </scm>
+    <repositories>
+        <!-- Needed as long as we depend on Tapestry snapshot
+            <repository>
+                <id>apache-ci-snapshots</id>
+                <url>http://repository.apache.org/snapshots</url>
+                <snapshots>
+                    <enabled>true</enabled>
+                </snapshots>
+                <releases>
+                    <enabled>false</enabled>
+                </releases>
+            </repository> -->
+        <!-- Needed as long as we depend on Tapestry staging builds (like alphas or betas)
+            <repository>
+                <id>apache-staging</id>
+                <url>https://repository.apache.org/content/groups/staging/</url>
+            </repository>
+            -->
+    </repositories>
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>src/main/filtered-resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <doclint>none</doclint>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -196,59 +286,55 @@
                     </execution>
                 </executions>
             </plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<suiteXmlFiles>
-						<suiteXmlFile>src/test/conf/testng.xml</suiteXmlFile>
-					</suiteXmlFiles>
-					<argLine>-Xmx500m</argLine>
-					<redirectTestOutputToFile>false</redirectTestOutputToFile>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifestEntries>
-							<Tapestry-Module-Classes>org.tynamo.security.services.SecurityModule
-							</Tapestry-Module-Classes>
-						</manifestEntries>
-					</archive>
-				</configuration>
-			</plugin>
-
-			<!-- run the test app in the port 8180 with "mvn jetty:run" -->
-			<plugin>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-maven-plugin</artifactId>
-				<configuration>
-					<webApp>
-						<contextPath>/</contextPath>
-					</webApp>
-					<useTestClasspath>true</useTestClasspath>
-					<webAppSourceDirectory>${basedir}/src/test/webapp</webAppSourceDirectory>
-					<systemProperties>
-						<systemProperty>
-							<name>jetty.port</name>
-							<value>8180</value>
-						</systemProperty>
-						<systemProperty>
-							<name>tapestry.compress-whitespace</name>
-							<value>false</value>
-						</systemProperty>
-						<systemProperty>
-							<name>tapestry.production-mode</name>
-							<value>false</value>
-						</systemProperty>
-					</systemProperties>
-				</configuration>
-			</plugin>
-
-		</plugins>
-	</build>
-
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>src/test/conf/testng.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <argLine>-Xmx500m</argLine>
+                    <redirectTestOutputToFile>false</redirectTestOutputToFile>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Tapestry-Module-Classes>org.tynamo.security.services.SecurityModule
+                            </Tapestry-Module-Classes>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <!-- run the test app in the port 8180 with "mvn jetty:run" -->
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <configuration>
+                    <webApp>
+                        <contextPath>/</contextPath>
+                    </webApp>
+                    <useTestClasspath>true</useTestClasspath>
+                    <webAppSourceDirectory>${basedir}/src/test/webapp</webAppSourceDirectory>
+                    <systemProperties>
+                        <systemProperty>
+                            <name>jetty.port</name>
+                            <value>8180</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <name>tapestry.compress-whitespace</name>
+                            <value>false</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <name>tapestry.production-mode</name>
+                            <value>false</value>
+                        </systemProperty>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
