@@ -30,9 +30,9 @@ import org.tynamo.security.internal.services.LoginContextService;
 
 
 /**
- * Filter that allows access based on the roles specified by the mapped value.
- * Access is granted if <em>no roles are specified</em> or the current user has <em>all</em> of roles.
- * Access is denied if the current user has none of the roles.
+ * Filter that allows access based on all of the roles specified by the mapped value.
+ * Access is granted if <em>no roles are specified</em> or if the current user has <em>all</em> of the roles.
+ * Access is denied if the current user does not have all of the roles.
  *
  * @since 0.4.0
  */
