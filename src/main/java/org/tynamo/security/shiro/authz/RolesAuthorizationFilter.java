@@ -30,8 +30,9 @@ import org.tynamo.security.internal.services.LoginContextService;
 
 
 /**
- * Filter that allows access if the current user has the roles specified by the mapped value, or denies access
- * if the user does not have all of the roles specified.
+ * Filter that allows access based on the roles specified by the mapped value.
+ * Access is granted if <em>no roles are specified</em> or the current user has <em>all</em> of roles.
+ * Access is denied if the current user has none of the roles.
  *
  * @since 0.4.0
  */
@@ -40,8 +41,13 @@ public class RolesAuthorizationFilter extends AuthorizationFilter {
 		super(loginContextService);
 	}
 
-    //TODO - complete JavaDoc
-
+    /**
+     * {@inheritDoc}
+     * @param request {@inheritDoc}
+     * @param response {@inheritDoc}
+     * @param mappedValue a String array containing the roles all of which the current user must <em>all</em> have to be granted access
+     * @return {@inheritDoc}
+     */
     @SuppressWarnings({"unchecked"})
     public boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws IOException {
 
