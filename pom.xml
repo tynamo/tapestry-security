@@ -5,15 +5,15 @@
     <name>Tapestry Security</name>
     <description>Tynamo Security package for Tapestry 5 based on Shiro Security</description>
     <packaging>jar</packaging>
-    <version>1.0.3</version>
+    <version>1.1.0</version>
     <parent>
         <groupId>org.tynamo</groupId>
         <artifactId>tynamo-parent</artifactId>
         <version>1.0.1</version>
     </parent>
     <properties>
-        <tapestry-release-version>5.9.0</tapestry-release-version>
-        <shiro-version>2.0.6</shiro-version>
+        <tapestry-release-version>5.9.1</tapestry-release-version>
+        <shiro-version>2.2.0</shiro-version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
