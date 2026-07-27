@@ -17,6 +17,7 @@ import org.tynamo.security.shiro.authc.AnonymousFilter;
 import org.tynamo.security.shiro.authc.BasicHttpAuthenticationFilter;
 import org.tynamo.security.shiro.authc.FormAuthenticationFilter;
 import org.tynamo.security.shiro.authc.UserFilter;
+import org.tynamo.security.shiro.authz.AnyRoleAuthorizationFilter;
 import org.tynamo.security.shiro.authz.NotFoundFilter;
 import org.tynamo.security.shiro.authz.PermissionsAuthorizationFilter;
 import org.tynamo.security.shiro.authz.PortFilter;
@@ -107,7 +108,13 @@ public class SecurityFilterChainFactoryImpl implements SecurityFilterChainFactor
 		return filter;
 	}
 	
-	
+	public AnyRoleAuthorizationFilter anyrole() {
+		String name = "anyrole";
+		AnyRoleAuthorizationFilter filter = new AnyRoleAuthorizationFilter(loginContextService);
+		filter.setName(name);
+		return filter;
+	}
+
 	public PermissionsAuthorizationFilter perms() {
 		String name = "perms";
 		PermissionsAuthorizationFilter filter = new PermissionsAuthorizationFilter(loginContextService);
